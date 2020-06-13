@@ -17,4 +17,5 @@ selenium-debug.log
 *.sln
 
 # Environment variables
-*.env.js
+dev.env.js
+test.env.js
