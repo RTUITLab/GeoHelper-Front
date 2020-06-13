@@ -3,6 +3,8 @@
     <v-dialog
       class="dialog"
       persistent
+      max-width="1200"
+      scrollable
       v-model="dialog"
     >
       <v-card>
@@ -13,7 +15,10 @@
         >
           <v-toolbar-title class="headline">Создать текстовый объект</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn icon>
+          <v-btn
+            icon
+            @click="$router.push('/')"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-toolbar>
@@ -42,14 +47,28 @@
               required
             ></v-textarea>
           </v-form>
-          <app-map />
+          <app-map ref="map" />
         </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-2" text @click="save">Сохранить</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar
+      :timeout="3000"
+      bottom
+      color="red darken-3"
+      v-model="snackbar"
+    >{{ message }}</v-snackbar>
   </v-content>
 </template>
 
 <script>
+import Text from '@/components/pages/Text'
 
 export default {
   data () {
@@ -61,7 +80,14 @@ export default {
         description: ''
       },
       nameRules: [v => !!v || 'Поле Название не заполнено'],
-      descriptionRules: [v => !!v || 'Поле Описание не заполнено']
+      descriptionRules: [v => !!v || 'Поле Описание не заполнено'],
+      snackbar: false,
+      message: ''
+    }
+  },
+  methods: {
+    save () {
+      Text.createObject(this)
     }
   }
 }
