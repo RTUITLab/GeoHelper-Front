@@ -20,7 +20,7 @@ export default {
       script.async = true
       script.defer = true
       script.setAttribute('id', 'maps-script')
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBJRRX1-e-D9XizNpGNQWqLfs-rHb9ZaOU&libraries=drawing"'
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_KEY}&libraries=drawing`
       document.head.appendChild(script)
     }
   },
