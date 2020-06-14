@@ -1,3 +1,7 @@
+import runtimeEnv from '@mars/heroku-js-runtime-env'
+
+const key = runtimeEnv().JS_RUNTIME_KEY || process.env.VUE_APP_KEY
+
 const modes = {
   SET_POSITION: 0,
   SET_AREA: 1
@@ -20,7 +24,7 @@ export default {
       script.async = true
       script.defer = true
       script.setAttribute('id', 'maps-script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_KEY}&libraries=drawing`
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=drawing`
       document.head.appendChild(script)
     }
   },
