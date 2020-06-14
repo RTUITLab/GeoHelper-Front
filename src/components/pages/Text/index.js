@@ -28,10 +28,9 @@ export default {
       entity.description = context.form.description
       entity.type = 'text'
 
-      // eslint-disable-next-line
-      console.log(entity)
       Axios.post(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
         .then(({data}) => {
+          context.$parent.getAllObjects()
           context.validForm = true
           router.push('/')
         })

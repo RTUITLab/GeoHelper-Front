@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col :cols="9">
+    <v-col :cols="9" id="map-cont">
       <div id="map" />
     </v-col>
-    <v-col :cols="3" class="pl-5">
+    <v-col :cols="3" class="pl-5" id="text-btns">
       <div class="headline pb-4" id="setup">Установить</div>
       <div>
         <v-btn-toggle
@@ -21,6 +21,25 @@
           width="100%"
           @click="clearMap"
         >Очистить карту</v-btn>
+      </div>
+    </v-col>
+    <v-col :cols="1" id="icon-btns" align="center">
+      <div>
+        <v-btn-toggle
+          class="btn-toggle"
+          color="blue darken-2"
+          mandatory group
+        >
+          <v-btn icon @click="mode = 0"><v-icon>mdi-map-marker-outline</v-icon></v-btn>
+          <v-btn icon @click="mode = 1"><v-icon>mdi-vector-rectangle</v-icon></v-btn>
+        </v-btn-toggle>
+        <v-btn
+          color="red darken-2"
+          class="mt-4"
+          outlined
+          icon
+          @click="clearMap"
+        ><v-icon>mdi-restore</v-icon></v-btn>
       </div>
     </v-col>
   </v-row>
@@ -64,9 +83,33 @@ export default {
 }
 .btn-toggle {
   flex-direction: column;
-  width: 100%
+  width: 100%;
+
+  @include _1000 {
+    width: auto;
+  }
 }
 #setup {
   color: $dark-blue
+}
+#text-btns {
+  @include _1000 {
+    display: none;
+  }
+}
+#icon-btns {
+  display: none;
+  padding-left: 0;
+  padding-right: 0;
+
+  @include _1000 {
+    display: flex;
+  }
+}
+#map-cont {
+  @include _1000 {
+    flex: 0 0 91%;
+    max-width: 91%;
+  }
 }
 </style>
