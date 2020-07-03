@@ -13,7 +13,8 @@
           flat
           dark
         >
-          <v-toolbar-title class="headline">Создать текстовый объект</v-toolbar-title>
+          <v-toolbar-title v-if="!item" class="headline">Создать текстовый объект</v-toolbar-title>
+          <v-toolbar-title v-else class="headline">Изменить текстовый объект</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
             icon
@@ -54,7 +55,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-2" text @click="save">Сохранить</v-btn>
+          <v-btn color="blue darken-2" text @click="!!item ? update() : save()">Сохранить</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -71,6 +72,7 @@
 import Text from '@/components/pages/Text'
 
 export default {
+  props: ['item'],
   data () {
     return {
       dialog: true,
@@ -88,7 +90,13 @@ export default {
   methods: {
     save () {
       Text.createObject(this)
+    },
+    update () {
+      Text.updateObject(this)
     }
+  },
+  mounted () {
+    if (this.item) Text.fillFields(this)
   }
 }
 </script>

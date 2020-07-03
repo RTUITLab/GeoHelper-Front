@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col :cols="9" id="map-cont">
+    <v-col id="map-cont">
       <div id="map" />
     </v-col>
-    <v-col :cols="3" class="pl-5" id="text-btns">
+    <v-col v-if="!test" :cols="3" class="pl-5" id="text-btns">
       <div class="headline pb-4" id="setup">Установить</div>
       <div>
         <v-btn-toggle
@@ -49,6 +49,7 @@
 import Map from '@/components/Map'
 
 export default {
+  props: ['test'],
   data () {
     return {
       map: '',
@@ -68,6 +69,15 @@ export default {
     },
     getData () {
       return Map.getData(this)
+    },
+    setData (data) {
+      Map.setData(this, data)
+    },
+    showArea (points) {
+      Map.showArea(points)
+    },
+    listenClicks (next) {
+      Map.listenClicks(this, next)
     }
   }
 }

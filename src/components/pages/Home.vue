@@ -38,11 +38,22 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-footer
+      color="blue darken-2"
+    >
+      <v-spacer></v-spacer>
+      <v-btn
+        dark
+        text
+        @click="$router.push('test')"
+      >Тест</v-btn>
+    </v-footer>
   </div>
 </template>
 
 <script>
 import Axios from 'axios'
+import router from '@/router'
 import Auth from '@/components/pages/Auth'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 
@@ -62,13 +73,18 @@ export default {
   },
   mounted () {
     this.getAllObjects()
+    this.loadMap()
   },
   methods: {
     getAllObjects () {
       Axios.get(`${GeoHelperAPI}/objects`, { headers: Auth.getAuthHeader(this) })
         .then(({data}) => (this.objects = data))
     },
-    editObject (item) {},
+    editObject (item) {
+      if (item.type === 'text') {
+        router.push({name: `update-text`, params: {item: item}})
+      }
+    },
     deleteObject (item) {
       Axios.delete(`${GeoHelperAPI}/object`, { headers: Auth.getAuthHeader(this), data: { _id: item._id } })
         .then((data) => {
@@ -79,6 +95,18 @@ export default {
             }
           })
         })
+    },
+    loadMap () {
+      const key = runtimeEnv().JS_RUNTIME_KEY || process.env.VUE_APP_KEY
+
+      if (!document.getElementById('maps-script')) {
+        let script = document.createElement('script')
+        script.async = true
+        script.defer = true
+        script.setAttribute('id', 'maps-script')
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=drawing`
+        document.head.appendChild(script)
+      }
     }
   }
 }

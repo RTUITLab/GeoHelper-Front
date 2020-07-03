@@ -48,6 +48,9 @@ export default {
     })
 
     // Creating marker showing position of object
+    if (marker) {
+      marker.setMap(null)
+    }
     // eslint-disable-next-line
     marker = new google.maps.Marker({
       position: { lat: 0, lng: 0 },
@@ -57,6 +60,9 @@ export default {
     marker.setMap(map)
 
     // Creating line used in creating polygons
+    if (line) {
+      line.setMap(null)
+    }
     // eslint-disable-next-line
     line = new google.maps.Polyline({
       strokeColor: '#424242',
@@ -73,6 +79,14 @@ export default {
     })
 
     line.setMap(map)
+
+    if (areas) {
+      areas.forEach((area, i, areas) => {
+        area.setMap(null)
+      })
+
+      areas = []
+    }
   },
 
   changeCoordinates (context, latLng) {
@@ -170,5 +184,47 @@ export default {
     })
 
     return data
+  },
+
+  setData (context, data) {
+    context.position = data.position
+    marker.setPosition(context.position)
+
+    data.areas.forEach((area, i, a) => {
+      // eslint-disable-next-line
+      const poly = new google.maps.Polygon({
+        path: area.points,
+        strokeColor: '#1976D2',
+        strokeWeight: 2,
+        fillColor: '#1976D2',
+        fillOpacity: 0.4,
+        editable: true
+      })
+
+      poly.setMap(map)
+      areas.push(poly)
+    })
+  },
+
+  showArea (points) {
+    // eslint-disable-next-line
+    const poly = new google.maps.Polygon({
+      path: points,
+      strokeColor: '#1976D2',
+      strokeWeight: 2,
+      fillColor: '#1976D2',
+      fillOpacity: 0.4,
+      editable: false,
+      clickable: false
+    })
+
+    poly.setMap(map)
+    areas.push(poly)
+  },
+
+  listenClicks (context, next) {
+    map.addListener('click', (e) => {
+      next(context, {lat: e.latLng.lat(), lng: e.latLng.lng()})
+    })
   }
 }
