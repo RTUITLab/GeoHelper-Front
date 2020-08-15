@@ -1,6 +1,4 @@
-import runtimeEnv from '@mars/heroku-js-runtime-env'
-
-const key = runtimeEnv().JS_RUNTIME_KEY || process.env.VUE_APP_KEY
+const key = process.env.VUE_APP_KEY
 
 const modes = {
   SET_POSITION: 0,

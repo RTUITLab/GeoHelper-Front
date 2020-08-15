@@ -7,6 +7,7 @@ yarn-error.log*
 /test/unit/coverage/
 /test/e2e/reports/
 selenium-debug.log
+Dockerfile
 
 # Editor directories and files
 .idea
@@ -15,3 +16,6 @@ selenium-debug.log
 *.ntvs*
 *.njsproj
 *.sln
+
+# Environment files
+config/*.env.js

@@ -55,9 +55,8 @@
 import Axios from 'axios'
 import router from '@/router'
 import Auth from '@/components/pages/Auth'
-import runtimeEnv from '@mars/heroku-js-runtime-env'
 
-const GeoHelperAPI = runtimeEnv().JS_RUNTIME_API || process.env.VUE_APP_API
+const GeoHelperAPI = process.env.VUE_APP_API
 
 export default {
   data () {
@@ -97,7 +96,7 @@ export default {
         })
     },
     loadMap () {
-      const key = runtimeEnv().JS_RUNTIME_KEY || process.env.VUE_APP_KEY
+      const key = process.env.VUE_APP_KEY
 
       if (!document.getElementById('maps-script')) {
         let script = document.createElement('script')

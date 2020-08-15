@@ -1,8 +1,7 @@
 import Axios from 'axios'
 import router from '@/router'
-import runtimeEnv from '@mars/heroku-js-runtime-env'
 
-const GeoHelperAPI = runtimeEnv().JS_RUNTIME_API || process.env.VUE_APP_API
+const GeoHelperAPI = process.env.VUE_APP_API
 
 export default {
   user: { authorized: false },
