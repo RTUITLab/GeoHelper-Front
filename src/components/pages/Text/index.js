@@ -1,3 +1,24 @@
+//
+//
+//	File:	index.js
+//
+//	By:		Ivan Laptev <ivlaptev13@ya.ru>
+//
+//	Created:	2020-06-09 00:01:48
+//	Updated:	2020-08-17 09:45:13
+//
+//
+
+/*
+ * Desciption:
+ * Manage text object.
+ *
+ * Functions:
+ * CreateObject: creates new text object.
+ * FillFields: sets up fields while text object is updating.
+ * UpdateObject: updates existing object.
+ */
+
 import Axios from 'axios'
 import router from '@/router'
 import Auth from '@/components/pages/Auth'

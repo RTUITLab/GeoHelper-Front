@@ -79,6 +79,11 @@ export default {
     return {
       tabs: [
         {
+          title: 'Звук',
+          redirect: '/create-audio',
+          disabled: true
+        },
+        {
           title: 'Текст',
           redirect: '/create-text',
           disabled: false

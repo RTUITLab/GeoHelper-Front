@@ -1,3 +1,25 @@
+//
+//
+//	File:	index.js
+//
+//	By:		Ivan Laptev <ivlaptev13@ya.ru>
+//
+//	Created:	2020-06-07 09:01:23
+//	Updated:	2020-08-17 09:05:02
+//
+//
+
+/*
+ * Description:
+ * Manage auth.
+ *
+ * Functions:
+ * Authorize: logs in.
+ * Signout: logs out.
+ * CheckAuth: checks if user is authorized.
+ * GetAuthHeader: returns complete request bearer header.
+ */
+
 import Axios from 'axios'
 import router from '@/router'
 

@@ -1,3 +1,19 @@
+//
+//
+//	File:	index.js
+//
+//	By:		Ivan Laptev <ivlaptev13@ya.ru>
+//
+//	Created:	2020-06-07 02:01:44
+//	Updated:	2020-08-17 21:40:10
+//
+//
+
+/*
+ * Description:
+ * Manage site paths
+ */
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import * as Authorization from '@/components/pages/Auth'
@@ -34,7 +50,7 @@ const router = new Router({
             container: Text
           },
           props: {
-            defaulst: false,
+            default: false,
             container: { item: '' }
           },
           meta: {
@@ -49,7 +65,7 @@ const router = new Router({
             container: Text
           },
           props: {
-            defaulst: false,
+            default: false,
             container: true
           },
           meta: {

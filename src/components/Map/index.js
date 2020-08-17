@@ -1,5 +1,40 @@
+//
+//
+//	File:	index.js
+//
+//	By:		Ivan Laptev <ivlaptev13@ya.ru>
+//
+//	Created:	2020-06-11 20:04:08
+//	Updated:	2020-08-17 08:45:14
+//
+//
+
+/*
+ * Description:
+ * Component functionality
+ *
+ * Functions:
+ * LoadMap: downloads JS Maps API sources.
+ * Init: creates and configures map.
+ * ChangeCoordinates: canges position of marker or adds new point to area
+ *  depending on the mode.
+ * DeletePoint: removes point from area.
+ * FinishPolygon: creates polygon from line and flushes line.
+ * Clear: resets marker position and flushes line and areas.
+ * CheckData: is used to check received data before sending to the server.
+ * GetData: prepares data to sending to the server.
+ * SetData: extracts received data and shows it on the map.
+ * ShowArea: shows one area on the map.
+ * ListenClicks: sets up a function that willl be executed on click
+ *
+ * Note:
+ * eslint-disable is used to avoid errors related with undefined variable google
+ */
+
+// Google Cloud Maps API Key
 const key = process.env.VUE_APP_KEY
 
+// Modes of work with map
 const modes = {
   SET_POSITION: 0,
   SET_AREA: 1
