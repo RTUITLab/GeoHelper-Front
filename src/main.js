@@ -5,7 +5,7 @@
 //	By:		Ivan Laptev <ivlaptev13@ya.ru>
 //
 //	Created:	2020-06-07 02:01:44
-//	Updated:	2020-08-17 09:52:48
+//	Updated:	2020-08-18 20:03:15
 //
 //
 
@@ -35,3 +35,4 @@ const vm = new Vue({
 })
 
 vm.$mount('#app')
+document.querySelector('#splash').remove()

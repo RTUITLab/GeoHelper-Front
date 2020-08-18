@@ -1,21 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <title>GeoHelper</title>
+    <meta name="title" content="GeoHelper. Мобильный AR-помощник в режиме реального времени">
+    <meta name="description" content="Панель управления системой контроля данных для мобильных приложений дополненной реальности. Вход в учётную запись пользователя. Управлениеконтентом для Android и IOS приложенийй.">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" as="font">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="./static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./static/favicon-16x16.png">
+    <link rel="manifest" href="./static/site.webmanifest">
+    <link rel="mask-icon" href="./static/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <title>GeoHelper</title>
+    <style type="text/css">
+      @keyframes spin {
+        from {
+          transform: rotate(0);
+        }
+        to{
+          transform: rotate(359deg);
+        }
+      }
+
+      #splash {
+        min-height: 100vh;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        box-sizing: border-box;
+      }
+
+      .spinner-box {
+        width: 300px;
+        height: 300px;
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+      }
+
+      .solar-system {
+        width: 300px;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .orbit {
+  	    position: relative;
+  	    display: flex;
+  	    justify-content: center;
+  	    align-items: center;
+  	    border: 1px solid #212121;
+  	    border-radius: 50%;
+      }
+
+      .earth-orbit {
+      	width: 270px;
+      	height: 270px;
+        -webkit-animation: spin 12s linear 0s infinite;
+      }
+
+      .venus-orbit {
+  	    width: 180px;
+  	    height: 180px;
+        -webkit-animation: spin 7.4s linear 0s infinite;
+      }
+
+      .mercury-orbit {
+  	    width: 110px;
+  	    height: 110px;
+        -webkit-animation: spin 3s linear 0s infinite;
+      }
+
+      .earth {
+        position: absolute;
+        top: -22.5px;
+        width: 45px;
+        height: 45px;
+        background-color: #82b1ff;
+        border-radius: 50%;
+      }
+
+      .venus {
+        position: absolute;
+        top: -17.5px;
+        width: 35px;
+        height: 35px;
+        background-color: #2196f3;
+        border-radius: 50%;
+      }
+
+      .mercury {
+        position: absolute;
+        top: -12.5px;
+        width: 25px;
+        height: 25px;
+        background-color: #217df3;
+        border-radius: 50%;
+      }
+
+      .sun {
+  	    width: 60px;
+  	    height: 60px;
+  	    border-radius: 50%;
+  	    background-color: #1976d2;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="splash">
+      <div class="spinner-box">
+        <div class="solar-system">
+          <div class="earth-orbit orbit">
+            <div class="earth"></div>
+            <div class="venus-orbit orbit">
+              <div class="venus"></div>
+              <div class="mercury-orbit orbit">
+                <div class="mercury"></div>
+                <div class="sun"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="app">
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

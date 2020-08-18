@@ -13,8 +13,8 @@
           flat
           dark
         >
-          <v-toolbar-title v-if="!item" class="headline">Создать текстовый объект</v-toolbar-title>
-          <v-toolbar-title v-else class="headline">Изменить текстовый объект</v-toolbar-title>
+          <v-toolbar-title v-if="!item" class="headline">Создать объект</v-toolbar-title>
+          <v-toolbar-title v-else class="headline">Изменить объект</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn
             icon
@@ -29,6 +29,14 @@
             v-model="validForm"
             ref="form"
           >
+            <v-text-field
+              label="Тип объекта"
+              class="mt-4"
+              value="Текстовый"
+              filled
+              dense
+              disabled
+            ></v-text-field>
             <v-text-field
               label="Название"
               v-model="form.name"

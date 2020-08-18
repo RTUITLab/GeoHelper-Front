@@ -1,34 +1,38 @@
 <template>
   <div>
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-    >
-      <v-toolbar
-        flat
+    <div id="nav-drawer">
+      <v-navigation-drawer
+        v-model="drawer"
+        temporary
+        fixed
+        app
       >
-        <v-toolbar-title>Создать</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          color="red darken-2"
-          text
-          @click="signout()"
-        ><v-icon>mdi-exit-to-app</v-icon></v-btn>
-      </v-toolbar>
-
-      <v-divider></v-divider>
-
-      <v-list>
-        <v-list-item
-          v-for="(tab, index) in tabs"
-          :key="index"
-          :disabled="tab.disabled"
-          @click="create(tab.redirect)"
+        <v-toolbar
+          flat
         >
-          <v-list-item-title>{{ tab.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+          <v-toolbar-title>Создать</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-2"
+            text
+            @click="signout()"
+          ><v-icon>mdi-exit-to-app</v-icon></v-btn>
+        </v-toolbar>
+
+        <v-divider></v-divider>
+
+        <v-list>
+          <v-list-item
+            v-for="(tab, index) in tabs"
+            :key="index"
+            :disabled="tab.disabled"
+            @click="create(tab.redirect)"
+          >
+            <v-list-item-title>{{ tab.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </div>
     <v-app-bar
       app
       color="blue darken-2"
@@ -40,33 +44,34 @@
 
       <v-spacer></v-spacer>
 
-      <v-menu offset-y class="large-menu">
-        <template v-slot:activator="{ on }">
-          <v-btn
-            class="large-menu"
-            color="white"
-            outlined
-            v-on="on"
-          >Создать объект</v-btn>
-        </template>
-        <v-list class="large-menu">
-          <v-list-item
-            v-for="(tab, index) in tabs"
-            :key="index"
-            :disabled="tab.disabled"
-            @click="create(tab.redirect)"
-          >
-            <v-list-item-title>{{ tab.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <div class="large-menu">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              color="white"
+              outlined
+              v-on="on"
+            >Создать объект</v-btn>
+          </template>
+          <v-list class="large-menu">
+            <v-list-item
+              v-for="(tab, index) in tabs"
+              :key="index"
+              :disabled="tab.disabled"
+              @click="create(tab.redirect)"
+            >
+              <v-list-item-title>{{ tab.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
 
-      <v-btn
-        class="ml-4 large-menu"
-        color="white"
-        text
-        @click="signout()"
-      >Выйти</v-btn>
+        <v-btn
+          class="ml-4"
+          color="white"
+          text
+          @click="signout()"
+        >Выйти</v-btn>
+      </div>
     </v-app-bar>
   </div>
 </template>
@@ -112,6 +117,14 @@ export default {
 @import '@/assets/styles.scss';
 
 #nav-btn {
+  display: none;
+
+  @include _600 {
+    display: flex;
+  }
+}
+
+#nav-drawer {
   display: none;
 
   @include _600 {
