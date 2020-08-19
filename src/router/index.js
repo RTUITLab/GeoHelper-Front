@@ -5,7 +5,7 @@
 //	By:		Ivan Laptev <ivlaptev13@ya.ru>
 //
 //	Created:	2020-06-07 02:01:44
-//	Updated:	2020-08-17 21:40:10
+//	Updated:	2020-08-19 08:22:38
 //
 //
 
@@ -22,6 +22,7 @@ import * as Authorization from '@/components/pages/Auth'
 import Auth from '@/components/pages/Auth/Auth'
 import Home from '@/components/pages/Home'
 import Text from '@/components/pages/Text/Text'
+import Audio from '@/components/pages/Audio/Audio'
 import Test from '@/components/pages/Test/Test'
 
 // Pages elements
@@ -63,6 +64,35 @@ const router = new Router({
           components: {
             default: Home,
             container: Text
+          },
+          props: {
+            default: false,
+            container: true
+          },
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
+          path: 'create-audio',
+          components: {
+            default: Home,
+            container: Audio
+          },
+          props: {
+            default: false,
+            container: { item: '' }
+          },
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
+          name: 'update-audio',
+          path: 'update-audio',
+          components: {
+            default: Home,
+            container: Audio
           },
           props: {
             default: false,
