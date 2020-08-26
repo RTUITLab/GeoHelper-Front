@@ -86,7 +86,7 @@ export default {
         {
           title: 'Звук',
           redirect: '/create-audio',
-          disabled: true
+          disabled: false
         },
         {
           title: 'Текст',

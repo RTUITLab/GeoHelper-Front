@@ -47,11 +47,13 @@
             ></v-text-field>
             <v-file-input
               label="Аудиофайл"
+              accept="audio/*"
               v-model="form.file"
               :rules="fileRules"
-              @change="(file) => (console.log(file))"
+              @change="load"
               required
             ></v-file-input>
+            <audio :src="audioSrc" controls></audio>
           </v-form>
           <app-map ref="map" />
         </v-card-text>
@@ -60,7 +62,11 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-2" text @click="!!item ? update() : save()">Сохранить</v-btn>
+          <v-btn
+            color="blue darken-2"
+            text
+            @click="!!item ? update() : save()"
+          >Сохранить</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -74,7 +80,7 @@
 </template>
 
 <script>
-import Text from '@/components/pages/Text'
+import Audio from '@/components/pages/Audio'
 
 export default {
   props: ['item'],
@@ -86,22 +92,27 @@ export default {
         name: '',
         file: ''
       },
+      changed: false,
       nameRules: [v => !!v || 'Поле Название не заполнено'],
       fileRules: [v => !!v || 'Файл не выбран'],
+      audioSrc: '',
       snackbar: false,
       message: ''
     }
   },
   methods: {
+    load () {
+      Audio.loadAudio(this)
+    },
     save () {
-      Text.createObject(this)
+      Audio.createObject(this)
     },
     update () {
-      Text.updateObject(this)
+      Audio.updateObject(this)
     }
   },
   mounted () {
-    if (this.item) Text.fillFields(this)
+    if (this.item) Audio.fillFields(this)
   }
 }
 </script>

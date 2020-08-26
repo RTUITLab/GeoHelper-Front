@@ -25,7 +25,7 @@ import Axios from 'axios'
 import Auth from '@/components/pages/Auth'
 
 const GeoHelperAPI = process.env.VUE_APP_API
-const socket = new WebSocket('wss://' + GeoHelperAPI.split('/')[2])
+var socket = new WebSocket('wss://' + GeoHelperAPI.split('/')[2])
 
 export default {
   getAllObjects (context) {
@@ -52,6 +52,13 @@ export default {
   },
 
   sendCoordinates (context, latLng) {
-    socket.send(JSON.stringify(latLng))
+    if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+      socket = new WebSocket('wss://' + GeoHelperAPI.split('/')[2])
+      this.sendCoordinates(context, latLng)
+    } else if (socket.readyState === WebSocket.CONNECTING) {
+      this.sendCoordinates(context, latLng)
+    } else {
+      socket.send(JSON.stringify(latLng))
+    }
   }
 }
