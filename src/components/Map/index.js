@@ -41,7 +41,7 @@ const modes = {
 }
 
 var map = ''
-var marker = ''
+var marker = []
 var line = ''
 var areas = []
 
@@ -81,16 +81,16 @@ export default {
     })
 
     // Creating marker showing position of object
-    if (marker) {
-      marker.setMap(null)
+    if (marker[0]) {
+      marker[0].setMap(null)
     }
     // eslint-disable-next-line
-    marker = new google.maps.Marker({
+    marker[0] = new google.maps.Marker({
       position: { lat: 0, lng: 0 },
       draggable: true
     })
 
-    marker.setMap(map)
+    marker[0].setMap(map)
 
     // Creating line used in creating polygons
     if (line) {
@@ -124,7 +124,7 @@ export default {
 
   changeCoordinates (context, latLng) {
     if (context.mode === modes.SET_POSITION) {
-      marker.setPosition(latLng)
+      marker[0].setPosition(latLng)
       context.position = { lat: latLng.lat(), lng: latLng.lng() }
     }
 
@@ -170,7 +170,7 @@ export default {
 
   clear (context) {
     context.position = ''
-    marker.setPosition({ lat: 0, lng: 0 })
+    marker[0].setPosition({ lat: 0, lng: 0 })
 
     line.setPath([])
 
@@ -221,7 +221,7 @@ export default {
 
   setData (context, data) {
     context.position = data.position
-    marker.setPosition(context.position)
+    marker[0].setPosition(context.position)
 
     data.areas.forEach((area, i, a) => {
       // eslint-disable-next-line
@@ -259,5 +259,26 @@ export default {
     map.addListener('click', (e) => {
       next(context, {lat: e.latLng.lat(), lng: e.latLng.lng()})
     })
+  },
+
+  deleteMarkers () {
+    marker.forEach((marker, i, markers) => {
+      if (i > 0) marker.setMap(null)
+    })
+    while (marker.length !== 1) {
+      marker.pop()
+    }
+  },
+
+  addMarker (position, name) {
+    // eslint-disable-next-line
+    let m = new google.maps.Marker({
+      position: { lat: position.lat, lng: position.lng },
+      label: name[0],
+      draggable: false
+    })
+
+    marker.push(m)
+    marker[marker.length - 1].setMap(map)
   }
 }

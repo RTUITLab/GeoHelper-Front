@@ -82,6 +82,12 @@ export default {
     },
     listenClicks (next) {
       Map.listenClicks(this, next)
+    },
+    deleteMarkers () {
+      Map.deleteMarkers()
+    },
+    addMarker (position, name) {
+      Map.addMarker(position, name)
     }
   }
 }
