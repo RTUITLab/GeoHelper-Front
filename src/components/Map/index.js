@@ -5,7 +5,6 @@
 //	By:		Ivan Laptev <ivlaptev13@ya.ru>
 //
 //	Created:	2020-06-11 20:04:08
-//	Updated:	2020-08-17 08:45:14
 //
 //
 
@@ -31,37 +30,18 @@
  * eslint-disable is used to avoid errors related with undefined variable google
  */
 
-// Google Cloud Maps API Key
-const key = process.env.VUE_APP_KEY
-
 // Modes of work with map
 const modes = {
   SET_POSITION: 0,
   SET_AREA: 1
 }
 
-var map = ''
-var marker = ''
-var line = ''
-var areas = []
+let map = ''
+let line = ''
+let areas = []
+const marker = []
 
 export default {
-  loadMap (context) {
-    if (document.getElementById('maps-script')) {
-      this.init(context)
-    } else {
-      let script = document.createElement('script')
-      script.onload = () => {
-        this.init(context)
-      }
-      script.async = true
-      script.defer = true
-      script.setAttribute('id', 'maps-script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=drawing`
-      document.head.appendChild(script)
-    }
-  },
-
   init (context) {
     // Map initialization
     // eslint-disable-next-line
@@ -81,16 +61,16 @@ export default {
     })
 
     // Creating marker showing position of object
-    if (marker) {
-      marker.setMap(null)
+    if (marker[0]) {
+      marker[0].setMap(null)
     }
     // eslint-disable-next-line
-    marker = new google.maps.Marker({
+    marker[0] = new google.maps.Marker({
       position: { lat: 0, lng: 0 },
       draggable: true
     })
 
-    marker.setMap(map)
+    marker[0].setMap(map)
 
     // Creating line used in creating polygons
     if (line) {
@@ -114,17 +94,60 @@ export default {
     line.setMap(map)
 
     if (areas) {
-      areas.forEach((area, i, areas) => {
+      areas.forEach((area) => {
         area.setMap(null)
       })
 
       areas = []
     }
+
+    const controlDiv = document.createElement('div')
+
+    const firstChild = document.createElement('button')
+    firstChild.style.backgroundColor = '#fff'
+    firstChild.style.border = 'none'
+    firstChild.style.outline = 'none'
+    firstChild.style.width = '28px'
+    firstChild.style.height = '28px'
+    firstChild.style.borderRadius = '2px'
+    firstChild.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)'
+    firstChild.style.cursor = 'pointer'
+    firstChild.style.marginRight = '10px'
+    firstChild.style.padding = '0px'
+    firstChild.title = 'Your Location'
+    controlDiv.appendChild(firstChild)
+
+    const secondChild = document.createElement('div')
+    secondChild.style.margin = '5px'
+    secondChild.style.width = '18px'
+    secondChild.style.height = '18px'
+    secondChild.style.backgroundImage = 'url(https://maps.gstatic.com/tactile/mylocation/mylocation-sprite-1x.png)'
+    secondChild.style.backgroundSize = '180px 18px'
+    secondChild.style.backgroundPosition = '0px 0px'
+    secondChild.style.backgroundRepeat = 'no-repeat'
+    secondChild.id = 'you_location_img'
+    firstChild.appendChild(secondChild)
+
+    firstChild.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          // eslint-disable-next-line
+          var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+          marker[0].setPosition(latlng)
+          context.position = { lat: position.coords.latitude, lng: position.coords.longitude }
+          map.setCenter(latlng)
+        })
+      }
+    })
+
+    controlDiv.index = 1
+    // eslint-disable-next-line
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv)
   },
 
   changeCoordinates (context, latLng) {
     if (context.mode === modes.SET_POSITION) {
-      marker.setPosition(latLng)
+      marker[0].setPosition(latLng)
       context.position = { lat: latLng.lat(), lng: latLng.lng() }
     }
 
@@ -135,7 +158,7 @@ export default {
 
   deletePoint (context, latLng) {
     if (context.mode === modes.SET_AREA) {
-      var points = line.getPath()
+      const points = line.getPath()
 
       points.forEach((point, i) => {
         if (point.lat() === latLng.lat() && point.lng() === latLng.lng()) {
@@ -170,11 +193,11 @@ export default {
 
   clear (context) {
     context.position = ''
-    marker.setPosition({ lat: 0, lng: 0 })
+    marker[0].setPosition({ lat: 0, lng: 0 })
 
     line.setPath([])
 
-    areas.forEach((area, i, areas) => {
+    areas.forEach((area) => {
       area.setMap(null)
     })
 
@@ -182,7 +205,7 @@ export default {
   },
 
   checkData (context) {
-    var errors = []
+    const errors = []
 
     // Check marker
     if (!context.position) {
@@ -201,16 +224,16 @@ export default {
     return errors
   },
 
-  getData (context) {
+  getData () {
     const data = { position: {
-      lat: context.position.lat,
-      lng: context.position.lng
-    }}
+      lat: marker[0].getPosition().lat(),
+      lng: marker[0].getPosition().lng()
+    }, areas: []}
 
     data.areas = []
-    areas.forEach((area, i, areas) => {
+    areas.forEach((area) => {
       const points = []
-      area.getPath().forEach((point, j) => {
+      area.getPath().forEach((point) => {
         points.push({ lat: point.lat(), lng: point.lng() })
       })
       data.areas.push({ points: points })
@@ -221,9 +244,9 @@ export default {
 
   setData (context, data) {
     context.position = data.position
-    marker.setPosition(context.position)
+    marker[0].setPosition(context.position)
 
-    data.areas.forEach((area, i, a) => {
+    data.areas.forEach((area) => {
       // eslint-disable-next-line
       const poly = new google.maps.Polygon({
         path: area.points,
@@ -259,5 +282,26 @@ export default {
     map.addListener('click', (e) => {
       next(context, {lat: e.latLng.lat(), lng: e.latLng.lng()})
     })
+  },
+
+  deleteMarkers () {
+    marker.forEach((marker, i) => {
+      if (i > 0) marker.setMap(null)
+    })
+    while (marker.length !== 1) {
+      marker.pop()
+    }
+  },
+
+  addMarker (position, name) {
+    // eslint-disable-next-line
+    let m = new google.maps.Marker({
+      position: { lat: position.lat, lng: position.lng },
+      label: name[0],
+      draggable: false
+    })
+
+    marker.push(m)
+    marker[marker.length - 1].setMap(map)
   }
 }
