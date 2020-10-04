@@ -31,6 +31,9 @@
  */
 
 // Modes of work with map
+
+const key = process.env.VUE_APP_KEY
+
 const modes = {
   SET_POSITION: 0,
   SET_AREA: 1
@@ -42,6 +45,21 @@ var areas = []
 var line = ''
 
 export default {
+  loadMap (context) {
+    if (document.getElementById('maps-script')) {
+      this.init(context)
+    } else {
+      let script = document.createElement('script')
+      script.onload = () => {
+        this.init(context)
+      }
+      script.async = true
+      script.defer = true
+      script.setAttribute('id', 'maps-script')
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=drawing`
+      document.head.appendChild(script)
+    }
+  },
   init (context) {
     // Map initialization
     // eslint-disable-next-line
@@ -225,10 +243,13 @@ export default {
   },
 
   getData () {
-    const data = { position: {
-      lat: marker[0].getPosition().lat(),
-      lng: marker[0].getPosition().lng()
-    }, areas: []}
+    const data = {
+      position: {
+        lat: marker[0].getPosition().lat(),
+        lng: marker[0].getPosition().lng()
+      },
+      areas: []
+    }
 
     data.areas = []
     areas.forEach((area) => {
