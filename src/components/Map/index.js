@@ -36,10 +36,10 @@ const modes = {
   SET_AREA: 1
 }
 
-let map = ''
-let line = ''
-let areas = []
-const marker = []
+var map = ''
+var marker = []
+var areas = []
+var line = ''
 
 export default {
   init (context) {
@@ -285,7 +285,7 @@ export default {
   },
 
   deleteMarkers () {
-    marker.forEach((marker, i) => {
+    marker.forEach((marker, i, markers) => {
       if (i > 0) marker.setMap(null)
     })
     while (marker.length !== 1) {

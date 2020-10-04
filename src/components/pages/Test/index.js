@@ -26,6 +26,7 @@ import Auth from '@/components/pages/Auth'
 
 const GeoHelperAPI = process.env.VUE_APP_API
 const socket = new WebSocket('wss://' + GeoHelperAPI.split('/')[2])
+var map = ''
 
 export default {
   getAllObjects (context) {
@@ -35,12 +36,19 @@ export default {
     socket.onmessage = (e) => {
       const data = JSON.parse(e.data)
 
-      if (data.data) context.objects = data.data
+      if (data.data) {
+        context.objects = data.data
+
+        map.deleteMarkers()
+        data.data.forEach((object, i, objects) => {
+          map.addMarker(object.position, object.name)
+        })
+      }
     }
   },
 
   showAreas (data, context) {
-    const map = context.$refs.map
+    map = context.$refs.map
 
     map.listenClicks(this.sendCoordinates)
 
