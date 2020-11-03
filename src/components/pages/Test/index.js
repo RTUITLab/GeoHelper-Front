@@ -18,14 +18,15 @@
  * ShowAreas: shows all areas that are existing in objects.
  * SendCoordinates: sends coordinates of marker to the server.
  *
- * TODO: reconnect wss
+ *
  */
 
 import Axios from 'axios'
 import Auth from '@/components/pages/Auth'
 
 const GeoHelperAPI = process.env.VUE_APP_API
-const socket = new WebSocket('wss://' + GeoHelperAPI.split('/')[2])
+const GeoHelperWSProtocol = process.env.VUE_WS_PROTOCOL
+const socket = new WebSocket(GeoHelperWSProtocol + '://' + GeoHelperAPI.split('/')[2])
 var map = ''
 
 export default {
