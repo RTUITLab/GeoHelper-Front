@@ -36,7 +36,7 @@ steps:
       'use strict'
       module.exports = {
         NODE_ENV: '"production"',
-        VUE_APP_API: '"/api/v1"',
+        VUE_APP_API: '"https://geohelper.rtuitlab.dev/api/v1"',
         VUE_APP_KEY: '"$(google_map_api_key)"',
         VUE_WS_PROTOCOL: '"wss"'
       }
