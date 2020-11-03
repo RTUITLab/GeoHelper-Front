@@ -63,5 +63,5 @@ steps:
   inputs:
     sshEndpoint: 'swarm manager'
     runOptions: 'commands'
-    commands: 'docker service update --image rtuitlab/geohelper-front:$(Build.BuildId) geohelper_proxy'
+    commands: 'docker service update --image rtuitlab/geohelper-front:$(Build.BuildId) geohelper_front'
     readyTimeout: '20000'
