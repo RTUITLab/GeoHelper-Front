@@ -1,0 +1,61 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Npm@1
+  inputs:
+    command: 'ci'
+- task: file-creator@6
+  inputs:
+    filepath: 'config/dev.env.js'
+    filecontent: |
+      'use strict'
+      module.exports = {
+        NODE_ENV: '"development"' ,
+        VUE_APP_API: '"http://localhost:3002/api/v1"',
+        VUE_APP_KEY: '"----"',
+        VUE_WS_PROTOCOL: '"ws"'
+      }
+    endWithNewLine: true
+- task: file-creator@6
+  inputs:
+    filepath: 'config/test.env.js'
+    filecontent: |
+      'use strict'
+      module.exports = {
+        NODE_ENV: '"testing"' ,
+        VUE_APP_API: '"http://localhost:3002/api/v1"',
+        VUE_APP_KEY: '"----"',
+        VUE_WS_PROTOCOL: '"ws"'
+      }
+    endWithNewLine: true
+- task: file-creator@6
+  inputs:
+    filepath: 'config/prod.env.js'
+    filecontent: |
+      'use strict'
+      module.exports = {
+        NODE_ENV: '"production"',
+        VUE_APP_API: '"/api/v1"',
+        VUE_APP_KEY: '"$(google_map_api_key)"',
+        VUE_WS_PROTOCOL: '"wss"'
+      }
+    endWithNewLine: true
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'run build'
+
+- task: Docker@2
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    containerRegistry: 'rtuitlab connection by admin'
+    repository: 'rtuitlab/geohelper-front'
+    command: 'buildAndPush'
+    Dockerfile: 'Dockerfile'
+    buildContext: '.'
+    tags: |
+      $(Build.BuildId)
+      latest
+    addPipelineData: false
