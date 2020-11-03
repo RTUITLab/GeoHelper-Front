@@ -59,3 +59,9 @@ steps:
       $(Build.BuildId)
       latest
     addPipelineData: false
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'swarm manager'
+    runOptions: 'commands'
+    commands: 'docker service update --image rtuitlab/geohelper-front:$(Build.BuildId) geohelper_proxy'
+    readyTimeout: '20000'
