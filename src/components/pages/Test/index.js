@@ -26,7 +26,7 @@ import Auth from '@/components/pages/Auth'
 
 const GeoHelperAPI = process.env.VUE_APP_API
 const GeoHelperWSProtocol = process.env.VUE_WS_PROTOCOL
-const socket = new WebSocket(GeoHelperWSProtocol + '://' + GeoHelperAPI.split('/')[2])
+const socket = new WebSocket(GeoHelperWSProtocol + '://' + GeoHelperAPI.split('/')[2] + '/api/test')
 var map = ''
 
 export default {
