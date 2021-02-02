@@ -59,6 +59,7 @@ export default {
         entity.name = context.form.name
         entity.type = 'object'
         entity.url = GeoHelperAPI.split('/api')[0] + '/uploads/' + name
+        entity.fileName = context.form.file.name
 
         Axios.post(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
           .then(({data}) => {
@@ -75,14 +76,12 @@ export default {
   },
 
   fillFields (context) {
-    context.form.name = context.item.name
-    context.form.file = new Blob([], { type: 'application/zip' })
-    context.form.file.name = context.item.url.split('/').pop()
-    context.modelSrc = context.item.url
-    context.form.file = 'Файл'
-
     const map = context.$refs.modal.$refs.map
     map.setData(context.item)
+
+    context.form.name = context.item.name
+    context.modelSrc = context.item.url
+    context.form.file = new File([], context.item.fileName, { type: 'application/zip' })
   },
 
   updateObject (context) {
@@ -115,6 +114,7 @@ export default {
         Axios.delete(`${GeoHelperAPI}/delete_file`, { data: { url: entity.url.split('/').pop() }, headers: Auth.getAuthHeader(context) })
         uploadFile(context, (name) => {
           entity.url = GeoHelperAPI.split('/api')[0] + '/uploads/' + name
+          entity.fileName = context.form.file.name
 
           Axios.put(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
             .then(({data}) => {
