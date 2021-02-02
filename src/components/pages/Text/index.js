@@ -27,7 +27,7 @@ const GeoHelperAPI = process.env.VUE_APP_API
 
 export default {
   createObject (context) {
-    const map = context.$refs.map
+    const map = context.$refs.modal.$refs.map
 
     // Check map data
     var errors = map.check()
@@ -65,12 +65,12 @@ export default {
     context.form.name = context.item.name
     context.form.description = context.item.description
 
-    const map = context.$refs.map
+    const map = context.$refs.modal.$refs.map
     map.setData(context.item)
   },
 
   updateObject (context) {
-    const map = context.$refs.map
+    const map = context.$refs.modal.$refs.map
 
     // Check map data
     var errors = map.check()

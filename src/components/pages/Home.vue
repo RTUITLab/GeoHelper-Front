@@ -86,6 +86,9 @@ export default {
       if (item.type === 'audio') {
         router.push({name: `update-audio`, params: {item: item}})
       }
+      if (item.type === 'object') {
+        router.push({name: `update-model`, params: {item: item}})
+      }
     },
     deleteObject (item) {
       Axios.delete(`${GeoHelperAPI}/object`, { headers: Auth.getAuthHeader(this), data: { _id: item._id } })

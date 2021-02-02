@@ -24,6 +24,7 @@ import Home from '@/components/pages/Home'
 import Text from '@/components/pages/Text/Text'
 import Audio from '@/components/pages/Audio/Audio'
 import Test from '@/components/pages/Test/Test'
+import Model from '@/components/pages/Model/Model'
 
 // Pages elements
 import Header from '@/components/Header'
@@ -101,11 +102,47 @@ const router = new Router({
           meta: {
             requiredAuth: true
           }
+        },
+        {
+          path: 'create-model',
+          components: {
+            default: Home,
+            container: Model
+          },
+          props: {
+            default: false,
+            container: { item: '' }
+          },
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
+          name: 'update-model',
+          path: 'update-model',
+          components: {
+            default: Home,
+            container: Model
+          },
+          props: {
+            default: false,
+            container: true
+          },
+          meta: {
+            requiredAuth: true
+          }
         }
       ]
     },
     {
       path: '/test',
+      component: Test,
+      meta: {
+        requiredAuth: true
+      }
+    },
+    {
+      path: '/view', // To view 3d models
       component: Test,
       meta: {
         requiredAuth: true

@@ -97,6 +97,11 @@ export default {
           title: 'Изображение',
           redirect: '/create-image',
           disabled: true
+        },
+        {
+          title: 'Модель',
+          redirect: '/create-model',
+          disabled: false
         }
       ],
       drawer: false

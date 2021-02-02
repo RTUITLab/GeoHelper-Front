@@ -1,23 +1,12 @@
-//
-//
-//	File:	index.js
-//
-//	By:		Ivan Laptev <ivlaptev13@ya.ru>
-//
-//	Created:	2020-08-21 12:47:48
-//	Updated:	2020-08-27 16:43:26
-//
-//
-
 /*
  * Desciption:
- * Manage audio object.
+ * Manage model object.
  *
  * Functions:
- * LoadAudio: loads audio into the player.
+ * LoadModel: loads model into the player.
  * SendFile: sends file to the server and starts object creating on the server.
- * CreateObject: creates new audio object.
- * FillFields: sets up fields while audio object is updating.
+ * CreateObject: creates new model.
+ * FillFields: sets up fields while model is updating.
  * UpdateObject: updates existing object.
  */
 
@@ -29,15 +18,15 @@ import Auth from '@/components/pages/Auth'
 const GeoHelperAPI = process.env.VUE_APP_API
 
 export default {
-  loadAudio (context) {
+  loadModel (context) {
     context.changed = true
 
-    context.audioSrc = URL.createObjectURL(context.form.file)
-    console.log(context.audioSrc)
-    console.log(context.form.file.name)
+    context.modelSrc = URL.createObjectURL(context.form.file)
+    console.log(context.modelSrc)
+    console.log(context.form.file)
   },
   sendFile (context, file) {
-    Axios.put(`${GeoHelperAPI}/upload_audio`, { file: file }, { headers: Auth.getAuthHeader(context) })
+    Axios.put(`${GeoHelperAPI}/upload_model`, { file: file }, { headers: Auth.getAuthHeader(context) })
       .then(({data}) => {
         console.log('200')
       })
@@ -68,9 +57,8 @@ export default {
         const entity = map.getData()
 
         entity.name = context.form.name
-        entity.type = 'audio'
+        entity.type = 'object'
         entity.url = GeoHelperAPI.split('/api')[0] + '/uploads/' + name
-        entity.fileName = context.form.file.name
 
         Axios.post(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
           .then(({data}) => {
@@ -87,12 +75,14 @@ export default {
   },
 
   fillFields (context) {
+    context.form.name = context.item.name
+    context.form.file = new Blob([], { type: 'application/zip' })
+    context.form.file.name = context.item.url.split('/').pop()
+    context.modelSrc = context.item.url
+    context.form.file = 'Файл'
+
     const map = context.$refs.modal.$refs.map
     map.setData(context.item)
-
-    context.form.name = context.item.name
-    context.audioSrc = context.item.url
-    context.form.file = new File([], context.item.fileName, { type: 'audio/*' })
   },
 
   updateObject (context) {
@@ -117,7 +107,7 @@ export default {
       const entity = map.getData()
 
       entity.name = context.form.name
-      entity.type = 'audio'
+      entity.type = 'object'
       entity._id = context.item._id
       entity.url = context.item.url
 
@@ -125,7 +115,6 @@ export default {
         Axios.delete(`${GeoHelperAPI}/delete_file`, { data: { url: entity.url.split('/').pop() }, headers: Auth.getAuthHeader(context) })
         uploadFile(context, (name) => {
           entity.url = GeoHelperAPI.split('/api')[0] + '/uploads/' + name
-          entity.fileName = context.form.file.name
 
           Axios.put(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
             .then(({data}) => {

@@ -14,7 +14,7 @@
       <v-text-field
         label="Тип объекта"
         class="mt-4"
-        value="Звуковой"
+        value="Модель"
         filled
         dense
         disabled
@@ -28,20 +28,19 @@
         required
       ></v-text-field>
       <v-file-input
-        label="Аудиофайл"
-        accept="audio/*"
+        label="Архив"
+        accept="application/zip"
         v-model="form.file"
         :rules="fileRules"
         @change="load"
         required
       ></v-file-input>
-      <audio :src="audioSrc" controls></audio>
     </template>
   </object-modal>
 </template>
 
 <script>
-import Audio from '@/components/pages/Audio'
+import Model from '@/components/pages/Model'
 import ObjectModal from '@/components/ObjectModal/ObjectModal.vue'
 
 export default {
@@ -57,7 +56,7 @@ export default {
       changed: false,
       nameRules: [v => !!v || 'Поле Название не заполнено'],
       fileRules: [v => !!v || 'Файл не выбран'],
-      audioSrc: '',
+      modelSrc: '',
       snackbar: false,
       message: ''
     }
@@ -67,17 +66,17 @@ export default {
   },
   methods: {
     load () {
-      Audio.loadAudio(this)
+      Model.loadModel(this)
     },
     save () {
-      Audio.createObject(this)
+      Model.createObject(this)
     },
     update () {
-      Audio.updateObject(this)
+      Model.updateObject(this)
     }
   },
   mounted () {
-    if (this.item) Audio.fillFields(this)
+    if (this.item) Model.fillFields(this)
   }
 }
 </script>
