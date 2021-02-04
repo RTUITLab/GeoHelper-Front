@@ -35,13 +35,18 @@ export default {
       .then(({data}) => (this.showAreas(data, context)))
 
     socket.onmessage = (e) => {
-      const data = JSON.parse(e.data)
+      const respData = JSON.parse(e.data)
 
-      if (data.data) {
-        context.objects = data.data
+      if (respData) {
+        const data = []
+        respData.poiObjectModels.forEach((entity) => data.push(entity))
+        respData.geoAudioObjectModels.forEach((entity) => data.push(entity))
+        respData.geo3dObjectModels.forEach((entity) => data.push(entity))
+
+        context.objects = data
 
         map.deleteMarkers()
-        data.data.forEach((object, i, objects) => {
+        data.forEach((object) => {
           map.addMarker(object.position, object.name)
         })
       }
