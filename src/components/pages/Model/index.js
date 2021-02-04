@@ -44,8 +44,8 @@ export default {
     if (!context.form || !context.form.name || !context.form.file) {
       errors = ['Не все поля заполнены']
       context.snackbar = true
-    } else if (context.form.file.size > 26214000) {
-      errors = ['Размер файла больше 25МБ']
+    } else if (context.form.file.size > 52428000) {
+      errors = ['Размер файла больше 50МБ']
       context.snackbar = true
     }
 
@@ -94,8 +94,8 @@ export default {
     if (!context.form || !context.form.name) {
       errors = ['Не все поля заполнены']
       context.snackbar = true
-    } else if (context.form.file.size > 26214000) {
-      errors = ['Размер файла больше 25МБ']
+    } else if (context.form.file.size > 52428000) {
+      errors = ['Размер файла больше 50МБ']
       context.snackbar = true
     }
 
