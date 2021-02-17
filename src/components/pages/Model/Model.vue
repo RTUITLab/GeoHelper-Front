@@ -35,6 +35,7 @@
         @change="load"
         required
       ></v-file-input>
+      <a v-if="item" target="blanc" :href="`/view/${item.url.split('/').pop()}`"><v-btn color="blue darken-2" text>Сохранить</v-btn></a>
     </template>
   </object-modal>
 </template>

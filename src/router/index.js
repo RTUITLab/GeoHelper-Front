@@ -29,6 +29,7 @@ import Model from '@/components/pages/Model/Model'
 // Pages elements
 import Header from '@/components/Header'
 import Map from '@/components/Map/Map'
+import ViewModel from '../components/pages/ViewModel/ViewModel'
 
 Vue.component('app-header', Header)
 Vue.component('app-map', Map)
@@ -36,6 +37,7 @@ Vue.component('app-map', Map)
 Vue.use(Router)
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -142,16 +144,14 @@ const router = new Router({
       }
     },
     {
-      path: '/view', // To view 3d models
-      component: Test,
-      meta: {
-        requiredAuth: true
-      }
-    },
-    {
       path: '/login',
       name: 'Auth',
       component: Auth
+    },
+    {
+      path: '/view/:fileName',
+      name: 'ViewModel',
+      component: ViewModel
     }
   ]
 })
