@@ -1,7 +1,6 @@
 // import Axios from 'axios'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Reflector } from 'three/examples/jsm/objects/Reflector'
 import * as THREE from 'three'
 
 const GeoHelperAPI = process.env.VUE_APP_API
@@ -13,7 +12,7 @@ export default {
     document.getElementById('renderer').appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color('white')
+    scene.background = new THREE.Color(0xf4f4f4)
 
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1 /* near */, 1000 /* far */)
     camera.position.set(0, 10, 20)
@@ -22,8 +21,8 @@ export default {
     controls.target.set(0, 0, 0)
     controls.update()
 
-    const skyColor = 0xB1E1FF
-    const groundColor = 0xB97A20
+    const skyColor = 0xFFFFFF
+    const groundColor = 0xFFFFFF
     const intensity = 1
     const light = new THREE.HemisphereLight(skyColor, groundColor, intensity)
     scene.add(light)
@@ -35,18 +34,6 @@ export default {
     dLight.position.set(5, 10, 2)
     scene.add(dLight)
     scene.add(dLight.target)
-
-    // Mirror plane
-    let geometry = new THREE.PlaneGeometry(3000, 3000)
-    const groundMirror = new Reflector(geometry, {
-      clipBias: 0.2,
-      textureWidth: window.innerWidth * window.devicePixelRatio,
-      textureHeight: window.innerHeight * window.devicePixelRatio,
-      color: 0x51c7ff
-    })
-    groundMirror.position.y = 0
-    groundMirror.rotateX(-Math.PI / 2)
-    scene.add(groundMirror)
 
     // Model
     const loader = new GLTFLoader()

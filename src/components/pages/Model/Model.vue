@@ -35,7 +35,7 @@
         @change="load"
         required
       ></v-file-input>
-      <a v-if="item" target="blanc" :href="`/view/${item.url.split('/').pop()}`"><v-btn color="blue darken-2" text>Сохранить</v-btn></a>
+      <v-btn color="blue darken-2" text><a v-if="!changed" target="blanc" :href="`/view/${item.url.split('/').pop()}`">Посмотреть</a></v-btn>
     </template>
   </object-modal>
 </template>
@@ -81,3 +81,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+a {
+  text-decoration: none;
+}
+
+button {
+  text-decoration: none;
+}
+</style>
