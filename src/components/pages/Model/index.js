@@ -140,5 +140,9 @@ export default {
           })
       }
     }
+  },
+
+  getFileLink (context) {
+    return `${GeoHelperAPI.split('/api')[0]}/uploads/${context.item.url.split('/').pop()}`
   }
 }

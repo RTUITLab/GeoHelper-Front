@@ -35,7 +35,8 @@
         @change="load"
         required
       ></v-file-input>
-      <v-btn color="blue darken-2" text><a v-if="!changed" target="blanc" :href="`/view/${item.url.split('/').pop()}`">Посмотреть</a></v-btn>
+      <v-btn v-if="!changed && item" color="blue darken-2" text><a target="blanc" :href="`/view/${item.url.split('/').pop()}`">Посмотреть</a></v-btn>
+      <v-btn v-if="!changed && item" color="blue darken-2" text><a target="blanc" :href="fileLink()">Скачать</a></v-btn>
     </template>
   </object-modal>
 </template>
@@ -74,6 +75,9 @@ export default {
     },
     update () {
       Model.updateObject(this)
+    },
+    fileLink () {
+      return Model.getFileLink(this)
     }
   },
   mounted () {
