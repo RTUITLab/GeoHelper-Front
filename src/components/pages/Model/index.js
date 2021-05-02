@@ -1,15 +1,3 @@
-/*
- * Desciption:
- * Manage model object.
- *
- * Functions:
- * LoadModel: loads model into the player.
- * SendFile: sends file to the server and starts object creating on the server.
- * CreateObject: creates new model.
- * FillFields: sets up fields while model is updating.
- * UpdateObject: updates existing object.
- */
-
 import Axios from 'axios'
 import router from '@/router'
 import uploadFile from '@/modules/loadFile.js'

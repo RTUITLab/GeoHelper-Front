@@ -1,26 +1,3 @@
-//
-//
-//	File:	index.js
-//
-//	By:		Ivan Laptev <ivlaptev13@ya.ru>
-//
-//	Created:	2020-08-21 12:47:48
-//	Updated:	2020-08-27 16:43:26
-//
-//
-
-/*
- * Desciption:
- * Manage audio object.
- *
- * Functions:
- * LoadAudio: loads audio into the player.
- * SendFile: sends file to the server and starts object creating on the server.
- * CreateObject: creates new audio object.
- * FillFields: sets up fields while audio object is updating.
- * UpdateObject: updates existing object.
- */
-
 import Axios from 'axios'
 import router from '@/router'
 import uploadFile from '@/modules/loadFile.js'

@@ -25,6 +25,7 @@ import Text from '@/components/pages/Text/Text'
 import Audio from '@/components/pages/Audio/Audio'
 import Test from '@/components/pages/Test/Test'
 import Model from '@/components/pages/Model/Model'
+import Excursion from '@/components/pages/Excursion/Excursion'
 
 // Pages elements
 import Header from '@/components/Header'
@@ -125,6 +126,35 @@ const router = new Router({
           components: {
             default: Home,
             container: Model
+          },
+          props: {
+            default: false,
+            container: true
+          },
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
+          path: 'create-excursion',
+          components: {
+            default: Home,
+            container: Excursion
+          },
+          props: {
+            default: false,
+            container: { item: '' }
+          },
+          meta: {
+            requiredAuth: true
+          }
+        },
+        {
+          name: 'update-excursion',
+          path: 'update-excursion',
+          components: {
+            default: Home,
+            container: Excursion
           },
           props: {
             default: false,

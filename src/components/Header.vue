@@ -94,13 +94,13 @@ export default {
           disabled: false
         },
         {
-          title: 'Изображение',
-          redirect: '/create-image',
-          disabled: true
-        },
-        {
           title: 'Модель',
           redirect: '/create-model',
+          disabled: false
+        },
+        {
+          title: 'Экскурсионный',
+          redirect: '/create-excursion',
           disabled: false
         }
       ],
