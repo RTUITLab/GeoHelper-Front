@@ -37,11 +37,14 @@ export default {
     socket.onmessage = (e) => {
       const respData = JSON.parse(e.data)
 
+      console.log(respData)
+
       if (respData) {
         const data = []
         respData.poiObjectModels.forEach((entity) => data.push(entity))
         respData.geoAudioObjectModels.forEach((entity) => data.push(entity))
         respData.geo3dObjectModels.forEach((entity) => data.push(entity))
+        respData.geoExcursionObjectModels.forEach((entity) => data.push(entity))
 
         context.objects = data
 
