@@ -62,7 +62,8 @@
         "error"
       ],
       "@typescript-eslint/ban-ts-comment": "off",
-      "no-underscore-dangle": "off"
+      "no-underscore-dangle": "off",
+      "max-len": "off"
     },
     "overrides": [
       {

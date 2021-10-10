@@ -1,5 +1,6 @@
 // Getters
 export const THEME_GET = 'THEME_GET';
+export const MENU_GET = 'MENU_GET';
 
 // Mutations
 export const THEME_SET = 'THEME_SET';

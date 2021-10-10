@@ -22,24 +22,18 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { watch } from 'vue';
 import Logo from '@/assets/svg/Logo.vue';
+import { MENU_GET } from '@/store/types';
 
 @Options({
   components: { Logo },
 })
 export default class Sidebar extends Vue {
-  private menu = [
-    [
-      { title: 'Новый объект', path: '/objects/new', name: 'NewObject' },
-      { title: 'Объекты', path: '/objects', name: 'Objects' },
-      // { title: '', path: '' },
-      { title: 'Карта', path: '/map', name: 'Map' },
-    ],
-    [
-      { title: 'Настройки', path: '/settings', name: 'Settings' },
-    ],
-  ];
+  private menu = [];
+
+  created(): void {
+    this.menu = this.$store.getters[MENU_GET];
+  }
 
   get route(): string {
     return this.$route.name as string;
@@ -48,15 +42,21 @@ export default class Sidebar extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import 'src/assets/styles/mixins';
+
 .sidebar {
   position: fixed;
-  display: flex;
+  display: none;
   flex-direction: column;
   height: 100vh;
-  width: 240px;
+  width: 220px;
   padding: 24px 0 24px 24px;
   background-color: var(--white);
   box-sizing: border-box;
+
+  @include desktop {
+    display: flex;
+  }
 
   * {
     color: var(--grafit);
