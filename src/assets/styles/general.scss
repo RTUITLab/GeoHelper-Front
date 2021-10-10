@@ -1,0 +1,18 @@
+#main[theme=light] {
+  --cloudy_light: #F6F8FA;
+  --cloudy_dark: #F1F6FD;
+  --white: #FAFCFF;
+  --deep-blue: #438EFF;
+  --grafit: #70727D;
+  --black: #2B2D39;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  color: var(--black);
+  font-family: Inter, sans-serif;
+}
