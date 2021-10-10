@@ -13,6 +13,7 @@ export default class EmptyLayout extends Vue { }
 <style scoped>
 .empty-layout {
   position: absolute;
+  display: flex;
   height: 100vh;
   width: 100vw;
 

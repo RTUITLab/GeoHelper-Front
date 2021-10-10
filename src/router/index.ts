@@ -1,15 +1,51 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axios from 'axios';
+
+// Layouts
 import EmptyLayout from '@/components/layouts/EmptyLayout.vue';
+import DefaultLayout from '@/components/layouts/DefaultLayout.vue';
+
+// Pages
 import Login from '@/views/Login.vue';
+import ObjectsView from '@/views/ObjectsView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    component: DefaultLayout,
+    children: [
+      {
+        path: 'objects',
+        name: 'Objects',
+        component: ObjectsView,
+      },
+      {
+        path: 'objects/new',
+        name: 'NewObject',
+        component: ObjectsView,
+      },
+      {
+        path: 'map',
+        name: 'Map',
+        component: ObjectsView,
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: ObjectsView,
+      },
+      {
+        path: '',
+        redirect: '/objects',
+      },
+    ],
+  },
+  {
+    path: '/login',
     component: EmptyLayout,
     children: [
       {
-        path: 'login',
+        path: '',
         name: 'Login',
         component: Login,
       },

@@ -64,7 +64,7 @@ export default class Login extends Vue {
 <style lang="scss" scoped>
 .login-card {
   width: 350px;
-  margin: 160px auto 0;
+  margin: auto;
   padding: 24px;
   box-sizing: border-box;
 

@@ -8,6 +8,7 @@ export const TOKEN_SET = 'TOKEN_SET';
 
 // Actions
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 
 // System settings
 export enum SystemTheme {

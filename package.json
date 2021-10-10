@@ -61,7 +61,8 @@
       "@typescript-eslint/no-shadow": [
         "error"
       ],
-      "@typescript-eslint/ban-ts-comment": "off"
+      "@typescript-eslint/ban-ts-comment": "off",
+      "no-underscore-dangle": "off"
     },
     "overrides": [
       {

@@ -4,7 +4,7 @@ import {
   THEME_SET,
   USER_SET,
   TOKEN_SET,
-  UserData,
+  UserData, LOGOUT,
 } from './types';
 
 const mutations: MutationTree<State> = {
@@ -18,6 +18,15 @@ const mutations: MutationTree<State> = {
   },
   [USER_SET]: (state, user: UserData) => {
     state.user = user;
+  },
+  [LOGOUT]: (state, cb) => {
+    state.user.username = '';
+    state.user._id = '';
+    state.user.role = '';
+    state.accessToken = '';
+
+    localStorage.removeItem('ACCESS_TOKEN');
+    cb();
   },
 };
 
