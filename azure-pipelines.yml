@@ -3,6 +3,7 @@ pool:
 
 steps:
 - task: Npm@1
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   inputs:
     command: 'ci'
 - task: file-creator@6
@@ -18,6 +19,7 @@ steps:
       }
     endWithNewLine: true
 - task: file-creator@6
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     filepath: 'config/test.env.js'
     filecontent: |
@@ -30,6 +32,7 @@ steps:
       }
     endWithNewLine: true
 - task: file-creator@6
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     filepath: 'config/prod.env.js'
     filecontent: |
@@ -43,6 +46,7 @@ steps:
     endWithNewLine: true
 
 - task: Npm@1
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     command: 'custom'
     customCommand: 'run build'
@@ -60,6 +64,7 @@ steps:
       latest
     addPipelineData: false
 - task: SSH@0
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     sshEndpoint: 'swarm manager'
     runOptions: 'commands'
