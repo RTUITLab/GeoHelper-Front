@@ -36,7 +36,7 @@ export default {
       Axios.post(`${GeoHelperAPI}/auth`, credentials)
         .then(({data}) => {
           context.$cookie.set('token', data.token, 1)
-          context.$cookie.set('user_id', data.user._id, 1)
+          context.$cookie.set('user_id', data.foundUser._id, 1)
           context.validLogin = true
           this.user.authorized = true
 
