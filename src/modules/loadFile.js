@@ -16,6 +16,7 @@ export default function uploadfile (context, callback) {
         context.snackbar = true
         context.message = data.message
         console.log(JSON.stringify(data))
+        callback('no-file')
       })
   } else {
     fd.append('file', context.form.audioFile)

@@ -37,7 +37,7 @@ export default {
     socket.onmessage = (e) => {
       const respData = JSON.parse(e.data)
 
-      console.log(respData)
+      console.log(Object.keys(respData))
 
       if (respData) {
         const data = []

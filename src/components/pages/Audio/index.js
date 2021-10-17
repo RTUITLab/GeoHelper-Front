@@ -116,6 +116,7 @@ export default {
             })
         })
       } else {
+        entity.fileName = context.item.fileName
         Axios.put(`${GeoHelperAPI}/object`, entity, { headers: Auth.getAuthHeader(context) })
           .then(({ data }) => {
             context.$parent.getAllObjects()
