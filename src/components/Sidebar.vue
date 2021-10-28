@@ -14,7 +14,7 @@
       <div
         class="menu-item"
         style="margin-top: auto"
-        @click="$store.commit('LOGOUT', () => $router.push('/login'))"
+        @click="$store.commit('LOGOUT', () => $router.push({ path: '/login', params: { name: 'asdasd' }}))"
       >Выйти</div>
     </div>
   </div>

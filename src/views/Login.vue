@@ -36,13 +36,13 @@ export default class Login extends Vue {
   private remember = false;
 
   async login(): Promise<void> {
-    console.log(this.remember);
     try {
       await this.validate();
       await this.$store.dispatch(LOGIN, {
         credentials: this.credentials,
         remember: this.remember,
       });
+      await this.$router.push('/objects');
     } catch (e) {
       console.log(e.message);
     }

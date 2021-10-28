@@ -37,6 +37,7 @@ export default class DefaultLayout extends Vue { }
     box-sizing: border-box;
 
     width: 100%;
+    height: 100%;
 
     @include desktop {
       padding-left: 220px;

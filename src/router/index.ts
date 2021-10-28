@@ -53,9 +53,16 @@ const routes: Array<RouteRecordRaw> = [
   },
 ];
 
+const history: string[] = [];
+
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to) => {
+  console.log(to.params);
+  console.log(history);
 });
 
 axios.defaults.baseURL = process.env.VUE_APP_API;

@@ -1,7 +1,7 @@
 <template>
   <button
     :type="type || 'button'"
-    :class="'button__' + (variant || 'primary')"
+    :class="'button__' + (variant || 'primary') + (outlined ? ' outlined' : '')"
   ><slot></slot></button>
 </template>
 
@@ -10,6 +10,7 @@ import { Options, Vue } from 'vue-class-component';
 
 enum ButtonVariants {
   primary = 'primary',
+  danger = 'danger',
 }
 
 @Options({
@@ -42,8 +43,33 @@ button {
     &:hover, &:focus-visible {
       box-shadow: 0 0 6px 0 var(--deep-blue);
     }
+
     &:active {
-      box-shadow: 0 0 10px 0 var(--deep-blue)
+      box-shadow: 0 0 10px 0 var(--deep-blue);
+    }
+
+    &.outlined {
+      background: none;
+      color: var(--deep-blue);
+      border: 1px solid var(--deep-blue);
+    }
+  }
+
+  &.button__danger {
+    background-color: var(--fire);
+    color: var(--fire);
+
+    &:hover, &:focus-visible {
+      box-shadow: 0 0 6px 0 var(--fire);
+    }
+    &:active {
+      box-shadow: 0 0 10px 0 var(--fire);
+    }
+
+    &.outlined {
+      background: none;
+      color: var(--fire);
+      border: 1px solid var(--fire);
     }
   }
 }
