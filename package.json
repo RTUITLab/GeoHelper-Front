@@ -63,7 +63,9 @@
       ],
       "@typescript-eslint/ban-ts-comment": "off",
       "no-underscore-dangle": "off",
-      "max-len": "off"
+      "max-len": "off",
+      "no-param-reassign": "off",
+      "import/no-named-as-default": "off"
     },
     "overrides": [
       {

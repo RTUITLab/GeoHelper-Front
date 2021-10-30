@@ -38,11 +38,12 @@ export default class Login extends Vue {
   async login(): Promise<void> {
     try {
       await this.validate();
-      await this.$store.dispatch(LOGIN, {
+      if (await this.$store.dispatch(LOGIN, {
         credentials: this.credentials,
         remember: this.remember,
-      });
-      await this.$router.push('/objects');
+      })) {
+        await this.$router.push('/objects');
+      }
     } catch (e) {
       console.log(e.message);
     }

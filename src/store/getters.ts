@@ -1,8 +1,14 @@
 import { GetterTree } from 'vuex';
-import { MENU_GET, State, THEME_GET } from '@/store/types';
+import {
+  MENU_GET,
+  State,
+  THEME_GET,
+  TOKEN_GET,
+} from '@/store/types';
 
 const getters: GetterTree<State, any> = {
   [THEME_GET]: (state) => state.settings.theme,
+  [TOKEN_GET]: (state) => state.accessToken,
   [MENU_GET]: () => [
     [
       { title: 'Новый объект', path: '/objects/new', name: 'NewObject' },

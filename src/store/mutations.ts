@@ -4,14 +4,16 @@ import {
   THEME_SET,
   USER_SET,
   TOKEN_SET,
-  UserData, LOGOUT,
+  UserData,
+  LOGOUT,
+  OBJECTS_SET,
+  BaseObject,
 } from './types';
 
 const mutations: MutationTree<State> = {
   [THEME_SET]: (state, theme) => {
     state.settings.theme = theme;
     localStorage.setItem('THEME', theme);
-    console.log(state, 'theme');
   },
   [TOKEN_SET]: (state, token: string) => {
     state.accessToken = token;
@@ -27,6 +29,9 @@ const mutations: MutationTree<State> = {
 
     localStorage.removeItem('ACCESS_TOKEN');
     cb();
+  },
+  [OBJECTS_SET]: (state, objects: BaseObject[]) => {
+    state.objects = objects;
   },
 };
 

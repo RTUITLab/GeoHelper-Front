@@ -46,6 +46,8 @@ export default class TopMenu extends Vue {
   background-color: var(--white);
   box-shadow: 0 -8px 12px 0px var(--grafit);
 
+  z-index: 2000;
+
   @include desktop {
     display: none;
   }

@@ -5,7 +5,7 @@
     </router-link>
     <div v-else style="height: 24px"></div>
 
-    <div class="header-line">
+    <div class="header-line not-selectable">
       <div class="header"><slot name="header"></slot></div>
       <slot name="action"></slot>
     </div>
@@ -31,7 +31,6 @@ export default class PageView extends Vue {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   box-sizing: border-box;
 
   .return {

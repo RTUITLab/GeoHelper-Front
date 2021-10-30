@@ -26,6 +26,7 @@ export const CState: State = {
   settings: {
     theme: SystemTheme.Light,
   },
+  objects: [],
   accessToken: token,
   user,
 };

@@ -32,5 +32,6 @@ export default class Search extends Vue {
 .search {
   margin: 0;
   max-width: 300px;
+  background: transparent;
 }
 </style>

@@ -38,6 +38,7 @@ export default class DefaultLayout extends Vue { }
 
     width: 100%;
     height: 100%;
+    overflow: auto;
 
     @include desktop {
       padding-left: 220px;

@@ -1,7 +1,7 @@
 <template>
   <button
     :type="type || 'button'"
-    :class="'button__' + (variant || 'primary') + (outlined ? ' outlined' : '')"
+    :class="'not-selectable button__' + (variant || 'primary') + (outlined ? ' outlined' : '')"
   ><slot></slot></button>
 </template>
 

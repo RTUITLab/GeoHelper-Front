@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axios from 'axios';
+import store from '../store';
 
 // Layouts
 import EmptyLayout from '@/components/layouts/EmptyLayout.vue';
@@ -8,6 +9,7 @@ import DefaultLayout from '@/components/layouts/DefaultLayout.vue';
 // Pages
 import Login from '@/views/Login.vue';
 import ObjectsView from '@/views/ObjectsView.vue';
+import { TOKEN_GET } from '@/store/types';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -66,6 +68,13 @@ router.beforeEach((to) => {
 });
 
 axios.defaults.baseURL = process.env.VUE_APP_API;
+axios.interceptors.request.use((config) => {
+  if (config && config.headers) {
+    config.headers.Authorization = `Bearer ${store.getters[TOKEN_GET]}`;
+  }
+
+  return config;
+});
 axios.interceptors.response.use((response) => response, (error) => {
   if (error.response.status.toString() === '401') {
     router.push('login');

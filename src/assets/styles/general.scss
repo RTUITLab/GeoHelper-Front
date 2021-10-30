@@ -8,6 +8,7 @@
   --grafit: #70727D;
   --black: #2B2D39;
   --fire: #F54A4ADD;
+  --grass: #44ba51;
 }
 
 body {
@@ -19,4 +20,12 @@ body {
   color: var(--black);
   font-family: Inter, sans-serif;
   font-size: 16px;
+}
+
+.not-selectable {
+  user-select: none;
+
+  * {
+    user-select: none;
+  }
 }
