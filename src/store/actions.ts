@@ -24,6 +24,7 @@ const actions: ActionTree<State, any> = {
       return true;
     } catch (err) {
       console.log(LOGIN, err);
+      throw new Error(err.response.data.message || 'Неизвестная ошибка сервера');
       return false;
     }
   },
@@ -38,6 +39,7 @@ const actions: ActionTree<State, any> = {
       return objects;
     } catch (err) {
       console.log(LOGIN, err);
+      throw new Error(err.response.data.message || 'Неизвестная ошибка сервера');
       return null;
     }
   },

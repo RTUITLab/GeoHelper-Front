@@ -1,65 +1,70 @@
 <template lang="html">
   <div class="c-table">
-    <div class="table-first-col">
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 32px"></th>
-            <th
-              @click="() => changeSort(fields[0])"
-              :class="filterField === fields[0] ? 'sort' : ''"
-              style="width: 300px"
-            >{{ headers[0] }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in filteredContent" :key="index">
-            <td style="width: 32px; cursor: default">
-              <checkbox :title="''" style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
-            </td>
-            <td style="width: 300px">{{ row[fields[0]] }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <template v-if="!content.length">
+      <div style="font-size: 14px; text-align: center; color: var(--grafit)">Нет данных для отображения</div>
+    </template>
+    <template v-else>
+      <div class="table-first-col">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 32px"></th>
+              <th
+                @click="() => changeSort(fields[0])"
+                :class="filterField === fields[0] ? 'sort' : ''"
+                style="width: 300px"
+              >{{ headers[0] }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in filteredContent" :key="index">
+              <td style="width: 32px; cursor: default">
+                <checkbox :title="''" style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
+              </td>
+              <td style="width: 300px">{{ row[fields[0]] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-next-cols">
+        <table>
+          <thead>
+            <tr>
+              <th
+                v-for="(header, i) in headers.slice(1, headers.length)"
+                :key="header" @click="() => changeSort(fields[i + 1])"
+                :class="filterField === fields[i + 1] ? 'sort' : ''"
+              >{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in filteredContent" :key="index">
+              <td v-for="(header, i) in headers.slice(1, headers.length)" :key="header">
+                <template v-if="fields[i + 1] !== 'status'">{{ row[fields[i + 1]] || '—' }}</template>
+                <template v-else>
+                  <div class="ring-container">
+                    <div class="ringring" :style="!row[fields[i + 1]] ? 'display: none;' : ''"></div>
+                    <div class="circle" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''"></div>
+                  </div>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
+    <div v-if="content.length" class="pagination not-selectable">
+      <back-arrow color="var(--black)" @click="() => page = page === 1 ? page : page - 1"></back-arrow>
+      <div
+        v-for="(n, i) in pages"
+        :key="n"
+        :style="`color: var(--${i + 1 === page ? 'deep-blue' : 'black'})`"
+        @click="() => page = i + 1"
+      >
+        {{ i + 1 }}
+      </div>
+      <next-arrow color="var(--black)" @click="() => page = page === pages.length ? page : page + 1"></next-arrow>
     </div>
-    <div class="table-next-cols">
-      <table>
-        <thead>
-          <tr>
-            <th
-              v-for="(header, i) in headers.slice(1, headers.length)"
-              :key="header" @click="() => changeSort(fields[i + 1])"
-              :class="filterField === fields[i + 1] ? 'sort' : ''"
-            >{{ header }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in filteredContent" :key="index">
-            <td v-for="(header, i) in headers.slice(1, headers.length)" :key="header">
-              <template v-if="fields[i + 1] !== 'status'">{{ row[fields[i + 1]] || '—' }}</template>
-              <template v-else>
-                <div class="ring-container">
-                  <div class="ringring" :style="!row[fields[i + 1]] ? 'display: none;' : ''"></div>
-                  <div class="circle" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''"></div>
-                </div>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="pagination not-selectable">
-    <back-arrow color="var(--black)" @click="() => page = page === 1 ? page : page - 1"></back-arrow>
-    <div
-      v-for="(n, i) in pages"
-      :key="n"
-      :style="`color: var(--${i + 1 === page ? 'deep-blue' : 'black'})`"
-      @click="() => page = i + 1"
-    >
-      {{ i + 1 }}
-    </div>
-    <next-arrow color="var(--black)" @click="() => page = page === pages.length ? page : page + 1"></next-arrow>
   </div>
 </template>
 
@@ -94,7 +99,13 @@ export default class CTable extends Vue {
 
   created() {
     // @ts-ignore
-    this.fields = Object.keys(this.content[0]);
+    if (this.content.length) {
+      // @ts-ignore
+      this.fields = Object.keys(this.content[0]);
+    }
+
+    // @ts-ignore
+    console.log(this.content);
   }
 
   public changeSort(field: string): void {

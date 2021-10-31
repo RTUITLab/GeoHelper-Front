@@ -45,6 +45,11 @@ export default class Login extends Vue {
         await this.$router.push('/objects');
       }
     } catch (e) {
+      this.$notifications.push({
+        type: 'warning',
+        title: 'Ошибка',
+        message: e.message,
+      });
       console.log(e.message);
     }
   }

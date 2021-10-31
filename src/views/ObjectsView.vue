@@ -63,12 +63,24 @@ export default class ObjectsView extends Vue {
   private isLoading = true;
 
   async created(): Promise<void> {
-    this.objects = await this.$store.dispatch(OBJECTS_FETCH);
-    this.isLoading = false;
+    try {
+      this.objects = await this.$store.dispatch(OBJECTS_FETCH) || [];
+    } catch (err) {
+      this.objects = [] as BaseObject[];
+      this.$notifications.push({
+        type: 'warning',
+        title: 'Ошибка',
+        message: err.message,
+      });
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   get filterContent() {
+    console.log(this.objects);
     const result = this.objects.filter((O) => JSON.stringify(O).toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+    console.log(result);
 
     return result.map((O) => ({
       name: O.name,
