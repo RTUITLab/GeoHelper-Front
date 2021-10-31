@@ -8,12 +8,13 @@
           <div style="transition: all .3s;">
             <c-button
               outlined
-              :style="`${selectedItems.length !== 1 ? 'opacity: 0; padding: 0; width: 0; margin: 0' : ''}`"
+              :style="`${selectedItems.length !== 1 ? 'opacity: 0; padding: 0; width: 0; margin: 0; z-index: -1' : ''}`"
             >Изменить</c-button>
             <c-button
               outlined
               variant="danger"
-              :style="`${selectedItems.length === 0 ? 'opacity: 0; padding: 0; width: 0; margin: 0' : ''}`"
+              :style="`${selectedItems.length === 0 ? 'opacity: 0; padding: 0; width: 0; margin: 0; z-index: -1' : ''}`"
+              @click="() => $notifications.push({ title: '0', message: '2', type: 'info'})"
             >Удалить</c-button>
           </div>
           <search v-model="search" class="search" />

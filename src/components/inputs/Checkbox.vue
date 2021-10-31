@@ -41,6 +41,7 @@ export default class Checkbox extends Vue {
     position: absolute;
     z-index: -1;
     opacity: 0;
+    left: -100%;
   }
 
   label {

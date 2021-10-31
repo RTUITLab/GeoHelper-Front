@@ -1,5 +1,6 @@
 <template>
   <div id="main" :theme="theme">
+    <notification-provider></notification-provider>
     <router-view />
   </div>
 </template>

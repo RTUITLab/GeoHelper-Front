@@ -33,6 +33,7 @@ button {
   border: none;
   border-radius: 4px;
   outline: none;
+  cursor: pointer;
 
   transition: .2s;
 

@@ -15,7 +15,7 @@
         <tbody>
           <tr v-for="(row, index) in filteredContent" :key="index">
             <td style="width: 32px; cursor: default">
-              <checkbox style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
+              <checkbox :title="''" style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
             </td>
             <td style="width: 300px">{{ row[fields[0]] }}</td>
           </tr>

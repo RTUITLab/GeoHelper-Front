@@ -1,8 +1,9 @@
 import { Store } from 'vuex';
-import { State } from '@/store/types';
+import Notifications from '@/components/notifications';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $store: Store
+    $store: Store,
+    $notifications: Notifications
   }
 }
