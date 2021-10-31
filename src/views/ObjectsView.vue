@@ -5,9 +5,16 @@
     <template v-slot:content>
       <div class="content">
         <div class="controls">
-          <div>
-            <c-button outlined>Изменить</c-button>
-            <c-button outlined variant="danger">Удалить</c-button>
+          <div style="transition: all .3s;">
+            <c-button
+              outlined
+              :style="`${selectedItems.length !== 1 ? 'opacity: 0; padding: 0; width: 0; margin: 0' : ''}`"
+            >Изменить</c-button>
+            <c-button
+              outlined
+              variant="danger"
+              :style="`${selectedItems.length === 0 ? 'opacity: 0; padding: 0; width: 0; margin: 0' : ''}`"
+            >Удалить</c-button>
           </div>
           <search v-model="search" class="search" />
         </div>
@@ -15,7 +22,11 @@
         <div class="payload">
           <loading v-if="isLoading"></loading>
           <div v-else>
-            <c-table :content="filterContent" :headers="['Название', 'Статус', 'Тип', 'Зоны', 'Файлы']"></c-table>
+            <c-table
+              :content="filterContent"
+              :headers="['Название', 'Статус', 'Тип', 'Зоны', 'Файлы']"
+              @input="(items) => selectedItems = items"
+            ></c-table>
           </div>
         </div>
       </div>
@@ -25,7 +36,6 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { watch } from 'vue';
 import PageView from '@/components/layouts/PageView.vue';
 import CButton from '@/components/CButton.vue';
 import Search from '@/components/Search.vue';
@@ -47,6 +57,8 @@ export default class ObjectsView extends Vue {
 
   private objects: BaseObject[] = [];
 
+  private selectedItems = [] as string[];
+
   private isLoading = true;
 
   async created(): Promise<void> {
@@ -63,6 +75,7 @@ export default class ObjectsView extends Vue {
       type: O.type,
       areas: O.areas.length,
       files: O.files?.length || 0,
+      _id: O._id,
     }));
   }
 }

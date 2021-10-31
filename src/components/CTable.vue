@@ -4,12 +4,20 @@
       <table>
         <thead>
           <tr>
-            <th @click="() => changeSort(fields[0])" :class="filterField === fields[0] ? 'sort' : ''">{{ headers[0] }}</th>
+            <th style="width: 32px"></th>
+            <th
+              @click="() => changeSort(fields[0])"
+              :class="filterField === fields[0] ? 'sort' : ''"
+              style="width: 300px"
+            >{{ headers[0] }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, index) in filteredContent" :key="index">
-            <td>{{ row[fields[0]] }}</td>
+            <td style="width: 32px; cursor: default">
+              <checkbox style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
+            </td>
+            <td style="width: 300px">{{ row[fields[0]] }}</td>
           </tr>
         </tbody>
       </table>
@@ -27,12 +35,12 @@
         </thead>
         <tbody>
           <tr v-for="(row, index) in filteredContent" :key="index">
-            <td v-for="header in fields.slice(1, fields.length)" :key="header">
-              <template v-if="header !== 'status'">{{ row[header] || '—' }}</template>
+            <td v-for="(header, i) in headers.slice(1, headers.length)" :key="header">
+              <template v-if="fields[i + 1] !== 'status'">{{ row[fields[i + 1]] || '—' }}</template>
               <template v-else>
                 <div class="ring-container">
-                  <div class="ringring" :style="!row[header] ? 'display: none;' : ''"></div>
-                  <div class="circle" :style="!!row[header] ? 'background: var(--deep-blue);' : ''"></div>
+                  <div class="ringring" :style="!row[fields[i + 1]] ? 'display: none;' : ''"></div>
+                  <div class="circle" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''"></div>
                 </div>
               </template>
             </td>
@@ -59,6 +67,7 @@
 import { Options, Vue } from 'vue-class-component';
 import NextArrow from '@/assets/svg/NextArrow.vue';
 import BackArrow from '@/assets/svg/BackArrow.vue';
+import Checkbox from '@/components/inputs/Checkbox.vue';
 
 @Options({
   props: {
@@ -68,7 +77,9 @@ import BackArrow from '@/assets/svg/BackArrow.vue';
   components: {
     NextArrow,
     BackArrow,
+    Checkbox,
   },
+  emits: ['input'],
 })
 export default class CTable extends Vue {
   private page = 1;
@@ -78,6 +89,8 @@ export default class CTable extends Vue {
   private filterField: null | string = null;
 
   private ascending = true;
+
+  private selectedItems = [] as string[];
 
   created() {
     // @ts-ignore
@@ -96,6 +109,16 @@ export default class CTable extends Vue {
       this.filterField = field;
       this.ascending = true;
     }
+  }
+
+  public changeSelection(_id: string): void {
+    if (this.selectedItems.find((item) => item === _id)) {
+      this.selectedItems = this.selectedItems.filter((item) => item !== _id);
+    } else {
+      this.selectedItems.push(_id);
+    }
+
+    this.$emit('input', this.selectedItems);
   }
 
   get filteredContent() {
@@ -124,7 +147,6 @@ export default class CTable extends Vue {
 <style lang="scss">
 .c-table {
   position: relative;
-  margin-bottom: 16px;
 
   table {
     table-layout: fixed;
@@ -144,7 +166,7 @@ export default class CTable extends Vue {
 
 .table-first-col {
   position: absolute;
-  width: 300px;
+  width: 332px;
   top: 0;
   left: 0;
 
@@ -159,20 +181,22 @@ export default class CTable extends Vue {
   }
 
   * {
-    width: 300px;
+    width: 332px;
   }
 
   td {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: block;
-    box-sizing: border-box;
+    &:last-child {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: block;
+      box-sizing: border-box;
+    }
   }
 }
 
 .table-next-cols {
-  padding-left: 300px;
+  padding-left: 332px;
   overflow: auto;
 
   &::-webkit-scrollbar {
