@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex';
 import axios from 'axios';
 import {
   BaseObject,
-  LOGIN,
+  LOGIN, OBJECT_DELETE, OBJECT_REMOVE,
   OBJECTS_FETCH, OBJECTS_SET,
   State,
   TOKEN_SET,
@@ -25,7 +25,6 @@ const actions: ActionTree<State, any> = {
     } catch (err) {
       console.log(LOGIN, err);
       throw new Error(err.response.data.message || 'Неизвестная ошибка сервера');
-      return false;
     }
   },
   [OBJECTS_FETCH]: async ({ commit }) => {
@@ -39,8 +38,21 @@ const actions: ActionTree<State, any> = {
       return objects;
     } catch (err) {
       console.log(LOGIN, err);
-      throw new Error(err.response.data.message || 'Неизвестная ошибка сервера');
-      return null;
+      throw new Error('Не удалось получить объекты с сервера. Попробуте позже');
+    }
+  },
+  [OBJECT_DELETE]: async ({ commit }, _id) => {
+    try {
+      await axios.request({
+        url: 'object',
+        method: 'delete',
+        data: { _id },
+      });
+
+      commit(OBJECT_REMOVE, _id);
+    } catch (err) {
+      console.log(OBJECT_DELETE, err);
+      throw new Error('Не получилось удалить объект');
     }
   },
 };

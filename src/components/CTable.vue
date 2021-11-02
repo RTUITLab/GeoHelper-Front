@@ -19,7 +19,12 @@
           <tbody>
             <tr v-for="(row, index) in filteredContent" :key="index">
               <td style="width: 32px; cursor: default">
-                <checkbox :title="''" style="margin: 0" @input="() => changeSelection(row._id)"></checkbox>
+                <checkbox
+                  :title="''"
+                  style="margin: 0"
+                  :model-value="isSelected(row._id)"
+                  @input="() => changeSelection(row._id)"
+                ></checkbox>
               </td>
               <td style="width: 300px">{{ row[fields[0]] }}</td>
             </tr>
@@ -78,6 +83,7 @@ import Checkbox from '@/components/inputs/Checkbox.vue';
   props: {
     headers: Array,
     content: Array,
+    selectedItems: Array,
   },
   components: {
     NextArrow,
@@ -94,8 +100,6 @@ export default class CTable extends Vue {
   private filterField: null | string = null;
 
   private ascending = true;
-
-  private selectedItems = [] as string[];
 
   created() {
     // @ts-ignore
@@ -120,13 +124,15 @@ export default class CTable extends Vue {
   }
 
   public changeSelection(_id: string): void {
-    if (this.selectedItems.find((item) => item === _id)) {
-      this.selectedItems = this.selectedItems.filter((item) => item !== _id);
+    // @ts-ignore
+    let selectedItems = JSON.parse(JSON.stringify(this.selectedItems));
+    if (selectedItems.find((item: string) => item === _id)) {
+      selectedItems = selectedItems.filter((item: string) => item !== _id);
     } else {
-      this.selectedItems.push(_id);
+      selectedItems.push(_id);
     }
 
-    this.$emit('input', this.selectedItems);
+    this.$emit('input', selectedItems);
   }
 
   get filteredContent() {
@@ -148,6 +154,11 @@ export default class CTable extends Vue {
     // @ts-ignore
     const size = this.content.length;
     return new Array<number>(Math.ceil(size / 15));
+  }
+
+  public isSelected(_id: string): boolean {
+    // @ts-ignore
+    return !!this.selectedItems.find((item) => item === _id);
   }
 }
 </script>

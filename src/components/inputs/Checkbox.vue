@@ -25,6 +25,11 @@ export default class Checkbox extends Vue {
   created(): void {
     // @ts-ignore
     this.value = this.modelValue;
+
+    // @ts-ignore
+    this.$watch(() => this.modelValue, (val: boolean) => {
+      this.value = val;
+    });
   }
 
   get getValue() {

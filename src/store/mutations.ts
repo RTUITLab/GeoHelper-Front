@@ -7,7 +7,7 @@ import {
   UserData,
   LOGOUT,
   OBJECTS_SET,
-  BaseObject,
+  BaseObject, OBJECT_REMOVE,
 } from './types';
 
 const mutations: MutationTree<State> = {
@@ -32,6 +32,9 @@ const mutations: MutationTree<State> = {
   },
   [OBJECTS_SET]: (state, objects: BaseObject[]) => {
     state.objects = objects;
+  },
+  [OBJECT_REMOVE]: (state, _id) => {
+    state.objects = state.objects.filter((item) => item._id !== _id);
   },
 };
 

@@ -14,7 +14,7 @@
               outlined
               variant="danger"
               :style="`${selectedItems.length === 0 ? 'opacity: 0; padding: 0; width: 0; margin: 0; z-index: -1' : ''}`"
-              @click="() => $notifications.push({ title: '0', message: '2', type: 'info'})"
+              @click="() => deleteObjects()"
             >Удалить</c-button>
           </div>
           <search v-model="search" class="search" />
@@ -26,6 +26,7 @@
             <c-table
               :content="filterContent"
               :headers="['Название', 'Статус', 'Тип', 'Зоны', 'Файлы']"
+              :selected-items="selectedItems"
               @input="(items) => selectedItems = items"
             ></c-table>
           </div>
@@ -42,7 +43,12 @@ import CButton from '@/components/CButton.vue';
 import Search from '@/components/Search.vue';
 import Loading from '@/components/Loading.vue';
 import CTable from '@/components/CTable.vue';
-import { BaseObject, OBJECTS_FETCH } from '@/store/types';
+import {
+  BaseObject,
+  OBJECT_DELETE,
+  OBJECTS_FETCH,
+  OBJECTS_GET,
+} from '@/store/types';
 
 @Options({
   components: {
@@ -75,6 +81,23 @@ export default class ObjectsView extends Vue {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  public deleteObjects(): void {
+    this.selectedItems.forEach(async (_id) => {
+      try {
+        await this.$store.dispatch(OBJECT_DELETE, _id);
+
+        this.selectedItems = this.selectedItems.filter((item) => _id !== item);
+        this.objects = this.$store.getters[OBJECTS_GET];
+      } catch (e) {
+        this.$notifications.push({
+          title: _id,
+          message: e.message,
+          type: 'warning',
+        });
+      }
+    });
   }
 
   get filterContent() {

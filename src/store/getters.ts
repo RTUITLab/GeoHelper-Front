@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex';
 import {
-  MENU_GET,
+  MENU_GET, OBJECTS_GET,
   State,
   THEME_GET,
   TOKEN_GET,
@@ -20,6 +20,7 @@ const getters: GetterTree<State, any> = {
       { title: 'Настройки', path: '/settings', name: 'Settings' },
     ],
   ],
+  [OBJECTS_GET]: (state) => state.objects,
 };
 
 export default getters;
