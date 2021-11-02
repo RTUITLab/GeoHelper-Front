@@ -103,9 +103,6 @@ export default class CTable extends Vue {
       // @ts-ignore
       this.fields = Object.keys(this.content[0]);
     }
-
-    // @ts-ignore
-    console.log(this.content);
   }
 
   public changeSort(field: string): void {

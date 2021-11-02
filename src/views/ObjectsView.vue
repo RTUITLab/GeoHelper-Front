@@ -78,9 +78,7 @@ export default class ObjectsView extends Vue {
   }
 
   get filterContent() {
-    console.log(this.objects);
     const result = this.objects.filter((O) => JSON.stringify(O).toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
-    console.log(result);
 
     return result.map((O) => ({
       name: O.name,
