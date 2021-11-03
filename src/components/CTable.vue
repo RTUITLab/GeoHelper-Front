@@ -47,12 +47,7 @@
               <td v-for="(header, i) in headers.slice(1, headers.length)" :key="header">
                 <template v-if="fields[i + 1] !== 'status'">{{ row[fields[i + 1]] || '—' }}</template>
                 <template v-else>
-                  <div class="ring-container">
-                    <div class="ringring" :style="!row[fields[i + 1]] ? 'display: none;' : ''"></div>
-                    <div class="circle with-tooltip" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''">
-                      <span class="tooltip">{{ !row[fields[i + 1]] ? 'Готов' : 'Обрабатывается' }}</span>
-                    </div>
-                  </div>
+                  <status-circle :is-ready="!row[fields[i + 1]]"></status-circle>
                 </template>
               </td>
             </tr>
@@ -80,6 +75,7 @@ import { Options, Vue } from 'vue-class-component';
 import NextArrow from '@/assets/svg/NextArrow.vue';
 import BackArrow from '@/assets/svg/BackArrow.vue';
 import Checkbox from '@/components/inputs/Checkbox.vue';
+import StatusCircle from '@/components/StatusCircle.vue';
 
 @Options({
   props: {
@@ -89,6 +85,7 @@ import Checkbox from '@/components/inputs/Checkbox.vue';
     onClickAction: Function,
   },
   components: {
+    StatusCircle,
     NextArrow,
     BackArrow,
     Checkbox,
@@ -306,39 +303,5 @@ tr {
       color: var(--deep-blue) !important;
     }
   }
-}
-
-//Pulsating ring
-.ring-container {
-  position: relative;
-  width: 12px;
-  height: 12px;
-  padding-left: 24px;
-}
-
-.circle {
-  width: 12px;
-  height: 12px;
-  background-color: var(--grass);
-  border-radius: 50%;
-  position: absolute;
-}
-
-.ringring {
-  border: 3px solid var(--deep-blue);
-  border-radius: 30px;
-  height: 12px;
-  width: 12px;
-  position: absolute;
-  animation: pulsate 1s ease-out;
-  animation-iteration-count: infinite;
-  opacity: 0.0;
-  top: -3px;
-  left: 21px;
-}
-@keyframes pulsate {
-  0% {transform: scale(0.1, 0.1); opacity: 0.0;}
-  50% {opacity: 1.0;}
-  100% {transform: scale(1.1, 1.1); opacity: 0.0;}
 }
 </style>
