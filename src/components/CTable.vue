@@ -26,7 +26,7 @@
                   @input="() => changeSelection(row._id)"
                 ></checkbox>
               </td>
-              <td style="width: 300px">{{ row[fields[0]] }}</td>
+              <td style="width: 300px" @click="() => onClickAction(row._id)">{{ row[fields[0]] }}</td>
             </tr>
           </tbody>
         </table>
@@ -43,13 +43,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, index) in filteredContent" :key="index">
+            <tr v-for="(row, index) in filteredContent" :key="index" @click="() => onClickAction(row._id)">
               <td v-for="(header, i) in headers.slice(1, headers.length)" :key="header">
                 <template v-if="fields[i + 1] !== 'status'">{{ row[fields[i + 1]] || '—' }}</template>
                 <template v-else>
                   <div class="ring-container">
                     <div class="ringring" :style="!row[fields[i + 1]] ? 'display: none;' : ''"></div>
-                    <div class="circle" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''"></div>
+                    <div class="circle with-tooltip" :style="!!row[fields[i + 1]] ? 'background: var(--deep-blue);' : ''">
+                      <span class="tooltip">{{ !row[fields[i + 1]] ? 'Готов' : 'Обрабатывается' }}</span>
+                    </div>
                   </div>
                 </template>
               </td>
@@ -84,6 +86,7 @@ import Checkbox from '@/components/inputs/Checkbox.vue';
     headers: Array,
     content: Array,
     selectedItems: Array,
+    onClickAction: Function,
   },
   components: {
     NextArrow,

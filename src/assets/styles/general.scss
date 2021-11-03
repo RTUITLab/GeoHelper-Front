@@ -29,3 +29,29 @@ body {
     user-select: none;
   }
 }
+
+.with-tooltip {
+  > .tooltip {
+    opacity: 0;
+    background-color: var(--grafit);
+    color: var(--white);
+    text-align: center;
+    padding: 4px 8px;
+    margin-left: 4px;
+    border-radius: 6px;
+
+    transition: .2s opacity;
+
+    position: absolute;
+    z-index: 3000;
+    top: calc(50% - 14px);
+    left: -100vw;
+
+    box-sizing: border-box;
+  }
+
+  &:hover > .tooltip {
+    opacity: 0.8;
+    left: 105%;
+  }
+}
