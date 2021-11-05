@@ -33,7 +33,7 @@ export default class StatusCircle extends Vue {}
   background-color: var(--grass);
   border-radius: 50%;
   position: absolute;
-  z-index: 2001;
+  z-index: 501;
 }
 
 .ringring {
@@ -47,11 +47,11 @@ export default class StatusCircle extends Vue {}
   opacity: 0.0;
   top: -3px;
   left: -3px;
-  z-index: 2000;
+  z-index: 500;
 }
 @keyframes pulsate {
   0% {transform: scale(0.1, 0.1); opacity: 0.0;}
   50% {opacity: 1.0;}
-  100% {transform: scale(1.1, 1.1); opacity: 0.0;}
+  100% {transform: scale(1.0, 1.0); opacity: 0.0;}
 }
 </style>

@@ -1,6 +1,6 @@
 <template lang="html">
-  <select class="c-select">
-    <option v-for="option in options" :key="option.value">{{ option.title }}</option>
+  <select class="c-select" v-model="value">
+    <option v-for="option in options" :key="option.value" :value="option.value">{{ option.title }}</option>
   </select>
 </template>
 
@@ -10,9 +10,21 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   props: {
     options: Array,
+    modelValue: String,
   },
 })
-export default class SelectInput extends Vue { }
+export default class SelectInput extends Vue {
+  private value = ''
+
+  created(): void {
+    // @ts-ignore
+    this.value = this.modelValue;
+
+    this.$watch(() => this.value, (val: string) => {
+      this.$emit('input', val);
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -29,7 +41,7 @@ export default class SelectInput extends Vue { }
   transition: 0.2s;
   will-change: border, box-shadow;
 
-  background-color: var(--white);
+  background-color: #FFFFFF;
 
   &:focus-visible {
     border: 1px solid var(--deep-blue);
