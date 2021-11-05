@@ -52,6 +52,7 @@ export default class PageView extends Vue {
 
     .header {
       font-size: 20px;
+      font-weight: 600;
     }
   }
 }

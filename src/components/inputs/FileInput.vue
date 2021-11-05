@@ -1,6 +1,6 @@
 <template lang="html">
   <label class="c-file-input"> {{ file.fileName || 'Выберите файл' }}
-    <input type="file" @input="loadFile" onclick="this.value = null">
+    <input type="file" :accept="accept" @input="loadFile" onclick="this.value = null">
   </label>
 </template>
 
@@ -10,12 +10,13 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   props: {
     fileName: String,
+    accept: String,
   },
 })
 export default class FileInput extends Vue {
   public file = {
     fileName: '',
-    file: new ArrayBuffer(0),
+    file: new File([], ''),
   };
 
   created(): void {
@@ -23,13 +24,13 @@ export default class FileInput extends Vue {
     this.file.fileName = this.fileName;
   }
 
-  public async loadFile(e: InputEvent): Promise<void> {
+  public loadFile(e: InputEvent): void {
     const target = (e.target as HTMLInputElement);
 
     if (target.files && target.files.length) {
       this.file = {
-        fileName: target.files.item(0)!.name,
-        file: await target.files.item(0)!.arrayBuffer(),
+        fileName: target.files[0].name,
+        file: target.files[0],
       };
 
       this.$emit('input', this.file);
@@ -55,12 +56,16 @@ input {
   color: var(--black) !important;
   outline: none;
 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
   background-color: #FFFFFF;
 
   transition: 0.2s border, 0.2s box-shadow;
   will-change: border, box-shadow;
 
-  &:focus-visible {
+  &:focus {
     border: 1px solid var(--deep-blue);
     box-shadow: 0 0 4px 0 var(--deep-blue);
   }

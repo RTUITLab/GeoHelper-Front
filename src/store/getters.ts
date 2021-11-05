@@ -11,7 +11,7 @@ const getters: GetterTree<State, any> = {
   [TOKEN_GET]: (state) => state.accessToken,
   [MENU_GET]: () => [
     [
-      { title: 'Новый объект', path: '/objects/new', name: 'NewObject' },
+      { title: 'Новый объект', path: '/objects/new', name: 'CreateObject' },
       { title: 'Объекты', path: '/objects', name: 'Objects' },
       // { title: '', path: '' },
       { title: 'Карта', path: '/map', name: 'Map' },

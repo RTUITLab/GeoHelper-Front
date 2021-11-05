@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import axios from 'axios';
 import store from '../store';
+import { TOKEN_GET } from '@/store/types';
 
 // Layouts
 import EmptyLayout from '@/components/layouts/EmptyLayout.vue';
@@ -9,7 +10,7 @@ import DefaultLayout from '@/components/layouts/DefaultLayout.vue';
 // Pages
 import Login from '@/views/Login.vue';
 import ObjectsView from '@/views/ObjectsView.vue';
-import { TOKEN_GET } from '@/store/types';
+import SingleObjectView from '@/views/SingleObjectView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,6 +21,16 @@ const routes: Array<RouteRecordRaw> = [
         path: 'objects',
         name: 'Objects',
         component: ObjectsView,
+      },
+      {
+        path: 'objects/new',
+        name: 'CreateObject',
+        component: SingleObjectView,
+      },
+      {
+        path: 'objects/:_id',
+        name: 'SingleObject',
+        component: SingleObjectView,
       },
       {
         path: 'objects/new',

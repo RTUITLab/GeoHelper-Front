@@ -9,6 +9,7 @@
             <c-button
               outlined
               :style="`${selectedItems.length !== 1 ? 'opacity: 0; padding: 0; width: 0; margin: 0; z-index: -1' : ''}`"
+              @click="() => $router.push('/objects/' + selectedItems[0])"
             >Изменить</c-button>
             <c-button
               outlined
@@ -27,6 +28,7 @@
               :content="filterContent"
               :headers="['Название', 'Статус', 'Тип', 'Зоны', 'Файлы']"
               :selected-items="selectedItems"
+              :onClickAction="(_id) => $router.push('/objects/' + _id)"
               @input="(items) => selectedItems = items"
             ></c-table>
           </div>
@@ -105,7 +107,7 @@ export default class ObjectsView extends Vue {
 
     return result.map((O) => ({
       name: O.name,
-      status: O.status,
+      status: O.status ?? 1,
       type: O.type,
       areas: O.areas.length,
       files: O.files?.length || 0,

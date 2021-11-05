@@ -37,7 +37,7 @@ export interface UserData {
 // Files
 
 export interface File {
-  _id: string,
+  _id?: string,
   type: 'audio' | 'model',
   fileName: string,
   url: string,
