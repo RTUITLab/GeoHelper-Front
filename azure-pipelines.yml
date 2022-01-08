@@ -2,6 +2,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- task: NodeTool@0
+  displayName: Downgrade NodeJS
+  inputs:
+    versionSpec: '14.x'
 - task: Npm@1
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   inputs:
