@@ -3,11 +3,11 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import {
-  CHECK_AUTH,
-  FETCH_OBJECTS, GET_TOKEN,
+  CHECK_AUTH, DELETE_OBJECT,
+  FETCH_OBJECTS, GET_OBJECTS, GET_TOKEN,
   INIT_APP,
   LOGIN,
-  LOGOUT,
+  LOGOUT, REMOVE_OBJECT,
   SET_OBJECTS,
   SET_TOKEN
 } from '../assets/globals'
@@ -30,6 +30,9 @@ const store = new Vuex.Store({
     },
     [GET_TOKEN]: (state) => {
       return state.user.accessToken
+    },
+    [GET_OBJECTS]: (state) => {
+      return state.objects
     }
   },
 
@@ -46,6 +49,9 @@ const store = new Vuex.Store({
     },
     [SET_OBJECTS]: (state, objects) => {
       state.objects = objects
+    },
+    [REMOVE_OBJECT]: (state, _id) => {
+      state.objects = state.objects.filter((item) => item._id !== _id)
     },
     [LOGOUT]: (state) => {
       state.user.accessToken = ''
@@ -101,6 +107,17 @@ const store = new Vuex.Store({
       }
 
       throw new Error('Не удалось загрузить список объектов')
+    },
+
+    [DELETE_OBJECT]: async (s, _id) => {
+      if (!s.state.objects.find((item) => item._id === _id)) {
+        throw new Error('Не удалось найти объект')
+      }
+
+      await axios.delete('object', { data: { _id } })
+      s.commit(REMOVE_OBJECT, _id)
+
+      return true
     }
   },
 

@@ -16,6 +16,10 @@ const routes = [
     children: [
       {
         path: '/',
+        redirect: '/objects'
+      },
+      {
+        path: 'objects',
         component: ObjectsList,
         meta: {
           secure: true

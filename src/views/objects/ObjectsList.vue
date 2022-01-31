@@ -29,11 +29,34 @@
         @input="changeQuery"
       ></v-text-field>
     </template>
+
+    <template v-slot:item.actions="{ item }">
+      <v-btn
+        icon
+        small
+        class="mr-2"
+        :to="`objects/${item._id}`"
+      >
+        <v-icon
+          small
+        >mdi-pencil</v-icon>
+      </v-btn>
+
+      <v-btn
+        icon
+        small
+        @click="deleteItem(item._id)"
+      >
+        <v-icon
+          small
+        >mdi-delete</v-icon>
+      </v-btn>
+    </template>
   </v-data-table>
 </template>
 
 <script>
-import { CREATE_SNACHBAR, FETCH_OBJECTS } from '../../assets/globals'
+import { CREATE_SNACHBAR, DELETE_OBJECT, FETCH_OBJECTS, GET_OBJECTS } from '../../assets/globals'
 import router from '../../router'
 
 export default {
@@ -43,7 +66,8 @@ export default {
       loading: true,
       headers: [
         { text: 'Название', align: 'start', value: 'name' },
-        { text: 'Тип', value: 'pType' }
+        { text: 'Тип', value: 'pType' },
+        { text: '', value: 'actions', sortable: false, align: 'end' }
       ],
       objects: [],
       search: ''
@@ -72,6 +96,20 @@ export default {
           this.$root.$emit(CREATE_SNACHBAR, { text: 'Не удалось получить список объектов' })
         })
     },
+
+    deleteItem (id) {
+      this.loading = true
+      this.$store.dispatch(DELETE_OBJECT, id)
+        .then(() => {
+          this.objects = this.$store.getters[GET_OBJECTS]
+        })
+        .catch((e) => {
+          this.$root.$emit(CREATE_SNACHBAR, { text: e.message })
+        })
+        .finally(() => (this.loading = false))
+      return 0
+    },
+
     changeQuery () {
       if (this.search) {
         router.replace({ path: '', query: { q: this.search } })
