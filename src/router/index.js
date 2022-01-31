@@ -6,6 +6,7 @@ import Login from '../views/Login'
 import store from '../store'
 import ObjectsList from '../views/objects/ObjectsList'
 import { CHECK_AUTH } from '../assets/globals'
+import SingleObject from '../views/objects/SingleObject'
 
 Vue.use(VueRouter)
 
@@ -26,7 +27,15 @@ const routes = [
         }
       },
       {
+        path: 'objects/:id',
+        component: SingleObject,
+        meta: {
+          secure: true
+        }
+      },
+      {
         path: 'create',
+        component: SingleObject,
         meta: {
           secure: true
         }

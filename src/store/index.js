@@ -4,7 +4,7 @@ import axios from 'axios'
 
 import {
   CHECK_AUTH, DELETE_OBJECT,
-  FETCH_OBJECTS, GET_OBJECTS, GET_TOKEN,
+  FETCH_OBJECTS, GET_OBJECT_ONE, GET_OBJECTS, GET_TOKEN,
   INIT_APP,
   LOGIN,
   LOGOUT, REMOVE_OBJECT,
@@ -33,6 +33,9 @@ const store = new Vuex.Store({
     },
     [GET_OBJECTS]: (state) => {
       return state.objects
+    },
+    [GET_OBJECT_ONE]: (state) => (_id) => {
+      return state.objects.find((item) => item._id === _id)
     }
   },
 

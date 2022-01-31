@@ -6,6 +6,7 @@
 export const CHECK_AUTH = 'CHECK_AUTH'
 export const GET_TOKEN = 'GET_TOKEN'
 export const GET_OBJECTS = 'GET_OBJECTS'
+export const GET_OBJECT_ONE = 'GET_OBJECT_ONE'
 
 // Mutations
 export const INIT_APP = 'INIT_APP'

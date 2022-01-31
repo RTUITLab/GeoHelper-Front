@@ -37,7 +37,7 @@
             </v-list-item-icon>
             <v-list-item-title>Создать объект</v-list-item-title>
           </v-list-item>
-          <v-list-item to="/">
+          <v-list-item to="/objects">
             <v-list-item-icon>
               <v-icon>mdi-view-list</v-icon>
             </v-list-item-icon>

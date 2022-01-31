@@ -5,6 +5,8 @@
     :loading="loading"
     loading-text="Загрузка объектов"
     class="elevation-2"
+    style="cursor: pointer"
+    @click:row="rowClick"
   >
     <template v-slot:top>
       <v-toolbar flat>
@@ -30,12 +32,23 @@
       ></v-text-field>
     </template>
 
+    <template v-slot:item.name="{ item }">
+      {{ item.name }}
+      <v-badge
+        inline
+        dot
+        :color="setBadge(item).color"
+        :title="setBadge(item).title"
+      ></v-badge>
+    </template>
+
     <template v-slot:item.actions="{ item }">
       <v-btn
         icon
         small
         class="mr-2"
         :to="`objects/${item._id}`"
+        title="Изменить"
       >
         <v-icon
           small
@@ -46,6 +59,7 @@
         icon
         small
         @click="deleteItem(item._id)"
+        title="Удалить"
       >
         <v-icon
           small
@@ -108,6 +122,19 @@ export default {
         })
         .finally(() => (this.loading = false))
       return 0
+    },
+
+    rowClick (item) {
+      router.push(`/objects/${item._id}`)
+    },
+
+    setBadge (item) {
+      if (item.status === 0) {
+        return { color: 'success', title: 'Готов' }
+      } else if (item.status < 3) {
+        return { color: 'blue', title: 'Обрабатывается' }
+      }
+      return { color: 'error', title: 'Нет файлов' }
     },
 
     changeQuery () {
