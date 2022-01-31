@@ -125,7 +125,7 @@ const store = new Vuex.Store({
   }
 })
 
-axios.defaults.baseURL = 'https://geohelper.rtuitlab.dev/api/v1'
+axios.defaults.baseURL = process.env.VUE_APP_API
 
 axios.interceptors.request.use((config) => {
   config.headers.authorization = store.getters[GET_TOKEN]
