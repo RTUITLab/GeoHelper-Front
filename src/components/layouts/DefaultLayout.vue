@@ -57,7 +57,7 @@
         >Выйти</v-btn>
       </v-list>
     </v-navigation-drawer>
-    <div style="padding: 16px">
+    <div class="main-container" style="padding: 16px">
       <router-view></router-view>
     </div>
   </v-main>
@@ -88,4 +88,8 @@ export default {
   position: absolute !important
   bottom: 16px
   width: 94%
+
+.main-container
+  max-width: 1200px
+  margin: 0 auto
 </style>

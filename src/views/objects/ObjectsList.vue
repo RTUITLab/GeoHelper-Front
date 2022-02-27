@@ -5,7 +5,6 @@
     :loading="loading"
     loading-text="Загрузка объектов"
     class="elevation-2"
-    style="cursor: pointer"
     @click:row="rowClick"
   >
     <template v-slot:top>
@@ -149,5 +148,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .v-data-table__wrapper tbody {
+  cursor: pointer !important;
+}
 </style>
