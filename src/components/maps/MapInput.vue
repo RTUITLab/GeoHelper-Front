@@ -9,24 +9,28 @@
         <v-btn-toggle
           color="primary"
           group
+          mandatory
         >
           <v-btn
             width="36"
             height="36"
             icon
             small
+            @click="mapControls.modes.setPositionMode()"
           ><v-icon style="padding: 4px">mdi-map-marker</v-icon></v-btn>
           <v-btn
             width="36"
             height="36"
             icon
             small
+            @click="mapControls.modes.setAreaMode()"
           ><v-icon>mdi-texture-box</v-icon></v-btn>
           <v-btn
             width="36"
             height="36"
             icon
             small
+            @click="mapControls.modes.setAreaMode()"
           ><v-icon>mdi-map-marker-path</v-icon></v-btn>
         </v-btn-toggle>
         <v-btn
@@ -36,7 +40,7 @@
           small
           style="margin-top: -6px"
           color="error"
-          dark
+          @click="mapControls.clearMap()"
         ><v-icon>mdi-restore</v-icon></v-btn>
       </v-toolbar-title>
     </v-toolbar>
@@ -49,18 +53,22 @@ import MapControls from './mapControls'
 
 export default {
   name: 'MapInput',
+  props: ['value'],
   data: () => {
     return {
-      mapIsReady: false
+      mapIsReady: false,
+      mapControls: MapControls
     }
   },
-  created () {
+  mounted () {
+    this.mapControls.modes.setPositionMode()
+
     // Check if map is ready to showing
     const mapCallback = () => {
       setTimeout(() => {
-        if (window.mapIsReady) {
+        if (window.mapIsReady && this.value) {
           this.mapIsReady = true
-          MapControls.init(this.$refs.map)
+          this.mapControls.init(this.$refs.map, this.value)
         } else {
           mapCallback()
         }
@@ -68,6 +76,11 @@ export default {
     }
 
     mapCallback()
+  },
+  methods: {
+    handleInput (data) {
+      this.$emit('input', data)
+    }
   }
 }
 </script>
