@@ -1,16 +1,43 @@
 <template>
-  <v-toolbar
-    elevation="2"
-  >
-    <v-toolbar-title>Редактировать объект</v-toolbar-title>
-  </v-toolbar>
+  <v-card>
+    <v-toolbar
+      flat
+    >
+      <v-toolbar-title>Редактировать объект</v-toolbar-title>
+    </v-toolbar>
+
+    <v-divider></v-divider>
+
+    <v-card-text>
+      <v-form>
+        <v-text-field
+          v-model="item.name"
+          label="Название"
+          type="text"
+          :rules="[v => !!v || 'Поле не заполнено']"
+        ></v-text-field>
+
+        <v-divider></v-divider>
+
+        <div>payload</div>
+
+        <v-divider></v-divider>
+
+        <div class="map-input">
+          <map-input v-model="item.map"></map-input>
+        </div>
+      </v-form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 import { FETCH_OBJECTS, GET_OBJECT_ONE } from '../../assets/globals'
+import MapInput from '../../components/maps/MapInput'
 
 export default {
   name: 'SingleObject',
+  components: { MapInput },
   data: () => {
     return {
       item: {}
@@ -20,11 +47,19 @@ export default {
     if (this.$route.params.id) {
       await this.$store.dispatch(FETCH_OBJECTS)
       this.item = this.$store.getters[GET_OBJECT_ONE](this.$route.params.id)
+      this.item.map = {
+        position: this.item.position,
+        areas: this.item.areas,
+        route: this.item.route
+      }
+    } else {
+      this.item.map = {}
     }
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="sass" scoped>
+.map-input
+  padding-top: 14px
 </style>

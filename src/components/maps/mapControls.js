@@ -1,5 +1,11 @@
 /* eslint-disable */
 
+const MODES = {
+  POSITION: 0,
+  AREA: 1,
+  ROUTE: 2
+}
+
 let bindElement, map, mode, line // Map control oobjects
 
 let marker = [] // Entity position
@@ -8,9 +14,24 @@ let route = [] // Entity route
 
 export default {
   modes: {
-    setPositionMode: () => { mode = 0 },
-    setAreaMode: () => { mode = 1 },
-    setRouteMode: () => { mode = 2 }
+    setPositionMode: () => {
+      mode = MODES.POSITION
+      if (marker[0]) {
+        marker[0].setDraggable(true)
+      }
+    },
+    setAreaMode: () => {
+      mode = MODES.AREA
+      if (marker[0]) {
+        marker[0].setDraggable(false)
+      }
+    },
+    setRouteMode: () => {
+      mode = MODES.ROUTE
+      if (marker[0]) {
+        marker[0].setDraggable(false)
+      }
+    }
   },
   init: (element, data) => {
     bindElement = element
@@ -26,6 +47,9 @@ export default {
       clickableIcons: false,
       draggableCursor: 'crosshair'
     })
+
+    //
+    map.addListener('click', (e) => processCoordinate(e.latLng))
 
     // Setup marker
     if (marker[0]) {
@@ -79,4 +103,8 @@ export default {
       }
     }
   }
+}
+
+function processCoordinate (latLng) {
+    
 }
