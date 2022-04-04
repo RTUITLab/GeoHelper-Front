@@ -1,76 +1,145 @@
+trigger:
+  branches:
+    include:
+      - "*"
+  tags:
+    include:
+      - "*"
+
+name: $(BuildID)-$(Build.SourceBranchName)
+
+resources:
+  - repo: self
+
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: NodeTool@0
-  displayName: Downgrade NodeJS
-  inputs:
-    versionSpec: '14.x'
-- task: Npm@1
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  inputs:
-    command: 'ci'
-- task: file-creator@6
-  inputs:
-    filepath: 'config/dev.env.js'
-    filecontent: |
-      'use strict'
-      module.exports = {
-        NODE_ENV: '"development"' ,
-        VUE_APP_API: '"http://localhost:3002/api/v1"',
-        VUE_APP_KEY: '"----"',
-        VUE_WS_PROTOCOL: '"ws"'
-      }
-    endWithNewLine: true
-- task: file-creator@6
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    filepath: 'config/test.env.js'
-    filecontent: |
-      'use strict'
-      module.exports = {
-        NODE_ENV: '"testing"' ,
-        VUE_APP_API: '"http://localhost:3002/api/v1"',
-        VUE_APP_KEY: '"----"',
-        VUE_WS_PROTOCOL: '"ws"'
-      }
-    endWithNewLine: true
-- task: file-creator@6
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    filepath: 'config/prod.env.js'
-    filecontent: |
-      'use strict'
-      module.exports = {
-        NODE_ENV: '"production"',
-        VUE_APP_API: '"https://geohelper.rtuitlab.dev/api/v1"',
-        VUE_APP_KEY: '"$(google_map_api_key)"',
-        VUE_WS_PROTOCOL: '"wss"'
-      }
-    endWithNewLine: true
-
-- task: Npm@1
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    command: 'custom'
-    customCommand: 'run build'
-
-- task: Docker@2
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    containerRegistry: 'rtuitlab connection by admin'
-    repository: 'rtuitlab/geohelper-front'
-    command: 'buildAndPush'
-    Dockerfile: 'Dockerfile'
-    buildContext: '.'
-    tags: |
+variables:
+  ${{ if notIn(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    buildImage: false
+    deployService: false
+    deployEnvironment: "no"
+    imageTags: "no"
+    serviceName: "no"
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    buildImage: true
+    deployService: true
+    deployEnvironment: production
+    imageTags: |
       $(Build.BuildId)
       latest
-    addPipelineData: false
-- task: SSH@0
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    sshEndpoint: 'swarm manager'
-    runOptions: 'commands'
-    commands: 'docker service update --image rtuitlab/geohelper-front:$(Build.BuildId) geohelper_front --with-registry-auth'
-    readyTimeout: '20000'
+    serviceName: geohelper_front
+stages:
+  - stage: build
+    displayName: Build app
+    jobs:
+      - job: buildApp
+        displayName: Build app
+        steps:
+          - task: NodeTool@0
+            displayName: Update NodeJS to 14.x version
+            inputs:
+              versionSpec: '14.x'
+          - task: Npm@1
+            displayName: Run 'npm ci'
+            inputs:
+              command: 'ci'
+          - task: file-creator@6
+            displayName: Create dev environment
+            inputs:
+              filepath: 'config/dev.env.js'
+              filecontent: |
+                'use strict'
+                module.exports = {
+                  NODE_ENV: '"development"' ,
+                  VUE_APP_API: '"http://localhost:3002/api/v1"',
+                  VUE_APP_KEY: '"----"',
+                  VUE_WS_PROTOCOL: '"ws"'
+                }
+              endWithNewLine: true
+          - task: file-creator@6
+            displayName: Create test environment
+            inputs:
+              filepath: 'config/test.env.js'
+              filecontent: |
+                'use strict'
+                module.exports = {
+                  NODE_ENV: '"testing"' ,
+                  VUE_APP_API: '"http://localhost:3002/api/v1"',
+                  VUE_APP_KEY: '"----"',
+                  VUE_WS_PROTOCOL: '"ws"'
+                }
+              endWithNewLine: true
+          - task: file-creator@6
+            displayName: Create prod environment
+            inputs:
+              filepath: 'config/prod.env.js'
+              filecontent: |
+                'use strict'
+                module.exports = {
+                  NODE_ENV: '"production"',
+                  VUE_APP_API: '"https://geohelper.rtuitlab.dev/api/v1"',
+                  VUE_APP_KEY: '"$(google_map_api_key)"',
+                  VUE_WS_PROTOCOL: '"wss"'
+                }
+              endWithNewLine: true
+          - task: Npm@1
+            displayName: Run npm build
+            inputs:
+              command: 'custom'
+              customCommand: 'run build'
+          # TODO: copy necessary files to dist folder
+          - publish: dist
+            artifact: geohelper-front
+
+  - stage: buildAndPushDockerImages
+    displayName: Build and push Docker images
+    condition: and(succeeded(), ${{ variables.buildImage }})
+    jobs:
+      - job: buildPublicImage
+        displayName: Build public docker image
+        steps:
+          - checkout: none
+          - download: current
+            artifact: geohelper-front
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'rtuitlab connection by admin'
+              repository: 'rtuitlab/geohelper-front'
+              command: 'buildAndPush'
+              Dockerfile: 'Dockerfile'
+              buildContext: '.'
+              tags: ${{ variables.imageTags }}
+              addPipelineData: false
+      - job: buildPrivateImage
+        displayName: Build private docker image
+        steps:
+          - checkout: none
+          - download: current
+            artifact: geohelper-front
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'private rtuitlab registry'
+              repository: 'geohelper/front'
+              command: 'buildAndPush'
+              Dockerfile: 'Dockerfile'
+              buildContext: '.'
+              tags: ${{ variables.imageTags }}
+              addPipelineData: false
+  - stage: UpdateService
+    condition: and(succeeded(), ${{ variables.deployService }})
+    displayName: Update service
+    jobs:
+      - deployment: Deploy
+        environment: ${{variables.deployEnvironment}}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - task: SSH@0
+                  inputs:
+                    sshEndpoint: 'swarm manager'
+                    runOptions: 'commands'
+                    commands: 'docker service update --image registry.rtuitlab.dev/geohelper/front:$(Build.BuildId) ${{ variables.serviceName }} --with-registry-auth'
+                    readyTimeout: '20000'
