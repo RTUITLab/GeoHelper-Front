@@ -88,7 +88,22 @@ stages:
             inputs:
               command: 'custom'
               customCommand: 'run build'
-          # TODO: copy necessary files to dist folder
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: './dist'
+              Contents: '**'
+              TargetFolder: './dist/dist'
+              CleanTargetFolder: true
+              OverWrite: true
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '.'
+              Contents: |
+                nginx.conf
+                .dockerignore
+                Dockerfile
+              TargetFolder: './dist'
+              OverWrite: true
           - publish: dist
             artifact: geohelper-front
 
