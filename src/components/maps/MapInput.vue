@@ -30,7 +30,7 @@
             height="36"
             icon
             small
-            @click="mapControls.modes.setAreaMode()"
+            @click="mapControls.modes.setRouteMode()"
           ><v-icon>mdi-map-marker-path</v-icon></v-btn>
         </v-btn-toggle>
         <v-btn
