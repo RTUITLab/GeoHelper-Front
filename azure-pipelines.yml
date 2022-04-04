@@ -88,23 +88,9 @@ stages:
             inputs:
               command: 'custom'
               customCommand: 'run build'
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: './dist'
-              Contents: '**'
-              TargetFolder: './dist/dist'
-              CleanTargetFolder: true
-              OverWrite: true
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '.'
-              Contents: |
-                nginx.conf
-                .dockerignore
-                Dockerfile
-              TargetFolder: './dist'
-              OverWrite: true
-          - publish: dist
+          - script: mv ./dist/ ./deploy/
+            displayName: Move dist to deploy directory
+          - publish: deploy
             artifact: geohelper-front
 
   - stage: buildAndPushDockerImages
@@ -122,8 +108,8 @@ stages:
               containerRegistry: 'rtuitlab connection by admin'
               repository: 'rtuitlab/geohelper-front'
               command: 'buildAndPush'
-              Dockerfile: 'Dockerfile'
-              buildContext: '.'
+              Dockerfile: '$(Pipeline.Workspace)/geohelper-front/Dockerfile'
+              buildContext: '$(Pipeline.Workspace)/geohelper-front'
               tags: ${{ variables.imageTags }}
               addPipelineData: false
       - job: buildPrivateImage
@@ -137,8 +123,8 @@ stages:
               containerRegistry: 'private rtuitlab registry'
               repository: 'geohelper/front'
               command: 'buildAndPush'
-              Dockerfile: 'Dockerfile'
-              buildContext: '.'
+              Dockerfile: '$(Pipeline.Workspace)/geohelper-front/Dockerfile'
+              buildContext: '$(Pipeline.Workspace)/geohelper-front'
               tags: ${{ variables.imageTags }}
               addPipelineData: false
   - stage: UpdateService
