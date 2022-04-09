@@ -25,3 +25,14 @@ export const DELETE_OBJECT = 'DELETE_OBJECT'
 // *******
 
 export const CREATE_SNACHBAR = 'CREATE_SNACHBAR'
+
+// *******
+//  ENUMS
+// *******
+
+export const ENTITY_TYPES = {
+  TEXT: 'text',
+  AUDIO: 'audio',
+  OBJECT: 'object',
+  EXCURSION: 'excursion'
+}

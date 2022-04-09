@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import {
-  CHECK_AUTH, DELETE_OBJECT,
+  CHECK_AUTH, DELETE_OBJECT, ENTITY_TYPES,
   FETCH_OBJECTS, GET_OBJECT_ONE, GET_OBJECTS, GET_TOKEN,
   INIT_APP,
   LOGIN,
@@ -86,19 +86,19 @@ const store = new Vuex.Store({
 
     [FETCH_OBJECTS]: async ({ commit }) => {
       const data = (await axios.get('objects')).data.map((item) => {
-        if (item.type === 'text') {
+        if (item.type === ENTITY_TYPES.TEXT) {
           item.pType = 'Текст'
           return item
         }
-        if (item.type === 'audio') {
+        if (item.type === ENTITY_TYPES.AUDIO) {
           item.pType = 'Аудио'
           return item
         }
-        if (item.type === 'object') {
+        if (item.type === ENTITY_TYPES.OBJECT) {
           item.pType = 'Модель'
           return item
         }
-        if (item.type === 'excursion') {
+        if (item.type === ENTITY_TYPES.EXCURSION) {
           item.pType = 'Экскурсионный'
           return item
         }

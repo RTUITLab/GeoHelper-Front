@@ -16,6 +16,28 @@
           type="text"
           :rules="[v => !!v || 'Поле не заполнено']"
         ></v-text-field>
+        <v-select
+          :items="[
+            {
+              value: ENTITY_TYPES.TEXT,
+              text: 'Текст'
+            },
+            {
+              value: ENTITY_TYPES.AUDIO,
+              text: 'Аудио'
+            },
+            {
+              value: ENTITY_TYPES.OBJECT,
+              text: 'Модель'
+            },
+            {
+              value: ENTITY_TYPES.EXCURSION,
+              text: 'Экскурсионный'
+            }
+          ]"
+          v-model="item.type"
+          label="Тип"
+        ></v-select>
 
         <v-divider></v-divider>
 
@@ -32,7 +54,7 @@
 </template>
 
 <script>
-import { FETCH_OBJECTS, GET_OBJECT_ONE } from '../../assets/globals'
+import { FETCH_OBJECTS, GET_OBJECT_ONE, ENTITY_TYPES } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
 
 export default {
@@ -40,7 +62,8 @@ export default {
   components: { MapInput },
   data: () => {
     return {
-      item: {}
+      item: {},
+      ENTITY_TYPES: ENTITY_TYPES
     }
   },
   async created () {
