@@ -9,7 +9,7 @@ import {
   LOGIN,
   LOGOUT, REMOVE_OBJECT,
   SET_OBJECTS,
-  SET_TOKEN
+  SET_TOKEN, UPLOAD_FILE
 } from '../assets/globals'
 
 import router from '../router'
@@ -84,6 +84,18 @@ const store = new Vuex.Store({
       throw new Error('Неизвестная ошибка')
     },
 
+    [UPLOAD_FILE]: async (s, file) => {
+      const formData = new FormData()
+
+      formData.append('file', file)
+      try {
+        const res = await axios.post('upload', formData)
+        return res.data.name
+      } catch (e) {
+        throw new Error(`Не удалось загрузить ${file.fileName}`)
+      }
+    },
+
     [FETCH_OBJECTS]: async ({ commit }) => {
       const data = (await axios.get('objects')).data.map((item) => {
         if (item.type === ENTITY_TYPES.TEXT) {
@@ -92,14 +104,18 @@ const store = new Vuex.Store({
         }
         if (item.type === ENTITY_TYPES.AUDIO) {
           item.pType = 'Аудио'
+          item.audioFile = item.files[0]
           return item
         }
         if (item.type === ENTITY_TYPES.OBJECT) {
           item.pType = 'Модель'
+          item.objectFile = item.files[0]
           return item
         }
         if (item.type === ENTITY_TYPES.EXCURSION) {
           item.pType = 'Экскурсионный'
+          item.audioFile = item.files.find((file) => file.type === 'audio')
+          item.objectFile = item.files.find((file) => file.type === 'model')
           return item
         }
       })
