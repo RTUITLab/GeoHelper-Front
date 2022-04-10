@@ -4,9 +4,7 @@ import DefaultLayout from '../components/layouts/DefaultLayout'
 import EmptyLayout from '../components/layouts/EmptyLayout'
 import Login from '../views/Login'
 import store from '../store'
-import ObjectsList from '../views/objects/ObjectsList'
 import { CHECK_AUTH } from '../assets/globals'
-import SingleObject from '../views/objects/SingleObject'
 
 Vue.use(VueRouter)
 
@@ -21,21 +19,21 @@ const routes = [
       },
       {
         path: 'objects',
-        component: ObjectsList,
+        component: () => import('../views/objects/ObjectsList'),
         meta: {
           secure: true
         }
       },
       {
         path: 'objects/:id',
-        component: SingleObject,
+        component: () => import('../views/objects/SingleObject'),
         meta: {
           secure: true
         }
       },
       {
         path: 'create',
-        component: SingleObject,
+        component: () => import('../views/objects/SingleObject'),
         meta: {
           secure: true
         }
