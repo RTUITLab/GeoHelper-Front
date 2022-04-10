@@ -41,7 +41,13 @@
 
         <v-divider></v-divider>
 
-        <div>payload</div>
+        <template v-if="ENTITY_TYPES.TEXT === item.type">
+          <v-text-field
+            v-model="item.description"
+            label="Описание"
+            :rules="[v => !!v || 'Поле не заполнено']"
+          ></v-text-field>
+        </template>
 
         <v-divider></v-divider>
 
