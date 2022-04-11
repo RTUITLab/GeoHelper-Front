@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import {
-  CHECK_AUTH, DELETE_OBJECT, ENTITY_TYPES,
+  CHECK_AUTH, CREATE_SNACHBAR, DELETE_OBJECT, ENTITY_TYPES,
   FETCH_OBJECTS, GET_OBJECT_ONE, GET_OBJECTS, GET_TOKEN,
   INIT_APP,
   LOGIN,
@@ -92,7 +92,7 @@ const store = new Vuex.Store({
         const res = await axios.post('upload', formData)
         return res.data.name
       } catch (e) {
-        throw new Error(`Не удалось загрузить ${file.fileName}`)
+        this.$root.$emit(CREATE_SNACHBAR, { text: `Не удалось отправить файл ${file.fileName}` })
       }
     },
 
@@ -109,13 +109,13 @@ const store = new Vuex.Store({
         }
         if (item.type === ENTITY_TYPES.OBJECT) {
           item.pType = 'Модель'
-          item.objectFile = item.files[0]
+          item.modelFile = item.files[0]
           return item
         }
         if (item.type === ENTITY_TYPES.EXCURSION) {
           item.pType = 'Экскурсионный'
           item.audioFile = item.files.find((file) => file.type === 'audio')
-          item.objectFile = item.files.find((file) => file.type === 'model')
+          item.modelFile = item.files.find((file) => file.type === 'model')
           return item
         }
       })

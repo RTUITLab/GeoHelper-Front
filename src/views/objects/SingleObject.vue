@@ -58,11 +58,42 @@
             label="Аудиофайл"
             accept="audio/*"
             v-model="audioFile"
-            @change="loadAudio"
+            :loading="!!loadingQueue"
+            :disabled="!!loadingQueue"
+            @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO)"
             :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
           ></v-file-input>
 
           <audio :src="item.audioFile ? item.audioFile.url : ''" controls></audio>
+        </template>
+
+        <template v-if="item.type === ENTITY_TYPES.OBJECT || item.type === ENTITY_TYPES.EXCURSION">
+          <v-file-input
+            label="Модель"
+            accept="application/zip"
+            v-model="modelFile"
+            :loading="!!loadingQueue"
+            :disabled="!!loadingQueue"
+            @change="(e) => uploadFile(e, ENTITY_TYPES.OBJECT)"
+            :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
+          ></v-file-input>
+
+          <v-row style="margin-bottom: 16px">
+            <v-col>
+              <v-btn
+                style="margin-right: 16px"
+                color="primary"
+                text
+                @click="() => openLink('DOWNLOAD')"
+              >Скачать</v-btn>
+
+              <v-btn
+                outlined
+                color="primary"
+                @click="() => openLink('OPEN')"
+              >Открыть</v-btn>
+            </v-col>
+          </v-row>
         </template>
 
         <v-divider></v-divider>
@@ -117,25 +148,53 @@ export default {
 
       if (this.item.audioFile) {
         this.audioFile = new File([], this.item.audioFile.fileName, { type: 'audio/*' })
-        console.log(this.audioFile)
+      }
+      if (this.item.modelFile) {
+        this.modelFile = new File([], this.item.modelFile.fileName, { type: 'application/zip' })
       }
     } else {
       this.item.map = {}
     }
   },
   methods: {
-    async loadAudio (e) {
+    async uploadFile (e, type) {
+      if (!e) {
+        return
+      }
+
       this.loadingQueue++
 
-      this.item.audioFile = {
-        type: 'audio',
-        url: URL.createObjectURL(e),
-        fileName: e.fileName
+      if (type === ENTITY_TYPES.AUDIO) {
+        this.item.audioFile = {
+          type: 'audio',
+          url: URL.createObjectURL(e),
+          fileName: e.fileName
+        }
+      } else if (type === ENTITY_TYPES.OBJECT) {
+        this.item.modelFile = {
+          type: 'model',
+          url: URL.createObjectURL(e),
+          fileName: e.fileName
+        }
       }
 
       await this.$store.dispatch(UPLOAD_FILE, e)
 
       this.loadingQueue--
+    },
+
+    openLink (mode) {
+      let src = ''
+      if (mode === 'DOWNLOAD') {
+        src = this.item.modelFile.url
+      }
+      if (mode === 'OPEN') {
+        src = location.origin + '/ModelViewer?=' + this.item.modelFile.url.split('/').pop()
+      }
+
+      if (src) {
+        window.open(src, '_blank')
+      }
     }
   }
 }
