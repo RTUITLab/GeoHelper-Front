@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/three@0.139.2/build/three.min.js"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <title>GeoHelper | Просмотр модели</title>
+</head>
+<body>
+    <div id="renderer"></div>
+
+    <script src="https://unpkg.com/three@0.139.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script type="module">
+
+      const src = location.origin + '/uploads/' + location.search.slice(3).split('.')[0] + '/scene.gltf';
+
+          const renderer = new THREE.WebGLRenderer()
+          renderer.setSize(window.innerWidth, window.innerHeight)
+          document.getElementById('renderer').appendChild(renderer.domElement)
+
+          const scene = new THREE.Scene()
+          scene.background = new THREE.Color(0xf4f4f4)
+
+          const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1 /* near */, 1000 /* far */)
+          camera.position.set(0, 10, 20)
+
+          const controls = new THREE.OrbitControls(camera, renderer.domElement)
+          controls.target.set(0, 0, 0)
+          controls.update()
+
+          const skyColor = 0xFFFFFF
+          const groundColor = 0xFFFFFF
+          const intensity = 1
+          const light = new THREE.HemisphereLight(skyColor, groundColor, intensity)
+          scene.add(light)
+
+          // Directional light
+          const color = 0xFFFFFF
+          const dIntensity = 1
+          const dLight = new THREE.DirectionalLight(color, dIntensity)
+          dLight.position.set(5, 10, 2)
+          scene.add(dLight)
+          scene.add(dLight.target)
+
+          // Model
+          const loader = new THREE.GLTFLoader()
+
+          loader.load(src, (gltf) => {
+            const box = new THREE.Box3().setFromObject(gltf.scene)
+            const size = box.getSize(new THREE.Vector3())
+            gltf.scene.position.y = size.y / 1.5
+            controls.target.set(0, size.y / 1.5, 0)
+            scene.add(gltf.scene)
+          })
+
+          const animate = function () {
+            requestAnimationFrame(animate)
+
+            renderer.render(scene, camera)
+          }
+
+          animate()
+    </script>
+</body>
+</html>
