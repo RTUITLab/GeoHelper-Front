@@ -9,7 +9,7 @@
     <v-divider></v-divider>
 
     <v-card-text>
-      <v-form>
+      <v-form ref="form">
         <v-text-field
           v-model="item.name"
           label="Название"
@@ -44,7 +44,7 @@
 
           <p></p>
 
-          <template v-if="ENTITY_TYPES.TEXT === item.type">
+          <template v-if="ENTITY_TYPES.TEXT === item.type || item.type === ENTITY_TYPES.EXCURSION">
             <v-text-field
               v-model="item.description"
               label="Описание"
@@ -99,7 +99,7 @@
         <v-divider></v-divider>
 
         <div class="map-input">
-          <map-input v-model="item.map"></map-input>
+          <map-input v-model="mapData" ref="map"></map-input>
         </div>
       </v-form>
     </v-card-text>
@@ -108,6 +108,7 @@
       <v-btn
         outlined
         color="error"
+        @click="() => $router.push('/objects')"
       >Отменить</v-btn>
 
       <v-spacer></v-spacer>
@@ -115,14 +116,23 @@
       <v-btn
         :loading="!!loadingQueue"
         color="primary"
+        @click="saveData"
       >Сохранить</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { FETCH_OBJECTS, GET_OBJECT_ONE, ENTITY_TYPES, UPLOAD_FILE } from '../../assets/globals'
+import {
+  FETCH_OBJECTS,
+  GET_OBJECT_ONE,
+  ENTITY_TYPES,
+  UPLOAD_FILE,
+  UPDATE_OBJECT,
+  CREATE_SNACHBAR
+} from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
+import router from '../../router'
 
 export default {
   name: 'SingleObject',
@@ -133,17 +143,18 @@ export default {
       ENTITY_TYPES: ENTITY_TYPES,
       audioFile: {},
       modelFile: {},
-      loadingQueue: 0
+      loadingQueue: 0,
+      mapData: ''
     }
   },
   async created () {
     if (this.$route.params.id) {
       await this.$store.dispatch(FETCH_OBJECTS)
       this.item = this.$store.getters[GET_OBJECT_ONE](this.$route.params.id)
-      this.item.map = {
+      this.mapData = {
         position: this.item.position,
-        areas: this.item.areas,
-        route: this.item.route
+        areas: this.item.areas || [],
+        route: this.item.route || []
       }
 
       if (this.item.audioFile) {
@@ -153,7 +164,10 @@ export default {
         this.modelFile = new File([], this.item.modelFile.fileName, { type: 'application/zip' })
       }
     } else {
-      this.item.map = {}
+      this.mapData = {
+        areas: [],
+        route: []
+      }
     }
   },
   methods: {
@@ -168,17 +182,22 @@ export default {
         this.item.audioFile = {
           type: 'audio',
           url: URL.createObjectURL(e),
-          fileName: e.fileName
+          fileName: e.name
         }
       } else if (type === ENTITY_TYPES.OBJECT) {
         this.item.modelFile = {
           type: 'model',
           url: URL.createObjectURL(e),
-          fileName: e.fileName
+          fileName: e.name
         }
       }
 
-      await this.$store.dispatch(UPLOAD_FILE, e)
+      const name = await this.$store.dispatch(UPLOAD_FILE, e)
+
+      const url = process.env.VUE_APP_API.split('/api')[0] + '/uploads/' + name
+      if (type === ENTITY_TYPES.OBJECT) {
+        this.item.modelFile.url = url
+      }
 
       this.loadingQueue--
     },
@@ -195,6 +214,41 @@ export default {
       if (src) {
         window.open(src, '_blank')
       }
+    },
+
+    saveData () {
+      if (!this.$refs.map.validate() || !this.$refs.map.validate()) {
+        return
+      }
+
+      const data = {
+        name: this.item.name,
+        type: this.item.type,
+        areas: this.mapData.areas,
+        position: this.mapData.position
+      }
+
+      data.files = []
+      if (this.item.type === ENTITY_TYPES.AUDIO || this.item.type === ENTITY_TYPES.EXCURSION) {
+        data.files.push(this.item.audioFile)
+      }
+      if (this.item.type === ENTITY_TYPES.OBJECT || this.item.type === ENTITY_TYPES.EXCURSION) {
+        data.files.push(this.item.modelFile)
+      }
+
+      // Type based data
+      if (this.item.type === ENTITY_TYPES.TEXT || this.item.type === ENTITY_TYPES.EXCURSION) {
+        data.description = this.item.description
+      }
+      if (this.item.type === ENTITY_TYPES.AUDIO || this.item.type === ENTITY_TYPES.OBJECT) {
+        data.fileName = data.files[0].fileName
+        data.url = data.files[0].url
+      }
+      console.log(data)
+
+      this.$store.dispatch(UPDATE_OBJECT, data)
+        .then(() => router.push('/'))
+        .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
     }
   }
 }
