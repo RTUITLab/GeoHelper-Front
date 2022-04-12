@@ -50,6 +50,7 @@
 
 <script>
 import MapControls from './mapControls'
+import { CREATE_SNACHBAR } from '../../assets/globals'
 
 export default {
   name: 'MapInput',
@@ -80,6 +81,17 @@ export default {
   methods: {
     handleInput (data) {
       this.$emit('input', data)
+    },
+
+    validate () {
+      const result = this.mapControls.getData()
+      if (result.error) {
+        this.$root.$emit(CREATE_SNACHBAR, { text: result.error })
+        return false
+      } else {
+        this.handleInput(result.data)
+      }
+      return true
     }
   }
 }
