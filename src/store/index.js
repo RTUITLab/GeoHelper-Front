@@ -3,13 +3,10 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import {
-  CHECK_AUTH, CREATE_SNACHBAR, DELETE_OBJECT, ENTITY_TYPES,
+  CHECK_AUTH, DELETE_OBJECT, ENTITY_TYPES,
   FETCH_OBJECTS, GET_OBJECT_ONE, GET_OBJECTS, GET_TOKEN,
-  INIT_APP,
-  LOGIN,
-  LOGOUT, REMOVE_OBJECT,
-  SET_OBJECTS,
-  SET_TOKEN, UPLOAD_FILE
+  INIT_APP, LOGIN, LOGOUT, REMOVE_OBJECT,
+  SET_OBJECTS, SET_TOKEN, UPDATE_OBJECT, UPLOAD_FILE
 } from '../assets/globals'
 
 import router from '../router'
@@ -92,7 +89,7 @@ const store = new Vuex.Store({
         const res = await axios.post('upload', formData)
         return res.data.name
       } catch (e) {
-        this.$root.$emit(CREATE_SNACHBAR, { text: `Не удалось отправить файл ${file.fileName}` })
+        throw new Error(`Не удалось отправить файл ${file.fileName}`)
       }
     },
 
@@ -126,6 +123,18 @@ const store = new Vuex.Store({
       }
 
       throw new Error('Не удалось загрузить список объектов')
+    },
+
+    [UPDATE_OBJECT]: async (s, item) => {
+      try {
+        const res = item._id
+          ? await axios.put('object', item)
+          : await axios.post('object', item)
+
+        return res.data
+      } catch (e) {
+        throw new Error('Не удалось сохранить изменения')
+      }
     },
 
     [DELETE_OBJECT]: async (s, _id) => {

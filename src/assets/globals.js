@@ -18,6 +18,8 @@ export const REMOVE_OBJECT = 'REMOVE_OBJECT'
 // Actions
 export const LOGIN = 'LOGIN'
 export const FETCH_OBJECTS = 'FETCH_OBJECTS'
+export const CREATE_OBJECT = 'CREATE_OBJECT'
+export const UPDATE_OBJECT = 'UPDATE_OBJECT'
 export const DELETE_OBJECT = 'DELETE_OBJECT'
 export const UPLOAD_FILE = 'UPLOAD_FILE'
 
