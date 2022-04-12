@@ -244,7 +244,10 @@ export default {
         data.fileName = data.files[0].fileName
         data.url = data.files[0].url
       }
-      console.log(data)
+
+      if (this.item._id) {
+        data._id = this.item._id
+      }
 
       this.$store.dispatch(UPDATE_OBJECT, data)
         .then(() => router.push('/'))
