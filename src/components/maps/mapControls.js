@@ -10,7 +10,7 @@ let bindElement, map, mode // Map control oobjects
 
 let marker = [] // Entity position
 let areas = []  // Entity areas of visibility
-let route = []  // Entity route
+let routes = []  // Entity route
 
 let areaLine = ''   // Additional var to store not finished areas
 let routeLine = ''  // Additional var to store not finished areas
@@ -138,7 +138,7 @@ export default {
     // TODO route setup
   },
 
-  clearMap() {
+  clearMap () {
     if (marker[0]) {
       marker[0].setPosition(map.getCenter())
     }
@@ -151,6 +151,37 @@ export default {
         areas = []
       }
     }
+  },
+
+  getData () {
+    const data = {
+      position: {
+        lat: marker[0].position.lat(),
+        lng: marker[0].position.lng()
+      },
+      areas: [],
+      routes: []
+    }
+
+    let error = null
+
+    if (!areas.length) {
+      error = 'Не задана ни одна область видимости'
+    }
+    if (areaLine && areaLine.getPath().getLength()) {
+      error = 'Не все области видимости завершены'
+    }
+    // if (!routeLine || !routeLine.getPath().getLength()) {
+    //   error = 'Не все маршруты завершены'
+    // }
+
+    areas.forEach((A) => {
+      const points = []
+      A.getPath().forEach((point) => points.push({ lat: point.lat(), lng: point.lng() }))
+      data.areas.push({ points })
+    })
+
+    return { data, error }
   }
 }
 
