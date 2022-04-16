@@ -11,10 +11,10 @@ export default {
   name: 'MapComponent',
   props: [
     'startPos',
-    'position',
     'areas',
     'routes',
-    'markers'
+    'markers',
+    'lines'
   ],
   data: () => {
     return {
@@ -29,7 +29,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.markers)
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady) {
@@ -102,6 +101,18 @@ export default {
         })
       }
 
+      if (this.lines) {
+        this.elements.lines = this.lines.map((line, i) => {
+          line = new google.maps.Polyline({
+            strokeColor: '#424242',
+            strokeWeight: 2,
+            editable: true
+          })
+
+          return line
+        })
+      }
+
       if (this.areas) {
         this.elements.areas = this.areas.map((area, i) => {
           const poly = new google.maps.Polygon({
@@ -112,7 +123,7 @@ export default {
             fillOpacity: 0.4,
             editable: true,
             map: this.map,
-            draggable: true
+            draggable: false
           })
 
           poly.getPath().addListener('insert_at', (e) => {
