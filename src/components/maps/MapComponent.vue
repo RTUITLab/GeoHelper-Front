@@ -68,6 +68,8 @@ export default {
     },
 
     drawElements () {
+      this.clearMap()
+
       if (this.markers) {
         this.elements.markers = this.markers.map((marker, i) => {
           const mapMarker = new google.maps.Marker({
@@ -136,8 +138,13 @@ export default {
       }
     },
 
+    clearMap () {
+      this.elements.markers.forEach((marker) => marker.setMap(null))
+      this.elements.areas.forEach((area) => area.setMap(null))
+      this.elements.routes.forEach((route) => route.setMap(null))
+    },
+
     dispatchEvent (event, target, value) {
-      console.log(event, target, value)
       this.$emit(event, { target, value })
     }
   }
