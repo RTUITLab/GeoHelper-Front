@@ -102,11 +102,19 @@ export default {
           })
 
           poly.getPath().addListener('insert_at', (e) => {
-            console.log(e)
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.AREA, index: i },
+              { type: CHANGE_TYPES.INSERT, index: e}
+            )
           })
 
           poly.getPath().addListener('remove_at', (e) => {
-            console.log(e)
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.AREA, index: i },
+              { type: CHANGE_TYPES.REMOVE, index: e}
+            )
           })
 
           poly.getPath().addListener('set_at', (e) => {
