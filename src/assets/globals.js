@@ -39,3 +39,17 @@ export const ENTITY_TYPES = {
   OBJECT: 'object',
   EXCURSION: 'excursion'
 }
+
+export const TARGETS = {
+  MARKER: 'MARKER',
+  AREA: 'AREA',
+  ROUTE: 'ROUTE',
+  LINE: 'LINE',
+  MAP: 'MAP'
+}
+
+export const CHANGE_TYPES = {
+  INSERT: 'INSERT',
+  REMOVE: 'REMOVE',
+  SET: 'SET'
+}

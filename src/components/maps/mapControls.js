@@ -102,7 +102,6 @@ export default {
       areas = []
     }
     data.areas.forEach((area) => {
-      // eslint-disable-next-line
       const poly = new google.maps.Polygon({
         path: area.points,
         strokeColor: '#1976D2',
