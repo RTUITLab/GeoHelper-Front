@@ -64,7 +64,7 @@
             :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
           ></v-file-input>
 
-          <audio :src="item.audioFile ? item.audioFile.url : ''" controls></audio>
+          <audio :src="item.audioFile ? (item.audioFile.localUrl ? item.audioFile.localUrl : item.audioFile.url) : ''" controls></audio>
         </template>
 
         <template v-if="item.type === ENTITY_TYPES.OBJECT || item.type === ENTITY_TYPES.EXCURSION">
@@ -181,7 +181,7 @@ export default {
       if (type === ENTITY_TYPES.AUDIO) {
         this.item.audioFile = {
           type: 'audio',
-          url: URL.createObjectURL(e),
+          localUrl: URL.createObjectURL(e),
           fileName: e.name
         }
       } else if (type === ENTITY_TYPES.OBJECT) {
@@ -195,6 +195,9 @@ export default {
       const name = await this.$store.dispatch(UPLOAD_FILE, e)
 
       const url = process.env.VUE_APP_API.split('/api')[0] + '/uploads/' + name
+      if (type === ENTITY_TYPES.AUDIO) {
+        this.item.audioFile.url = url
+      }
       if (type === ENTITY_TYPES.OBJECT) {
         this.item.modelFile.url = url
       }
