@@ -8,56 +8,23 @@ const MODES = {
 
 let bindElement, map, mode // Map control oobjects
 
-let marker = [] // Entity position
+let markers = [] // Entity position
 let areas = []  // Entity areas of visibility
 let routes = []  // Entity route
 
-let areaLine = ''   // Additional var to store not finished areas
+let areaLine = { points: [] }   // Additional var to store not finished areas
 let routeLine = ''  // Additional var to store not finished areas
 
 export default {
   modes: {
     setPositionMode: () => {
       mode = MODES.POSITION
-      if (marker[0]) {
-        marker[0].setDraggable(true)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(null)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(null)
-      }
     },
     setAreaMode: () => {
       mode = MODES.AREA
-      if (marker[0]) {
-        marker[0].setDraggable(false)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(map)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(null)
-      }
     },
     setRouteMode: () => {
       mode = MODES.ROUTE
-      if (marker[0]) {
-        marker[0].setDraggable(false)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(null)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(map)
-      }
     }
   },
 
@@ -77,22 +44,6 @@ export default {
       clickableIcons: false,
       draggableCursor: 'crosshair'
     })
-
-    map.addListener('click', (e) => processCoordinate(e.latLng))
-
-    // Setup marker
-    if (marker[0]) {
-      marker[0].setMap(null)
-    }
-    // eslint-disable-next-line
-    marker[0] = new google.maps.Marker({
-      position: { lat: 0, lng: 0 },
-      draggable: true
-    })
-    marker[0].setMap(map)
-    if (data.hasOwnProperty('position')) {
-      marker[0].setPosition({ lat: data.position.lat, lng: data.position.lng })
-    }
 
     // Setup areas
     if (areas) {
@@ -138,10 +89,6 @@ export default {
   },
 
   clearMap () {
-    if (marker[0]) {
-      marker[0].setPosition(map.getCenter())
-    }
-
     if (areas.length) {
       if (areas) {
         areas.forEach((area) => {
@@ -155,8 +102,8 @@ export default {
   getData () {
     const data = {
       position: {
-        lat: marker[0].position.lat(),
-        lng: marker[0].position.lng()
+        lat: markers[0].position.lat(),
+        lng: markers[0].position.lng()
       },
       areas: [],
       routes: []
@@ -181,6 +128,23 @@ export default {
     })
 
     return { data, error }
+  },
+
+  map: {
+    onClick (latLng) {
+      if (mode === MODES.POSITION) {
+        // Move marker to another place
+        markers[0] = { position: latLng }
+      }
+      return { markers, areas, routes }
+    }
+  },
+
+  marker: {
+    moveTo (i, latLng) {
+      markers[i].position = latLng
+      return { markers, areas, routes }
+    }
   }
 }
 
@@ -234,7 +198,7 @@ function checkIfFinished(elem, latLng) {
 
 function processCoordinate (latLng) {
   if (mode === MODES.POSITION) {
-    marker[0].setPosition(latLng)
+    // marker[0].setPosition(latLng)
   } else if (mode === MODES.AREA) {
     areaLine.setPath(areaLine.getPath().push(latLng))
   }

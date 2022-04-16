@@ -29,6 +29,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.markers)
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady) {
@@ -43,7 +44,16 @@ export default {
 
     mapCallback()
   },
+  watch: {
+    markers () {
+      this.watchProps()
+    }
+  },
   methods: {
+    watchProps () {
+      console.log(this.markers)
+      this.drawElements()
+    },
     initMap () {
       const mapElem = this.$refs.map
 
@@ -80,11 +90,13 @@ export default {
             map: this.map
           })
 
-          mapMarker.addListener('click', (e) => this.dispatchEvent(
-            'click',
-            { type: TARGETS.MARKER, index: i},
-            { lat: e.latLng.lat(), lng: e.latLng.lng() }
-          ))
+          if (mapMarker.getDraggable()) {
+            mapMarker.addListener('dragend', (e) => this.dispatchEvent(
+              'click',
+              { type: TARGETS.MARKER, index: i},
+              { lat: e.latLng.lat(), lng: e.latLng.lng() }
+            ))
+          }
 
           return mapMarker
         })

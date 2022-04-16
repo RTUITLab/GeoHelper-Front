@@ -44,21 +44,31 @@
         ><v-icon>mdi-restore</v-icon></v-btn>
       </v-toolbar-title>
     </v-toolbar>
+    <map-component
+      v-if="mapIsReady"
+      :start-pos="{ lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }"
+      :markers="[mapData.markers[0]]"
+      :areas="mapData.areas"
+      @click="clickHandler"
+    ></map-component>
     <div class="map" ref="map"></div>
   </div>
 </template>
 
 <script>
 import MapControls from './mapControls'
-import { CREATE_SNACHBAR } from '../../assets/globals'
+import { CREATE_SNACHBAR, TARGETS } from '../../assets/globals'
+import MapComponent from './MapComponent'
 
 export default {
   name: 'MapInput',
+  components: { MapComponent },
   props: ['value'],
   data: () => {
     return {
       mapIsReady: false,
-      mapControls: MapControls
+      mapControls: MapControls,
+      mapData: {}
     }
   },
   mounted () {
@@ -69,7 +79,10 @@ export default {
       setTimeout(() => {
         if (window.mapIsReady && this.value) {
           this.mapIsReady = true
+          this.mapData = this.value
+          this.mapData.markers = [{ position: this.mapData.position }]
           this.mapControls.init(this.$refs.map, this.value)
+          console.log(this.mapData)
         } else {
           mapCallback()
         }
@@ -83,6 +96,14 @@ export default {
       this.$emit('input', data)
     },
 
+    clickHandler (e) {
+      if (e.target.type === TARGETS.MAP) {
+        this.mapData = this.mapControls.map.onClick(e.value)
+      } else if (e.target.type === TARGETS.MARKER) {
+        this.mapData = this.mapControls.marker.moveTo(e.target.index, e.value)
+      }
+    },
+
     validate () {
       const result = this.mapControls.getData()
       if (result.error) {
@@ -90,6 +111,7 @@ export default {
         return false
       } else {
         this.handleInput(result.data)
+        this.mapData = result.data
       }
       return true
     }
