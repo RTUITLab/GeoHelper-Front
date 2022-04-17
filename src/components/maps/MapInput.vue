@@ -141,7 +141,6 @@ export default {
     },
 
     validate () {
-      console.log(1, this.mapData)
       const result = {
         position: {
           lat: this.mapData.markers[0].position.lat,

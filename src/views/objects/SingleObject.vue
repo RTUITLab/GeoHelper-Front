@@ -251,8 +251,6 @@ export default {
         data._id = this.item._id
       }
 
-      console.log(data)
-
       this.$store.dispatch(UPDATE_OBJECT, data)
         .then(() => this.$router.push('/'))
         .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
