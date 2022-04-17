@@ -151,7 +151,7 @@ export default {
       await this.$store.dispatch(FETCH_OBJECTS)
       this.item = this.$store.getters[GET_OBJECT_ONE](this.$route.params.id)
       this.mapData = {
-        position: this.item.position,
+        markers: [{ position: this.item.position }],
         areas: this.item.areas || [],
         route: this.item.route || []
       }
@@ -164,6 +164,7 @@ export default {
       }
     } else {
       this.mapData = {
+        markers: [],
         areas: [],
         route: []
       }

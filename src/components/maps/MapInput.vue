@@ -12,6 +12,7 @@
           mandatory
         >
           <v-btn
+            v-if="mapData.markers"
             width="36"
             height="36"
             icon
@@ -19,6 +20,7 @@
             @click="mapControls.modes.setPositionMode()"
           ><v-icon style="padding: 4px">mdi-map-marker</v-icon></v-btn>
           <v-btn
+            v-if="mapData.areas"
             width="36"
             height="36"
             icon
@@ -26,6 +28,7 @@
             @click="mapControls.modes.setAreaMode()"
           ><v-icon>mdi-texture-box</v-icon></v-btn>
           <v-btn
+            v-if="mapData.routes"
             width="36"
             height="36"
             icon
@@ -46,7 +49,7 @@
     </v-toolbar>
     <map-component
       v-if="mapIsReady"
-      :start-pos="this.mapData.markers[0].position
+      :start-pos="this.mapData.markers[0] && this.mapData.markers[0].position
         ? { lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }
         : null"
       :markers="mapData.markers"
@@ -84,7 +87,6 @@ export default {
         if (window.mapIsReady && this.value) {
           this.mapIsReady = true
           this.mapData = this.value
-          this.mapData.markers = [{ position: this.mapData.position }] // TODO: remove, process in store
           this.mapData.lines = [{ points: [] }, { points: [] }]
           this.mapControls.init(this.mapData)
         } else {

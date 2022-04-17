@@ -42,11 +42,11 @@ export default {
   },
 
   clearMap () {
-    markers = []
-    areas = []
-    routes = []
+    markers = markers === undefined ? undefined : []
+    areas = areas === undefined ? undefined : []
+    routes = routes === undefined ? undefined : []
     areaLine = { points: [] }
-    routes =  { points: [] }
+    routeLine =  { points: [] }
 
     return { markers, areas, routes, lines: [areaLine, routeLine] }
   },
