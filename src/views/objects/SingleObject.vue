@@ -132,7 +132,6 @@ import {
   CREATE_SNACHBAR
 } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
-import router from '../../router'
 
 export default {
   name: 'SingleObject',
@@ -220,7 +219,7 @@ export default {
     },
 
     saveData () {
-      if (!this.$refs.map.validate() || !this.$refs.map.validate()) {
+      if (!this.$refs.map.validate()) {
         return
       }
 
@@ -252,8 +251,10 @@ export default {
         data._id = this.item._id
       }
 
+      console.log(data)
+
       this.$store.dispatch(UPDATE_OBJECT, data)
-        .then(() => router.push('/'))
+        .then(() => this.$router.push('/'))
         .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
     }
   }

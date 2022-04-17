@@ -40,21 +40,20 @@
           small
           style="margin-top: -6px"
           color="error"
-          @click="mapControls.clearMap()"
+          @click="clearMap()"
         ><v-icon>mdi-restore</v-icon></v-btn>
       </v-toolbar-title>
     </v-toolbar>
     <map-component
       v-if="mapIsReady"
       :start-pos="{ lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }"
-      :markers="[mapData.markers[0]]"
+      :markers="mapData.markers"
       :areas="mapData.areas"
       :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
       @click="clickHandler"
       @change="changeHandler"
       @create="createHandler"
     ></map-component>
-    <div class="map" ref="map"></div>
   </div>
 </template>
 
@@ -77,7 +76,7 @@ export default {
   mounted () {
     this.mapControls.modes.setPositionMode()
 
-    // Check if map is ready to showing
+    // Wait until map is ready to showing
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady && this.value) {
@@ -135,16 +134,40 @@ export default {
       }
     },
 
+    clearMap () {
+      this.mapData = this.mapControls.clearMap()
+    },
+
     validate () {
-      const result = this.mapControls.getData()
-      if (result.error) {
-        this.$root.$emit(CREATE_SNACHBAR, { text: result.error })
+      console.log(1, this.mapData)
+      const result = {
+        position: {
+          lat: this.mapData.markers[0].position.lat,
+          lng: this.mapData.markers[0].position.lng
+        },
+        areas: this.mapData.areas,
+        routes: this.mapData.routes
+      }
+
+      let error = null
+
+      if (!result.areas.length) {
+        error = 'Не задана ни одна область видимости'
+      }
+      if (this.mapData.lines[0].length) {
+        error = 'Не все области видимости завершены'
+      }
+      // if (!routeLine || !routeLine.getPath().getLength()) {
+      //   error = 'Не все маршруты завершены'
+      // }
+
+      if (error) {
+        this.$root.$emit(CREATE_SNACHBAR, { text: error })
         return false
       } else {
-        this.handleInput(result.data)
-        this.mapData = result.data
+        this.handleInput(result)
+        return true
       }
-      return true
     }
   }
 }

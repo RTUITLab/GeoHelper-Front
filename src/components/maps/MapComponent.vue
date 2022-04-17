@@ -44,14 +44,18 @@ export default {
     mapCallback()
   },
   watch: {
-    markers () {
-      this.watchProps()
+    lines: {
+      handler: function () {
+        this.watchProps()
+      },
+      deep: true
     }
   },
   methods: {
     watchProps () {
       this.drawElements()
     },
+
     initMap () {
       const mapElem = this.$refs.map
 
@@ -240,7 +244,7 @@ export default {
       this.elements.markers.forEach((marker) => marker.setMap(null))
       this.elements.areas.forEach((area) => area.setMap(null))
       this.elements.routes.forEach((route) => route.setMap(null))
-      this.elements.lines.forEach((route) => route.setMap(null))
+      this.elements.lines.forEach((lines) => lines.setMap(null))
     },
 
     dispatchEvent (event, target, value) {

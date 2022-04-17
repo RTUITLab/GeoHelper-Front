@@ -42,14 +42,13 @@ export default {
   },
 
   clearMap () {
-    if (areas.length) {
-      if (areas) {
-        areas.forEach((area) => {
-          area.setMap(null)
-        })
-        areas = []
-      }
-    }
+    markers = []
+    areas = []
+    routes = []
+    areaLine = { points: [] }
+    routes =  { points: [] }
+
+    return { markers, areas, routes, lines: [areaLine, routeLine] }
   },
 
   getData () {
@@ -90,7 +89,6 @@ export default {
         markers[0] = { position: latLng }
       } else if (mode === MODES.AREA) {
         areaLine.points.push(latLng)
-        console.log(areaLine)
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
