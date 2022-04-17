@@ -6,14 +6,14 @@ const MODES = {
   ROUTE: 2
 }
 
-let bindElement, map, mode // Map control oobjects
+let mode // Map control object
 
 let markers = [] // Entity position
 let areas = []  // Entity areas of visibility
 let routes = []  // Entity route
 
 let areaLine = { points: [] }   // Additional var to store not finished areas
-let routeLine = ''  // Additional var to store not finished areas
+let routeLine = { points: [] }  // Additional var to store not finished areas
 
 export default {
   modes: {
@@ -28,64 +28,17 @@ export default {
     }
   },
 
-  init: (element, data) => {
-    bindElement = element
+  getMode () {
+    return mode
+  },
 
-    // eslint-disable-next-line
-    map = new google.maps.Map(bindElement, {
-      center: data.hasOwnProperty('position') ?
-        { lat: data.position.lat, lng: data.position.lng } :
-        { lat: 55.751244, lng: 37.618423 },
-      zoom: 10,
-      mapTypeControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false,
-      clickableIcons: false,
-      draggableCursor: 'crosshair'
-    })
+  init: (data) => {
+    markers = data.markers
+    areas = data.areas
+    routes = data.routes
 
-    // Setup areas
-    if (areas) {
-      areas.forEach((area) => {
-        area.setMap(null)
-      })
-      areas = []
-    }
-    data.areas.forEach((area) => {
-      const poly = new google.maps.Polygon({
-        path: area.points,
-        strokeColor: '#1976D2',
-        strokeWeight: 2,
-        fillColor: '#1976D2',
-        fillOpacity: 0.4,
-        editable: true
-      })
-
-      poly.addListener('rightclick', (e) => {
-        removePoint(poly, e.latLng)
-      })
-
-      poly.setMap(map)
-      areas.push(poly)
-    })
-
-    // Setup lines
-    areaLine = new google.maps.Polyline({
-      strokeColor: '#424242',
-      strokeWeight: 2,
-      editable: true
-    })
-
-    areaLine.addListener('rightclick', (e) => {
-      removePoint(areaLine, e.latLng)
-    })
-
-    areaLine.addListener('dblclick', (e) => {
-      checkIfFinished(areaLine, e.latLng)
-    })
-
-    // TODO route setup
+    areaLine = { points: [] }
+    routeLine = { points: [] }
   },
 
   clearMap () {
@@ -135,15 +88,18 @@ export default {
       if (mode === MODES.POSITION) {
         // Move marker to another place
         markers[0] = { position: latLng }
+      } else if (mode === MODES.AREA) {
+        areaLine.points.push(latLng)
+        console.log(areaLine)
       }
-      return { markers, areas, routes }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
   },
 
   marker: {
     moveTo (i, latLng) {
       markers[i].position = latLng
-      return { markers, areas, routes }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
   }
 }

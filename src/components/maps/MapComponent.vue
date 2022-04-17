@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     watchProps () {
-      console.log(this.markers)
       this.drawElements()
     },
     initMap () {
@@ -103,13 +102,16 @@ export default {
 
       if (this.lines) {
         this.elements.lines = this.lines.map((line, i) => {
-          line = new google.maps.Polyline({
+          console.log(line)
+          const poly = new google.maps.Polyline({
+            path: line.points,
             strokeColor: '#424242',
             strokeWeight: 2,
-            editable: true
+            editable: true,
+            map: this.map
           })
 
-          return line
+          return poly
         })
       }
 

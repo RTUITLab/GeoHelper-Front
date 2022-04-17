@@ -49,6 +49,7 @@
       :start-pos="{ lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }"
       :markers="[mapData.markers[0]]"
       :areas="mapData.areas"
+      :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
       @click="clickHandler"
     ></map-component>
     <div class="map" ref="map"></div>
@@ -80,9 +81,9 @@ export default {
         if (window.mapIsReady && this.value) {
           this.mapIsReady = true
           this.mapData = this.value
-          this.mapData.markers = [{ position: this.mapData.position }]
-          this.mapControls.init(this.$refs.map, this.value)
-          console.log(this.mapData)
+          this.mapData.markers = [{ position: this.mapData.position }] // TODO: remove, process in store
+          this.mapData.lines = [{ points: [] }, { points: [] }]
+          this.mapControls.init(this.mapData)
         } else {
           mapCallback()
         }
