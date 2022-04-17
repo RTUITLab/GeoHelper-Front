@@ -135,6 +135,25 @@ export default {
       areas.push(areaLine)
       areaLine = { points: [] }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    setAt (areaId, pointId, latLng) {
+      areas[areaId].points[pointId] = latLng
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (areaId, pointId, latLng) {
+      areas[areaId].points.splice(pointId, 0, latLng)
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (areaId, pointId) {
+      areas[areaId].points.splice(pointId, 1)
+
+      if (areas[areaId].points.length <= 1) {
+        areas.splice(areaId, 1)
+      }
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
   },
 

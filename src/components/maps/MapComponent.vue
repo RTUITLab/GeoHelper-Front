@@ -191,7 +191,10 @@ export default {
             this.dispatchEvent(
               'change',
               { type: TARGETS.AREA, index: i },
-              { type: CHANGE_TYPES.INSERT, index: e}
+              { type: CHANGE_TYPES.INSERT, index: e, latLng: {
+                lat: poly.getPath().getAt(e).lat(),
+                lng: poly.getPath().getAt(e).lng()
+              }}
             )
           })
 
@@ -207,15 +210,26 @@ export default {
             this.dispatchEvent(
               'change',
               { type: TARGETS.AREA, index: i },
-              { type: CHANGE_TYPES.SET, index: e}
+              { type: CHANGE_TYPES.SET, index: e, latLng: {
+                lat: poly.getPath().getAt(e).lat(),
+                lng: poly.getPath().getAt(e).lng()}}
             )
           })
 
-          poly.addListener('rightclick', (e) => this.dispatchEvent(
-            'rightclick',
-            { type: TARGETS.AREA, index: i},
-            { lat: e.latLng.lat(), lng: e.latLng.lng() }
-          ))
+          poly.addListener('rightclick', (e) => {
+            let index = -1
+            poly.getPath().forEach((point, i) => {
+              if (point.lat() === e.latLng.lat() && point.lng() === e.latLng.lng()) {
+                index = i
+              }
+            })
+
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.AREA, index: i },
+              { type: CHANGE_TYPES.REMOVE, index: index}
+            )
+          })
 
           return poly
         })

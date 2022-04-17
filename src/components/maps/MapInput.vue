@@ -116,6 +116,14 @@ export default {
         } else if (e.value.type === CHANGE_TYPES.REMOVE) {
           this.mapData = this.mapControls.line.removeAt(e.value.index)
         }
+      } else if (e.target.type === TARGETS.AREA) {
+        if (e.value.type === CHANGE_TYPES.SET) {
+          this.mapData = this.mapControls.area.setAt(e.target.index, e.value.index, e.value.latLng)
+        } else if (e.value.type === CHANGE_TYPES.INSERT) {
+          this.mapData = this.mapControls.area.insertAt(e.target.index, e.value.index, e.value.latLng)
+        } else if (e.value.type === CHANGE_TYPES.REMOVE) {
+          this.mapData = this.mapControls.area.removeAt(e.target.index, e.value.index)
+        }
       }
     },
 
