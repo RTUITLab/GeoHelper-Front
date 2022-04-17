@@ -46,7 +46,9 @@
     </v-toolbar>
     <map-component
       v-if="mapIsReady"
-      :start-pos="{ lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }"
+      :start-pos="this.mapData.markers[0].position
+        ? { lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }
+        : null"
       :markers="mapData.markers"
       :areas="mapData.areas"
       :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
