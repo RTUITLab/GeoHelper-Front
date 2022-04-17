@@ -102,13 +102,72 @@ export default {
 
       if (this.lines) {
         this.elements.lines = this.lines.map((line, i) => {
-          console.log(line)
           const poly = new google.maps.Polyline({
             path: line.points,
             strokeColor: '#424242',
             strokeWeight: 2,
             editable: true,
             map: this.map
+          })
+
+          poly.addListener('rightclick', (e) => {
+            let index = -1
+            poly.getPath().forEach((point, i) => {
+              if (point.lat() === e.latLng.lat() && point.lng() === e.latLng.lng()) {
+                index = i
+              }
+            })
+
+            if (index !== -1) {
+              this.dispatchEvent(
+                'change',
+                { type: TARGETS.LINE, index: i },
+                { type: CHANGE_TYPES.REMOVE, index: index}
+              )
+            }
+          })
+
+          poly.addListener('dblclick', (e) => {
+            let index = -1
+            poly.getPath().forEach((point, i) => {
+              if (point.lat() === e.latLng.lat()) {
+                index = i
+              }
+            })
+
+            if (index === 0 || index === poly.getPath().getLength() - 1) {
+              this.dispatchEvent('create')
+            }
+          })
+
+          poly.getPath().addListener('insert_at', (e) => {
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.LINE, index: i },
+              { type: CHANGE_TYPES.INSERT, index: e, latLng: {
+                lat: poly.getPath().getAt(e).lat(),
+                lng: poly.getPath().getAt(e).lng()
+              }}
+            )
+          })
+
+          poly.getPath().addListener('remove_at', (e) => {
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.LINE, index: i },
+              { type: CHANGE_TYPES.REMOVE, index: e}
+            )
+          })
+
+          poly.getPath().addListener('set_at', (e) => {
+            this.dispatchEvent(
+              'change',
+              { type: TARGETS.LINE, index: i },
+              { type: CHANGE_TYPES.SET, index: e, latLng: {
+                lat: poly.getPath().getAt(e).lat(),
+                lng: poly.getPath().getAt(e).lng()
+              }}
+            )
           })
 
           return poly
@@ -167,6 +226,7 @@ export default {
       this.elements.markers.forEach((marker) => marker.setMap(null))
       this.elements.areas.forEach((area) => area.setMap(null))
       this.elements.routes.forEach((route) => route.setMap(null))
+      this.elements.lines.forEach((route) => route.setMap(null))
     },
 
     dispatchEvent (event, target, value) {

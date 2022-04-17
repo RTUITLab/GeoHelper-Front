@@ -101,7 +101,44 @@ export default {
       markers[i].position = latLng
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
-  }
+  },
+
+  line: {
+    setAt (pointId, latLng) {
+      if (mode === MODES.AREA) {
+        areaLine.points[pointId] = latLng
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points[pointId] = latLng
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (pointId, latLng) {
+      if (mode === MODES.AREA) {
+        areaLine.points.splice(pointId, 0, latLng)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.splice(pointId, 0, latLng)
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (pointId) {
+      if (mode === MODES.AREA) {
+        areaLine.points.splice(pointId, 1)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.splice(pointId, 1)
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  area: {
+    create () {
+      areas.push(areaLine)
+      areaLine = { points: [] }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  route: {}
 }
 
 function removePoint (elem, latLng) {

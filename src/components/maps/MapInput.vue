@@ -51,6 +51,8 @@
       :areas="mapData.areas"
       :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
       @click="clickHandler"
+      @change="changeHandler"
+      @create="createHandler"
     ></map-component>
     <div class="map" ref="map"></div>
   </div>
@@ -58,7 +60,7 @@
 
 <script>
 import MapControls from './mapControls'
-import { CREATE_SNACHBAR, TARGETS } from '../../assets/globals'
+import { CHANGE_TYPES, CREATE_SNACHBAR, TARGETS } from '../../assets/globals'
 import MapComponent from './MapComponent'
 
 export default {
@@ -102,6 +104,26 @@ export default {
         this.mapData = this.mapControls.map.onClick(e.value)
       } else if (e.target.type === TARGETS.MARKER) {
         this.mapData = this.mapControls.marker.moveTo(e.target.index, e.value)
+      }
+    },
+
+    changeHandler (e) {
+      if (e.target.type === TARGETS.LINE) {
+        if (e.value.type === CHANGE_TYPES.SET) {
+          this.mapData = this.mapControls.line.setAt(e.value.index, e.value.latLng)
+        } else if (e.value.type === CHANGE_TYPES.INSERT) {
+          this.mapData = this.mapControls.line.insertAt(e.value.index, e.value.latLng)
+        } else if (e.value.type === CHANGE_TYPES.REMOVE) {
+          this.mapData = this.mapControls.line.removeAt(e.value.index)
+        }
+      }
+    },
+
+    createHandler () {
+      if (this.mapControls.getMode() === 1) {
+        this.mapData = this.mapControls.area.create()
+      } else if (this.mapControls.getMode() === 2) {
+        this.mapData = this.mapControls.route.create()
       }
     },
 
