@@ -6,158 +6,56 @@ const MODES = {
   ROUTE: 2
 }
 
-let bindElement, map, mode // Map control oobjects
+let mode // Map control object
 
-let marker = [] // Entity position
+let markers = [] // Entity position
 let areas = []  // Entity areas of visibility
 let routes = []  // Entity route
 
-let areaLine = ''   // Additional var to store not finished areas
-let routeLine = ''  // Additional var to store not finished areas
+let areaLine = { points: [] }   // Additional var to store not finished areas
+let routeLine = { points: [] }  // Additional var to store not finished areas
 
 export default {
   modes: {
     setPositionMode: () => {
       mode = MODES.POSITION
-      if (marker[0]) {
-        marker[0].setDraggable(true)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(null)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(null)
-      }
     },
     setAreaMode: () => {
       mode = MODES.AREA
-      if (marker[0]) {
-        marker[0].setDraggable(false)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(map)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(null)
-      }
     },
     setRouteMode: () => {
       mode = MODES.ROUTE
-      if (marker[0]) {
-        marker[0].setDraggable(false)
-      }
-
-      if (areaLine) {
-        areaLine.setMap(null)
-      }
-
-      if (routeLine) {
-        routeLine.setMap(map)
-      }
     }
   },
 
-  init: (element, data) => {
-    bindElement = element
+  getMode () {
+    return mode
+  },
 
-    // eslint-disable-next-line
-    map = new google.maps.Map(bindElement, {
-      center: data.hasOwnProperty('position') ?
-        { lat: data.position.lat, lng: data.position.lng } :
-        { lat: 55.751244, lng: 37.618423 },
-      zoom: 10,
-      mapTypeControl: false,
-      streetViewControl: false,
-      rotateControl: false,
-      fullscreenControl: false,
-      clickableIcons: false,
-      draggableCursor: 'crosshair'
-    })
+  init: (data) => {
+    markers = data.markers
+    areas = data.areas
+    routes = data.routes
 
-    map.addListener('click', (e) => processCoordinate(e.latLng))
-
-    // Setup marker
-    if (marker[0]) {
-      marker[0].setMap(null)
-    }
-    // eslint-disable-next-line
-    marker[0] = new google.maps.Marker({
-      position: { lat: 0, lng: 0 },
-      draggable: true
-    })
-    marker[0].setMap(map)
-    if (data.hasOwnProperty('position')) {
-      marker[0].setPosition({ lat: data.position.lat, lng: data.position.lng })
-    }
-
-    // Setup areas
-    if (areas) {
-      areas.forEach((area) => {
-        area.setMap(null)
-      })
-      areas = []
-    }
-    data.areas.forEach((area) => {
-      // eslint-disable-next-line
-      const poly = new google.maps.Polygon({
-        path: area.points,
-        strokeColor: '#1976D2',
-        strokeWeight: 2,
-        fillColor: '#1976D2',
-        fillOpacity: 0.4,
-        editable: true
-      })
-
-      poly.addListener('rightclick', (e) => {
-        removePoint(poly, e.latLng)
-      })
-
-      poly.setMap(map)
-      areas.push(poly)
-    })
-
-    // Setup lines
-    areaLine = new google.maps.Polyline({
-      strokeColor: '#424242',
-      strokeWeight: 2,
-      editable: true
-    })
-
-    areaLine.addListener('rightclick', (e) => {
-      removePoint(areaLine, e.latLng)
-    })
-
-    areaLine.addListener('dblclick', (e) => {
-      checkIfFinished(areaLine, e.latLng)
-    })
-
-    // TODO route setup
+    areaLine = { points: [] }
+    routeLine = { points: [] }
   },
 
   clearMap () {
-    if (marker[0]) {
-      marker[0].setPosition(map.getCenter())
-    }
+    markers = markers === undefined ? undefined : []
+    areas = areas === undefined ? undefined : []
+    routes = routes === undefined ? undefined : []
+    areaLine = { points: [] }
+    routeLine =  { points: [] }
 
-    if (areas.length) {
-      if (areas) {
-        areas.forEach((area) => {
-          area.setMap(null)
-        })
-        areas = []
-      }
-    }
+    return { markers, areas, routes, lines: [areaLine, routeLine] }
   },
 
   getData () {
     const data = {
       position: {
-        lat: marker[0].position.lat(),
-        lng: marker[0].position.lng()
+        lat: markers[0].position.lat(),
+        lng: markers[0].position.lng()
       },
       areas: [],
       routes: []
@@ -182,7 +80,82 @@ export default {
     })
 
     return { data, error }
-  }
+  },
+
+  map: {
+    onClick (latLng) {
+      if (mode === MODES.POSITION) {
+        // Move marker to another place
+        markers[0] = { position: latLng }
+      } else if (mode === MODES.AREA) {
+        areaLine.points.push(latLng)
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  marker: {
+    moveTo (i, latLng) {
+      markers[i].position = latLng
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  line: {
+    setAt (pointId, latLng) {
+      if (mode === MODES.AREA) {
+        areaLine.points[pointId] = latLng
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points[pointId] = latLng
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (pointId, latLng) {
+      if (mode === MODES.AREA) {
+        areaLine.points.splice(pointId, 0, latLng)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.splice(pointId, 0, latLng)
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (pointId) {
+      if (mode === MODES.AREA) {
+        areaLine.points.splice(pointId, 1)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.splice(pointId, 1)
+      }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  area: {
+    create () {
+      areas.push(areaLine)
+      areaLine = { points: [] }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    setAt (areaId, pointId, latLng) {
+      areas[areaId].points[pointId] = latLng
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (areaId, pointId, latLng) {
+      areas[areaId].points.splice(pointId, 0, latLng)
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (areaId, pointId) {
+      areas[areaId].points.splice(pointId, 1)
+
+      if (areas[areaId].points.length <= 1) {
+        areas.splice(areaId, 1)
+      }
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  },
+
+  route: {}
 }
 
 function removePoint (elem, latLng) {
@@ -235,7 +208,7 @@ function checkIfFinished(elem, latLng) {
 
 function processCoordinate (latLng) {
   if (mode === MODES.POSITION) {
-    marker[0].setPosition(latLng)
+    // marker[0].setPosition(latLng)
   } else if (mode === MODES.AREA) {
     areaLine.setPath(areaLine.getPath().push(latLng))
   }
