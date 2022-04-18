@@ -47,18 +47,26 @@ export default {
     }
   },
   async mounted () {
-    this.socket = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + '://' + process.env.VUE_APP_API.split('/')[2] + '/api/test')
+    const connectWS = () => {
+      this.socket = new WebSocket(process.env.VUE_APP_WS_PROTOCOL + '://' + process.env.VUE_APP_API.split('/')[2] + '/api/test')
 
-    this.socket.onmessage = (res) => {
-      this.filteredObjects = Object.values(JSON.parse(res.data)).reduce((accum, next) => {
-        accum.push(...(next.map((obj) => ({
-          name: obj.name,
-          pType: obj.type,
-          position: obj.position
-        }))))
-        return accum
-      }, [])
+      this.socket.onmessage = (res) => {
+        this.filteredObjects = Object.values(JSON.parse(res.data)).reduce((accum, next) => {
+          accum.push(...(next.map((obj) => ({
+            name: obj.name,
+            pType: obj.type,
+            position: obj.position
+          }))))
+          return accum
+        }, [])
+      }
+
+      this.socket.onclose = () => { setTimeout(connectWS, 1000) }
+
+      this.socket.onerror = () => { setTimeout(connectWS, 1000) }
     }
+
+    connectWS()
 
     this.objects = await this.$store.dispatch(FETCH_OBJECTS)
     this.mapData = {}
