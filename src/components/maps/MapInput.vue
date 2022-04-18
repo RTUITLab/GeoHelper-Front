@@ -80,13 +80,22 @@ export default {
     }
   },
   mounted () {
+    this.$watch(
+      'value',
+      (val) => {
+        if (val.markers) {
+          this.mapData.markers = [this.mapData.markers[0], ...val.markers]
+        }
+      },
+      { deep: true }
+    )
+
     this.mapControls.modes.setPositionMode()
 
     // Wait until map is ready to showing
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady && this.value) {
-          console.log(this.value)
           this.mapIsReady = true
           this.mapData = this.value
           this.mapData.lines = [{ points: [] }, { points: [] }]

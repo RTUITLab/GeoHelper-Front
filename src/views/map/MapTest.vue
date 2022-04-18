@@ -59,6 +59,9 @@ export default {
           }))))
           return accum
         }, [])
+
+        this.mapData.markers = this.filteredObjects.map((obj) => ({ position: obj.position, title: obj.name }))
+        this.mapData = JSON.parse(JSON.stringify(this.mapData))
       }
 
       this.socket.onclose = () => { setTimeout(connectWS, 1000) }
