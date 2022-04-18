@@ -14,7 +14,8 @@ export default {
     'areas',
     'routes',
     'markers',
-    'lines'
+    'lines',
+    'view'
   ],
   data: () => {
     return {
@@ -185,8 +186,9 @@ export default {
             strokeColor: '#1976D2',
             strokeWeight: 2,
             fillColor: '#1976D2',
-            fillOpacity: 0.4,
-            editable: true,
+            fillOpacity: !this.view ? 0.4 : 0.2,
+            editable: !this.view,
+            clickable: false,
             map: this.map,
             draggable: false
           })

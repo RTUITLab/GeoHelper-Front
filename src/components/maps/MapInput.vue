@@ -4,7 +4,7 @@
       v-if="!mapIsReady"
       type="image"
     ></v-skeleton-loader>
-    <v-toolbar class="map-control" dense>
+    <v-toolbar class="map-control" dense v-if="!view">
       <v-toolbar-title>
         <v-btn-toggle
           color="primary"
@@ -49,12 +49,13 @@
     </v-toolbar>
     <map-component
       v-if="mapIsReady"
-      :start-pos="this.mapData.markers[0] && this.mapData.markers[0].position
+      :start-pos="this.mapData.markers && this.mapData.markers[0] && this.mapData.markers[0].position
         ? { lat: this.mapData.markers[0].position.lat, lng: this.mapData.markers[0].position.lng }
         : null"
       :markers="mapData.markers"
       :areas="mapData.areas"
       :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
+      :view="view"
       @click="clickHandler"
       @change="changeHandler"
       @create="createHandler"
@@ -70,7 +71,7 @@ import MapComponent from './MapComponent'
 export default {
   name: 'MapInput',
   components: { MapComponent },
-  props: ['value'],
+  props: ['value', 'view'],
   data: () => {
     return {
       mapIsReady: false,
@@ -85,6 +86,7 @@ export default {
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady && this.value) {
+          console.log(this.value)
           this.mapIsReady = true
           this.mapData = this.value
           this.mapData.lines = [{ points: [] }, { points: [] }]
