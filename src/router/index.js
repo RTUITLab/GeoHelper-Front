@@ -40,6 +40,7 @@ const routes = [
       },
       {
         path: 'map',
+        component: () => import('../views/map/MapTest'),
         meta: {
           secure: true
         }

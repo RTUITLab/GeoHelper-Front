@@ -110,6 +110,8 @@ export default {
       } else if (e.target.type === TARGETS.MARKER) {
         this.mapData = this.mapControls.marker.moveTo(e.target.index, e.value)
       }
+
+      this.validate(true)
     },
 
     changeHandler (e) {
@@ -144,7 +146,7 @@ export default {
       this.mapData = this.mapControls.clearMap()
     },
 
-    validate () {
+    validate (silent = false) {
       const result = {
         position: {
           lat: this.mapData.markers[0].position.lat,
@@ -166,7 +168,7 @@ export default {
       //   error = 'Не все маршруты завершены'
       // }
 
-      if (error) {
+      if (error && !silent) {
         this.$root.$emit(CREATE_SNACHBAR, { text: error })
         return false
       } else {
