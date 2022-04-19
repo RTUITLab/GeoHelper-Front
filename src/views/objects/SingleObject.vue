@@ -211,7 +211,7 @@ export default {
         src = this.item.modelFile.url
       }
       if (mode === 'OPEN') {
-        src = location.origin + '/ModelViewer?=' + this.item.modelFile.url.split('/').pop()
+        src = location.origin + '/ModelViewer/index.html?=' + this.item.modelFile.url.split('/').pop()
       }
 
       if (src) {
