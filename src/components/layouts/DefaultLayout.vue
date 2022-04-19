@@ -14,6 +14,7 @@
       v-model="drawerToggle"
       absolute
       temporary
+      style="height: 100vh"
     >
       <v-card-title>
         GeoHelper
