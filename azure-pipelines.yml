@@ -54,7 +54,7 @@ stages:
                   NODE_ENV: '"development"' ,
                   VUE_APP_API: '"http://localhost:3002/api/v1"',
                   VUE_APP_KEY: '"----"',
-                  VUE_WS_PROTOCOL: '"ws"'
+                  VUE_APP_WS_PROTOCOL: '"ws"'
                 }
               endWithNewLine: true
           - task: file-creator@6
@@ -67,7 +67,7 @@ stages:
                   NODE_ENV: '"testing"' ,
                   VUE_APP_API: '"http://localhost:3002/api/v1"',
                   VUE_APP_KEY: '"----"',
-                  VUE_WS_PROTOCOL: '"ws"'
+                  VUE_APP_WS_PROTOCOL: '"ws"'
                 }
               endWithNewLine: true
           - task: file-creator@6
@@ -80,7 +80,7 @@ stages:
                   NODE_ENV: '"production"',
                   VUE_APP_API: '"https://geohelper.rtuitlab.dev/api/v1"',
                   VUE_APP_KEY: '"$(google_map_api_key)"',
-                  VUE_WS_PROTOCOL: '"wss"'
+                  VUE_APP_WS_PROTOCOL: '"wss"'
                 }
               endWithNewLine: true
           - task: Npm@1

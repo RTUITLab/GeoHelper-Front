@@ -1,198 +1,77 @@
-//
-//
-//	File:	index.js
-//
-//	By:		Ivan Laptev <ivlaptev13@ya.ru>
-//
-//	Created:	2020-06-07 02:01:44
-//	Updated:	2020-08-19 08:22:38
-//
-//
-
-/*
- * Description:
- * Manage site paths
- */
-
 import Vue from 'vue'
-import Router from 'vue-router'
-import * as Authorization from '@/components/pages/Auth'
+import VueRouter from 'vue-router'
+import DefaultLayout from '../components/layouts/DefaultLayout'
+import EmptyLayout from '../components/layouts/EmptyLayout'
+import Login from '../views/Login'
+import store from '../store'
+import { CHECK_AUTH } from '../assets/globals'
 
-// Pages
-import Auth from '@/components/pages/Auth/Auth'
-import Home from '@/components/pages/Home'
-import Text from '@/components/pages/Text/Text'
-import Audio from '@/components/pages/Audio/Audio'
-import Test from '@/components/pages/Test/Test'
-import Model from '@/components/pages/Model/Model'
-import Excursion from '@/components/pages/Excursion/Excursion'
+Vue.use(VueRouter)
 
-// Pages elements
-import Header from '@/components/Header'
-import Map from '@/components/Map/Map'
-import ViewModel from '../components/pages/ViewModel/ViewModel'
-
-Vue.component('app-header', Header)
-Vue.component('app-map', Map)
-
-Vue.use(Router)
-
-const router = new Router({
-  mode: 'history',
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home,
-      meta: {
-        requiredAuth: true
+const routes = [
+  {
+    path: '/',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '/',
+        redirect: '/objects'
       },
-      children: [
-        {
-          path: 'create-text',
-          components: {
-            default: Home,
-            container: Text
-          },
-          props: {
-            default: false,
-            container: { item: '' }
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          name: 'update-text',
-          path: 'update-text',
-          components: {
-            default: Home,
-            container: Text
-          },
-          props: {
-            default: false,
-            container: true
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          path: 'create-audio',
-          components: {
-            default: Home,
-            container: Audio
-          },
-          props: {
-            default: false,
-            container: { item: '' }
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          name: 'update-audio',
-          path: 'update-audio',
-          components: {
-            default: Home,
-            container: Audio
-          },
-          props: {
-            default: false,
-            container: true
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          path: 'create-model',
-          components: {
-            default: Home,
-            container: Model
-          },
-          props: {
-            default: false,
-            container: { item: '' }
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          name: 'update-model',
-          path: 'update-model',
-          components: {
-            default: Home,
-            container: Model
-          },
-          props: {
-            default: false,
-            container: true
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          path: 'create-excursion',
-          components: {
-            default: Home,
-            container: Excursion
-          },
-          props: {
-            default: false,
-            container: { item: '' }
-          },
-          meta: {
-            requiredAuth: true
-          }
-        },
-        {
-          name: 'update-excursion',
-          path: 'update-excursion',
-          components: {
-            default: Home,
-            container: Excursion
-          },
-          props: {
-            default: false,
-            container: true
-          },
-          meta: {
-            requiredAuth: true
-          }
+      {
+        path: 'objects',
+        component: () => import('../views/objects/ObjectsList'),
+        meta: {
+          secure: true
         }
-      ]
-    },
-    {
-      path: '/test',
-      component: Test,
-      meta: {
-        requiredAuth: true
+      },
+      {
+        path: 'objects/:id',
+        component: () => import('../views/objects/SingleObject'),
+        meta: {
+          secure: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('../views/objects/SingleObject'),
+        meta: {
+          secure: true
+        }
+      },
+      {
+        path: 'map',
+        component: () => import('../views/map/MapTest'),
+        meta: {
+          secure: true
+        }
       }
-    },
-    {
-      path: '/login',
-      name: 'Auth',
-      component: Auth
-    },
-    {
-      path: '/view/:fileName',
-      name: 'ViewModel',
-      component: ViewModel
-    }
-  ]
+    ]
+  },
+  {
+    path: '**',
+    children: [
+      {
+        path: 'login',
+        component: Login
+      },
+      {
+        path: '**',
+        redirect: '/'
+      }
+    ],
+    component: EmptyLayout
+  }
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiredAuth) {
-    if (Authorization.default.user.authorized) {
-      next()
-    } else {
-      router.push('/login')
-    }
+  if (to.meta && to.meta.secure && !store.getters[CHECK_AUTH]) {
+    next('/login')
   } else {
     next()
   }
