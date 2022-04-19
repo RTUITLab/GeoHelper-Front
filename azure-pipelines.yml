@@ -45,43 +45,14 @@ stages:
             inputs:
               command: 'ci'
           - task: file-creator@6
-            displayName: Create dev environment
-            inputs:
-              filepath: 'config/dev.env.js'
-              filecontent: |
-                'use strict'
-                module.exports = {
-                  NODE_ENV: '"development"' ,
-                  VUE_APP_API: '"http://localhost:3002/api/v1"',
-                  VUE_APP_KEY: '"----"',
-                  VUE_APP_WS_PROTOCOL: '"ws"'
-                }
-              endWithNewLine: true
-          - task: file-creator@6
-            displayName: Create test environment
-            inputs:
-              filepath: 'config/test.env.js'
-              filecontent: |
-                'use strict'
-                module.exports = {
-                  NODE_ENV: '"testing"' ,
-                  VUE_APP_API: '"http://localhost:3002/api/v1"',
-                  VUE_APP_KEY: '"----"',
-                  VUE_APP_WS_PROTOCOL: '"ws"'
-                }
-              endWithNewLine: true
-          - task: file-creator@6
             displayName: Create prod environment
             inputs:
-              filepath: 'config/prod.env.js'
+              filepath: '.env.production'
               filecontent: |
-                'use strict'
-                module.exports = {
-                  NODE_ENV: '"production"',
-                  VUE_APP_API: '"https://geohelper.rtuitlab.dev/api/v1"',
-                  VUE_APP_KEY: '"$(google_map_api_key)"',
-                  VUE_APP_WS_PROTOCOL: '"wss"'
-                }
+                NODE_ENV=production
+                VUE_APP_API=https://geohelper.rtuitlab.dev/api/v1,
+                VUE_APP_KEY=$(google_map_api_key)
+                VUE_APP_WS_PROTOCOL=wss
               endWithNewLine: true
           - task: Npm@1
             displayName: Run npm build
