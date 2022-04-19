@@ -58,7 +58,7 @@
       </v-list>
     </v-navigation-drawer>
     <div class="main-container" style="padding: 16px">
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </div>
   </v-main>
 </template>
