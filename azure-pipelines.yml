@@ -50,7 +50,7 @@ stages:
               filepath: '.env.production'
               filecontent: |
                 NODE_ENV=production
-                VUE_APP_API=https://geohelper.rtuitlab.dev/api/v1,
+                VUE_APP_API=https://geohelper.rtuitlab.dev/api/v1
                 VUE_APP_KEY=$(google_map_api_key)
                 VUE_APP_WS_PROTOCOL=wss
               endWithNewLine: true
