@@ -133,5 +133,30 @@ export default {
     }
   },
 
-  route: {}
+  route: {
+    create () {
+      routes.push(routeLine)
+      routeLine = { points: [] }
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    setAt (routeId, pointId, latLng) {
+      routes[routeId].points[pointId] = latLng
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (routeId, pointId, latLng) {
+      routes[routeId].points.splice(pointId, 0, latLng)
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (routeId, pointId) {
+      routes[routeId].points.splice(pointId, 1)
+
+      if (routes[routeId].points.length <= 1) {
+        routes.splice(routeId, 1)
+      }
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  }
 }
