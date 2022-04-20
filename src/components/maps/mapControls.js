@@ -39,6 +39,14 @@ export default {
 
     areaLine = { points: [] }
     routeLine = { points: [] }
+
+    if (markers) {
+      mode = MODES.POSITION
+    } else if (areas) {
+      mode = MODES.AREA
+    } else if (routes) {
+      mode = MODES.ROUTE
+    }
   },
 
   clearMap () {
