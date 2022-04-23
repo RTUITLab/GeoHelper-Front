@@ -67,6 +67,9 @@ export default {
         markers[0] = { position: latLng }
       } else if (mode === MODES.AREA) {
         areaLine.points.push(latLng)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.push(latLng)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
@@ -85,6 +88,7 @@ export default {
         areaLine.points[pointId] = latLng
       } else if (mode === MODES.ROUTE) {
         routeLine.points[pointId] = latLng
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     },
@@ -93,6 +97,7 @@ export default {
         areaLine.points.splice(pointId, 0, latLng)
       } else if (mode === MODES.ROUTE) {
         routeLine.points.splice(pointId, 0, latLng)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     },
@@ -101,6 +106,7 @@ export default {
         areaLine.points.splice(pointId, 1)
       } else if (mode === MODES.ROUTE) {
         routeLine.points.splice(pointId, 1)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
@@ -133,5 +139,30 @@ export default {
     }
   },
 
-  route: {}
+  route: {
+    create () {
+      routeLine = { points: [] }
+      routes = []
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    setAt (routeId, pointId, latLng) {
+      routes[routeId].points[pointId] = latLng
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    insertAt (routeId, pointId, latLng) {
+      routes[routeId].points.splice(pointId, 0, latLng)
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    },
+    removeAt (routeId, pointId) {
+      routes[routeId].points.splice(pointId, 1)
+
+      if (routes[routeId].points.length <= 1) {
+        routes.splice(routeId, 1)
+      }
+
+      return { markers, areas, routes, lines: [areaLine, routeLine] }
+    }
+  }
 }
