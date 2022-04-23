@@ -107,6 +107,40 @@
         <div class="map-input">
           <map-input v-model="mapData" ref="map"></map-input>
         </div>
+
+        <template v-if="item.type && item.type === ENTITY_TYPES.OBJECT">
+          <v-divider style="margin-top: 16px"></v-divider>
+          <v-row>
+            <v-col class="a">
+              <v-subheader style="padding-left: 4px">Поведение</v-subheader>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col class="col-auto">
+              <v-btn
+                icon
+                small
+                class="ml-auto"
+                title="Добавить поведение"
+                @click="addBehavior"
+              ><v-icon>mdi-plus</v-icon></v-btn>
+            </v-col>
+          </v-row>
+
+          <p v-if="!item.behaviors || !item.behaviors.length" style="text-align: center">Поведение отсутствует</p>
+          <v-expansion-panels v-else>
+            <v-expansion-panel
+              v-for="(item,i) in item.behaviors"
+              :key="i"
+            >
+              <v-expansion-panel-header>Поведение {{i + 1}}</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div class="map-input">
+                  <map-input v-model="item.map"></map-input>
+                </div>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </template>
       </v-form>
     </v-card-text>
 
@@ -133,9 +167,9 @@ import {
   FETCH_OBJECTS,
   GET_OBJECT_ONE,
   ENTITY_TYPES,
-  UPLOAD_FILE,
-  UPDATE_OBJECT,
-  CREATE_SNACHBAR
+  UPLOAD_FILE
+  // UPDATE_OBJECT,
+  // CREATE_SNACHBAR
 } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
 
@@ -258,9 +292,26 @@ export default {
         data._id = this.item._id
       }
 
-      this.$store.dispatch(UPDATE_OBJECT, data)
-        .then(() => this.$router.push('/'))
-        .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
+      console.log(this.item.behaviors)
+      // this.$store.dispatch(UPDATE_OBJECT, data)
+      //   .then(() => this.$router.push('/'))
+      //   .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
+    },
+
+    addBehavior () {
+      const newBehavior = {
+        type: '',
+        map: {
+          routes: []
+        },
+        points: []
+      }
+
+      if (this.item.behaviors) {
+        this.item.behaviors.push(newBehavior)
+      } else {
+        this.item.behaviors = [newBehavior]
+      }
     }
   }
 }
