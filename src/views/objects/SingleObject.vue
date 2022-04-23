@@ -41,6 +41,9 @@
 
         <template v-if="item.type">
           <v-divider></v-divider>
+          <v-row>
+            <v-subheader>Данные</v-subheader>
+          </v-row>
 
           <p></p>
 
@@ -97,6 +100,9 @@
         </template>
 
         <v-divider></v-divider>
+        <v-row>
+          <v-subheader>Видимость</v-subheader>
+        </v-row>
 
         <div class="map-input">
           <map-input v-model="mapData" ref="map"></map-input>
