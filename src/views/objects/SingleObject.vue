@@ -134,6 +134,35 @@
             >
               <v-expansion-panel-header>Поведение {{i + 1}}</v-expansion-panel-header>
               <v-expansion-panel-content>
+                <v-select
+                  label="Тип"
+                  v-model="item.action.type"
+                  :items="[
+                    {
+                      value: BEHAVIORS_TYPES.ROUTE,
+                      text: 'Маршрут'
+                    },
+                    {
+                      value: BEHAVIORS_TYPES.EXCURSION,
+                      text: 'Экскурсия'
+                    }
+                  ]"
+                ></v-select>
+                <v-select
+                  multiple
+                  label="Условия"
+                  v-model="item.conditions"
+                  :items="[
+                    {
+                      value: BEHAVIORS_CONDITIONS_TYPES.CLICK,
+                      text: 'Нажатие'
+                    },
+                    {
+                      value: BEHAVIORS_CONDITIONS_TYPES.VOLUME,
+                      text: 'Звук'
+                    }
+                  ]"
+                ></v-select>
                 <div class="map-input">
                   <map-input v-model="item.map"></map-input>
                 </div>
@@ -167,6 +196,8 @@ import {
   FETCH_OBJECTS,
   GET_OBJECT_ONE,
   ENTITY_TYPES,
+  BEHAVIORS_TYPES,
+  BEHAVIORS_CONDITIONS_TYPES,
   UPLOAD_FILE
   // UPDATE_OBJECT,
   // CREATE_SNACHBAR
@@ -180,6 +211,8 @@ export default {
     return {
       item: {},
       ENTITY_TYPES: ENTITY_TYPES,
+      BEHAVIORS_TYPES: BEHAVIORS_TYPES,
+      BEHAVIORS_CONDITIONS_TYPES: BEHAVIORS_CONDITIONS_TYPES,
       audioFile: {},
       modelFile: {},
       loadingQueue: 0,
@@ -300,7 +333,7 @@ export default {
 
     addBehavior () {
       const newBehavior = {
-        type: '',
+        action: {},
         map: {
           routes: []
         },

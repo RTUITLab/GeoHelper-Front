@@ -40,13 +40,13 @@ export const ENTITY_TYPES = {
 }
 
 export const BEHAVIORS_TYPES = {
-  EXCURSION: 'EXCURSION',
-  ROUTE: 'ROUTE'
+  EXCURSION: 'excursion',
+  ROUTE: 'route'
 }
 
 export const BEHAVIORS_CONDITIONS_TYPES = {
-  CLICK: 'CLICK',
-  VOLUME: 'VOLUME'
+  CLICK: 'click',
+  VOLUME: 'volume'
 }
 
 export const TARGETS = {
