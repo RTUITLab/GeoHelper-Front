@@ -67,6 +67,9 @@ export default {
         markers[0] = { position: latLng }
       } else if (mode === MODES.AREA) {
         areaLine.points.push(latLng)
+      } else if (mode === MODES.ROUTE) {
+        routeLine.points.push(latLng)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
@@ -85,6 +88,7 @@ export default {
         areaLine.points[pointId] = latLng
       } else if (mode === MODES.ROUTE) {
         routeLine.points[pointId] = latLng
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     },
@@ -93,6 +97,7 @@ export default {
         areaLine.points.splice(pointId, 0, latLng)
       } else if (mode === MODES.ROUTE) {
         routeLine.points.splice(pointId, 0, latLng)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     },
@@ -101,6 +106,7 @@ export default {
         areaLine.points.splice(pointId, 1)
       } else if (mode === MODES.ROUTE) {
         routeLine.points.splice(pointId, 1)
+        routes = [routeLine]
       }
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     }
@@ -135,8 +141,8 @@ export default {
 
   route: {
     create () {
-      routes.push(routeLine)
       routeLine = { points: [] }
+      routes = []
       return { markers, areas, routes, lines: [areaLine, routeLine] }
     },
     setAt (routeId, pointId, latLng) {
