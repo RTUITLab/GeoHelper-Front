@@ -243,9 +243,9 @@ import {
   ENTITY_TYPES,
   BEHAVIORS_TYPES,
   BEHAVIORS_CONDITIONS_TYPES,
-  UPLOAD_FILE
-  // UPDATE_OBJECT,
-  // CREATE_SNACHBAR
+  UPLOAD_FILE,
+  UPDATE_OBJECT,
+  CREATE_SNACHBAR
 } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
 
@@ -380,8 +380,8 @@ export default {
       }
 
       // Behaviors
-      data.behaviors = this.item.behaviors.map((B) => {
-        console.log(B)
+      let bError = ''
+      data.behaviors = this.item.behaviors.map((B, j) => {
         const behavior = {
           type: B.action.type,
           action: {
@@ -396,12 +396,20 @@ export default {
           conditions: B.conditions
         }
 
+        if (behavior.action.points.length < 3) {
+          bError = `Поведение ${j + 1} содержит менее 3-х точек`
+        }
+
         return behavior
       })
-      console.log(data)
-      // this.$store.dispatch(UPDATE_OBJECT, data)
-      //   .then(() => this.$router.push('/'))
-      //   .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
+
+      if (bError) {
+        this.$root.$emit(CREATE_SNACHBAR, { text: bError })
+        return
+      }
+      this.$store.dispatch(UPDATE_OBJECT, data)
+        .then(() => this.$router.push('/'))
+        .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
     },
 
     addBehavior () {
