@@ -280,6 +280,21 @@ export default {
       if (this.item.modelFile) {
         this.modelFile = new File([], this.item.modelFile.fileName, { type: 'application/zip' })
       }
+
+      if (this.item.behaviors && this.item.behaviors.length) {
+        this.item.behaviors = this.item.behaviors.map((B) => {
+          B.map = {
+            routes: [{ points: B.action.points.map((point) => ({ lat: point.lat, lng: point.lng })) }]
+          }
+          B.action.points = B.action.points.map((point) => {
+            point.audioFile = new File([], point.audio.fileName, { type: 'audio/*' })
+
+            return point
+          })
+
+          return B
+        })
+      }
     } else {
       this.mapData = {
         markers: [],

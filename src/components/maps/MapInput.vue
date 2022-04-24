@@ -97,7 +97,7 @@ export default {
         if (window.mapIsReady && this.value) {
           this.mapIsReady = true
           this.mapData = this.value
-          this.mapData.lines = [{ points: [] }, { points: [] }]
+          this.mapData.lines = [{ points: [] }, this.mapData.routes ? this.mapData.routes[0] : { points: [] }]
           this.mapControls = new MapControl(this.mapData)
           if (this.view) {
             this.mapControls.modes.setPositionMode()
