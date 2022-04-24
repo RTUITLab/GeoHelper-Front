@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import MapControls from './mapControls'
+import { MapControl } from './mapControls'
 import { CHANGE_TYPES, CREATE_SNACHBAR, TARGETS } from '../../assets/globals'
 import MapComponent from './MapComponent'
 
@@ -76,7 +76,7 @@ export default {
   data: () => {
     return {
       mapIsReady: false,
-      mapControls: MapControls,
+      mapControls: {},
       mapData: {}
     }
   },
@@ -84,14 +84,13 @@ export default {
     this.$watch(
       'value',
       (val) => {
+        console.log(val)
         if (val.markers) {
           this.mapData.markers = [this.mapData.markers[0], ...val.markers]
         }
       },
       { deep: true }
     )
-
-    this.mapControls.modes.setPositionMode()
 
     // Wait until map is ready to showing
     const mapCallback = () => {
@@ -100,7 +99,10 @@ export default {
           this.mapIsReady = true
           this.mapData = this.value
           this.mapData.lines = [{ points: [] }, { points: [] }]
-          this.mapControls.init(this.mapData)
+          this.mapControls = new MapControl(this.mapData)
+          if (this.view) {
+            this.mapControls.modes.setPositionMode()
+          }
         } else {
           mapCallback()
         }
