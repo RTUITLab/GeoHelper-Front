@@ -287,10 +287,14 @@ export default {
             routes: [{ points: B.action.points.map((point) => ({ lat: point.lat, lng: point.lng })) }]
           }
           B.action.points = B.action.points.map((point) => {
-            point.audioFile = new File([], point.audio.fileName, { type: 'audio/*' })
+            if (point.audio) {
+              point.audioFile = new File([], point.audio.fileName, { type: 'audio/*' })
+            }
 
             return point
           })
+
+          B.action.points.push(...(new Array(100)).fill({}))
 
           return B
         })
@@ -422,6 +426,8 @@ export default {
         this.$root.$emit(CREATE_SNACHBAR, { text: bError })
         return
       }
+
+      console.log(data.behaviors)
       this.$store.dispatch(UPDATE_OBJECT, data)
         .then(() => this.$router.push('/'))
         .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))

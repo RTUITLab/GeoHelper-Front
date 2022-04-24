@@ -35,7 +35,7 @@ export class MapControl {
     this.routes = data.routes
 
     this.areaLine = { points: [] }
-    this.routeLine = data.routes ? data.routes[0] : { points: [] }
+    this.routeLine = data.routes && data.routes.length ? data.routes[0] : { points: [] }
 
     if (this.markers) {
       this.mode = MODES.POSITION
@@ -54,6 +54,7 @@ export class MapControl {
         } else if (this.mode === MODES.AREA) {
           this.areaLine.points.push(latLng)
         } else if (this.mode === MODES.ROUTE) {
+          console.log(this.routeLine)
           this.routeLine.points.push(latLng)
           this.routes = [this.routeLine]
         }
