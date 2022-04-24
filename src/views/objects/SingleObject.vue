@@ -48,11 +48,12 @@
           <p></p>
 
           <template v-if="ENTITY_TYPES.TEXT === item.type || item.type === ENTITY_TYPES.EXCURSION">
-            <v-text-field
+            <v-textarea
               v-model="item.description"
               label="Описание"
+              auto-grow
               :rules="[v => !!v || 'Поле не заполнено']"
-            ></v-text-field>
+            ></v-textarea>
           </template>
         </template>
 
@@ -137,6 +138,7 @@
                 <v-select
                   label="Тип"
                   v-model="item.action.type"
+                  :rules="[v => !!v || 'Поле не заполнено']"
                   :items="[
                     {
                       value: BEHAVIORS_TYPES.ROUTE,
@@ -151,6 +153,7 @@
                 <v-select
                   multiple
                   label="Условия"
+                  :rules="[v => !!v || 'Поле не заполнено', v => !!v.length || 'Поле не заполнено']"
                   v-model="item.conditions"
                   :items="[
                     {
@@ -166,6 +169,33 @@
                 <div class="map-input">
                   <map-input v-model="item.map"></map-input>
                 </div>
+
+                <template v-if="item.map.routes[0] && item.action.type === BEHAVIORS_TYPES.EXCURSION">
+                  <v-row v-for="(point, j) in item.map.routes[0].points" :key="j">
+                    <v-col>
+                      <v-divider></v-divider>
+                      <v-subheader>Точка {{j + 1}}</v-subheader>
+                      <v-textarea
+                        auto-grow
+                        label="Описание"
+                        v-model="item.action.points[j].description"
+                        :rules="[v => !!v || 'Поле не заполнено']"
+                      ></v-textarea>
+
+                      <v-file-input
+                        label="Аудиофайл"
+                        accept="audio/*"
+                        v-model="item.action.points[j].audioFile"
+                        :loading="!!loadingQueue"
+                        :disabled="!!loadingQueue"
+                        @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO, item.action.points[j])"
+                        :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
+                      ></v-file-input>
+
+                      <audio :src="item.action.points[j].audio ? (item.action.points[j].audio.localUrl ? item.action.points[j].audio.localUrl : item.action.points[j].audio.url) : ''" controls></audio>
+                    </v-col>
+                  </v-row>
+                </template>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -244,7 +274,7 @@ export default {
     }
   },
   methods: {
-    async uploadFile (e, type) {
+    async uploadFile (e, type = '-1', item) {
       if (!e) {
         return
       }
@@ -265,6 +295,11 @@ export default {
         }
       }
 
+      if (item) {
+        item.audio.fileName = e.name
+        item.audio.localUrl = URL.createObjectURL(e)
+      }
+
       const name = await this.$store.dispatch(UPLOAD_FILE, e)
 
       const url = process.env.VUE_APP_API.split('/api')[0] + '/uploads/' + name
@@ -273,6 +308,10 @@ export default {
       }
       if (type === ENTITY_TYPES.OBJECT) {
         this.item.modelFile.url = url
+      }
+
+      if (item) {
+        item.audio.url = url
       }
 
       this.loadingQueue--
@@ -293,7 +332,7 @@ export default {
     },
 
     saveData () {
-      if (!this.$refs.map.validate()) {
+      if (!this.$refs.map.validate() || !this.$refs.form.validate()) {
         return
       }
 
@@ -333,12 +372,17 @@ export default {
 
     addBehavior () {
       const newBehavior = {
-        action: {},
+        action: {
+          points: new Array(100).fill({})
+        },
         map: {
           routes: []
-        },
-        points: []
+        }
       }
+
+      newBehavior.action.points = newBehavior.action.points.map(() => ({ audio: {} }))
+
+      console.log(newBehavior)
 
       if (this.item.behaviors) {
         this.item.behaviors.push(newBehavior)
