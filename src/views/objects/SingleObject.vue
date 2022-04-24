@@ -166,6 +166,21 @@
                     }
                   ]"
                 ></v-select>
+
+                <template v-if="item.action.type === BEHAVIORS_TYPES.ROUTE">
+                  <v-file-input
+                    label="Аудиофайл"
+                    accept="audio/*"
+                    v-model="item.action.points[0].audioFile"
+                    :loading="!!loadingQueue"
+                    :disabled="!!loadingQueue"
+                    @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO, item.action.points[0])"
+                    :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
+                  ></v-file-input>
+
+                  <audio :src="item.action.points[0].audio ? (item.action.points[0].audio.localUrl ? item.action.points[0].audio.localUrl : item.action.points[0].audio.url) : ''" controls></audio>
+                </template>
+
                 <div class="map-input">
                   <map-input v-model="item.map"></map-input>
                 </div>
@@ -381,8 +396,6 @@ export default {
       }
 
       newBehavior.action.points = newBehavior.action.points.map(() => ({ audio: {} }))
-
-      console.log(newBehavior)
 
       if (this.item.behaviors) {
         this.item.behaviors.push(newBehavior)
