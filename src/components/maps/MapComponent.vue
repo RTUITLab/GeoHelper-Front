@@ -310,7 +310,6 @@ export default {
     },
 
     dispatchEvent (event, target, value) {
-      console.log(this.$refs)
       this.$emit(event, { target, value })
     }
   }

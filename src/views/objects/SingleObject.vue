@@ -379,7 +379,26 @@ export default {
         data._id = this.item._id
       }
 
-      console.log(this.item.behaviors)
+      // Behaviors
+      data.behaviors = this.item.behaviors.map((B) => {
+        console.log(B)
+        const behavior = {
+          type: B.action.type,
+          action: {
+            type: B.action.type,
+            points: B.action.points.slice(0, B.map.routes[0].points.length).map((P, i) => ({
+              lat: B.map.routes[0].points[i].lat,
+              lng: B.map.routes[0].points[i].lng,
+              audio: P.audio ? P.audio : B.action.points[0].audio,
+              description: P.description ? P.description : B.action.points[0].description
+            }))
+          },
+          conditions: B.conditions
+        }
+
+        return behavior
+      })
+      console.log(data)
       // this.$store.dispatch(UPDATE_OBJECT, data)
       //   .then(() => this.$router.push('/'))
       //   .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))

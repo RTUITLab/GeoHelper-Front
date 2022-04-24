@@ -84,7 +84,6 @@ export default {
     this.$watch(
       'value',
       (val) => {
-        console.log(val)
         if (val.markers) {
           this.mapData.markers = [this.mapData.markers[0], ...val.markers]
         }
