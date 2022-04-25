@@ -4,6 +4,8 @@
       flat
     >
       <v-toolbar-title>Редактировать объект</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <token-btn :id="item._id"></token-btn>
     </v-toolbar>
 
     <v-divider></v-divider>
@@ -248,10 +250,11 @@ import {
   CREATE_SNACHBAR
 } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
+import TokenBtn from '../../components/objects/TokenBtn'
 
 export default {
   name: 'SingleObject',
-  components: { MapInput },
+  components: { TokenBtn, MapInput },
   data: () => {
     return {
       item: {},
