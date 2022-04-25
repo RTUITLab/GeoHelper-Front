@@ -39,6 +39,16 @@ export const ENTITY_TYPES = {
   EXCURSION: 'excursion'
 }
 
+export const BEHAVIORS_TYPES = {
+  EXCURSION: 'excursion',
+  ROUTE: 'route'
+}
+
+export const BEHAVIORS_CONDITIONS_TYPES = {
+  CLICK: 'click',
+  VOLUME: 'volume'
+}
+
 export const TARGETS = {
   MARKER: 'MARKER',
   AREA: 'AREA',

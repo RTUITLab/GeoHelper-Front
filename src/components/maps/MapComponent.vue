@@ -35,6 +35,7 @@ export default {
         if (window.mapIsReady) {
           this.loading = false
           this.initMap()
+          console.log(this.lines)
           this.drawElements()
         } else {
           mapCallback()
@@ -240,6 +241,66 @@ export default {
           return poly
         })
       }
+
+      // if (this.routes) {
+      //   this.elements.lines = this.lines.map((route, i) => {
+      //     const poly = new google.maps.Polyline({
+      //       path: route.points,
+      //       strokeColor: '#1976D2',
+      //       strokeWeight: 2,
+      //       editable: !this.view,
+      //       clickable: false,
+      //       map: this.map,
+      //       draggable: false
+      //     })
+      //
+      //     poly.getPath().addListener('insert_at', (e) => {
+      //       this.dispatchEvent(
+      //         'change',
+      //         { type: TARGETS.ROUTE, index: i },
+      //         { type: CHANGE_TYPES.INSERT, index: e, latLng: {
+      //             lat: poly.getPath().getAt(e).lat(),
+      //             lng: poly.getPath().getAt(e).lng()
+      //           }}
+      //       )
+      //     })
+      //
+      //     poly.getPath().addListener('remove_at', (e) => {
+      //       this.dispatchEvent(
+      //         'change',
+      //         { type: TARGETS.ROUTE, index: i },
+      //         { type: CHANGE_TYPES.REMOVE, index: e}
+      //       )
+      //     })
+      //
+      //     poly.getPath().addListener('set_at', (e) => {
+      //       this.dispatchEvent(
+      //         'change',
+      //         { type: TARGETS.ROUTE, index: i },
+      //         { type: CHANGE_TYPES.SET, index: e, latLng: {
+      //             lat: poly.getPath().getAt(e).lat(),
+      //             lng: poly.getPath().getAt(e).lng()}}
+      //       )
+      //     })
+      //
+      //     poly.addListener('rightclick', (e) => {
+      //       let index = -1
+      //       poly.getPath().forEach((point, i) => {
+      //         if (point.lat() === e.latLng.lat() && point.lng() === e.latLng.lng()) {
+      //           index = i
+      //         }
+      //       })
+      //
+      //       this.dispatchEvent(
+      //         'change',
+      //         { type: TARGETS.ROUTE, index: i },
+      //         { type: CHANGE_TYPES.REMOVE, index: index}
+      //       )
+      //     })
+      //
+      //     return poly
+      //   })
+      // }
     },
 
     clearMap () {

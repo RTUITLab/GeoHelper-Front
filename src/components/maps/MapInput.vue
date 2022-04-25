@@ -54,6 +54,7 @@
         : null"
       :markers="mapData.markers"
       :areas="mapData.areas"
+      :routes="mapData.routes"
       :lines="[mapControls.getMode() === 2 ? mapData.lines[1] : mapData.lines[0]]"
       :view="view"
       @click="clickHandler"
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import MapControls from './mapControls'
+import { MapControl } from './mapControls'
 import { CHANGE_TYPES, CREATE_SNACHBAR, TARGETS } from '../../assets/globals'
 import MapComponent from './MapComponent'
 
@@ -75,7 +76,7 @@ export default {
   data: () => {
     return {
       mapIsReady: false,
-      mapControls: MapControls,
+      mapControls: {},
       mapData: {}
     }
   },
@@ -90,16 +91,17 @@ export default {
       { deep: true }
     )
 
-    this.mapControls.modes.setPositionMode()
-
     // Wait until map is ready to showing
     const mapCallback = () => {
       setTimeout(() => {
         if (window.mapIsReady && this.value) {
           this.mapIsReady = true
           this.mapData = this.value
-          this.mapData.lines = [{ points: [] }, { points: [] }]
-          this.mapControls.init(this.mapData)
+          this.mapData.lines = [{ points: [] }, this.mapData.routes ? this.mapData.routes[0] : { points: [] }]
+          this.mapControls = new MapControl(this.mapData)
+          if (this.view) {
+            this.mapControls.modes.setPositionMode()
+          }
         } else {
           mapCallback()
         }
@@ -141,6 +143,8 @@ export default {
           this.mapData = this.mapControls.area.removeAt(e.target.index, e.value.index)
         }
       }
+
+      this.validate(true)
     },
 
     createHandler () {
@@ -149,6 +153,8 @@ export default {
       } else if (this.mapControls.getMode() === 2) {
         this.mapData = this.mapControls.route.create()
       }
+
+      this.validate(true)
     },
 
     clearMap () {
@@ -157,21 +163,21 @@ export default {
 
     validate (silent = false) {
       const result = {
-        position: {
+        position: this.mapData.markers ? {
           lat: this.mapData.markers[0].position.lat,
           lng: this.mapData.markers[0].position.lng
-        },
+        } : undefined,
         areas: this.mapData.areas,
         routes: this.mapData.routes
       }
 
       let error = null
 
-      if (!result.areas.length) {
+      if (!result.areas || !result.areas.length) {
         error = 'Не задана ни одна область видимости'
       }
       if (this.mapData.lines[0].length) {
-        error = 'Не все области видимости завершены'
+        error = 'Не все области видимости или маршруты завершены'
       }
       // if (!routeLine || !routeLine.getPath().getLength()) {
       //   error = 'Не все маршруты завершены'

@@ -6,124 +6,165 @@ const MODES = {
   ROUTE: 2
 }
 
-let mode // Map control object
+export class MapControl {
 
-let markers = [] // Entity position
-let areas = []  // Entity areas of visibility
-let routes = []  // Entity route
-
-let areaLine = { points: [] }   // Additional var to store not finished areas
-let routeLine = { points: [] }  // Additional var to store not finished areas
-
-export default {
-  modes: {
-    setPositionMode: () => {
-      mode = MODES.POSITION
-    },
-    setAreaMode: () => {
-      mode = MODES.AREA
-    },
-    setRouteMode: () => {
-      mode = MODES.ROUTE
+  constructor (data) {
+    this.returnState = () => {
+      return {
+        markers: this.markers,
+        areas: this.areas,
+        routes: this.routes,
+        lines: [this.areaLine, this.routeLine]
+      }
     }
-  },
+
+    this.modes = {
+      setPositionMode: () => {
+        this.mode = MODES.POSITION
+      },
+      setAreaMode: () => {
+        this.mode = MODES.AREA
+      },
+      setRouteMode: () => {
+        this.mode = MODES.ROUTE
+      }
+    }
+
+    this.markers = data.markers
+    this.areas = data.areas
+    this.routes = data.routes
+
+    this.areaLine = { points: [] }
+    this.routeLine = data.routes && data.routes.length ? data.routes[0] : { points: [] }
+
+    if (this.markers) {
+      this.mode = MODES.POSITION
+    } else if (this.areas) {
+      this.mode = MODES.AREA
+    } else if (this.routes) {
+      this.mode = MODES.ROUTE
+    }
+
+    this.map = {
+      onClick: (latLng) => {
+        if (this.mode === MODES.POSITION) {
+          // Move marker to another place
+          if (!this.markers) this.markers = new Array(1)
+          this.markers[0] = { position: latLng }
+        } else if (this.mode === MODES.AREA) {
+          this.areaLine.points.push(latLng)
+        } else if (this.mode === MODES.ROUTE) {
+          console.log(this.routeLine)
+          this.routeLine.points.push(latLng)
+          this.routes = [this.routeLine]
+        }
+        return this.returnState()
+      }
+    }
+
+    this.marker = {
+      moveTo: (i, latLng) => {
+        this.markers[i].position = latLng
+        return this.returnState()
+      }
+    }
+
+    this.line = {
+      setAt: (pointId, latLng) => {
+        if (this.mode === MODES.AREA) {
+          this.areaLine.points[pointId] = latLng
+        } else if (this.mode === MODES.ROUTE) {
+          this.routeLine.points[pointId] = latLng
+          this.routes = [this.routeLine]
+        }
+        return this.returnState()
+      },
+      insertAt: (pointId, latLng) => {
+        if (this.mode === MODES.AREA) {
+          this.areaLine.points.splice(pointId, 0, latLng)
+        } else if (this.mode === MODES.ROUTE) {
+          this.routeLine.points.splice(pointId, 0, latLng)
+          this.routes = [this.routeLine]
+        }
+        return this.returnState()
+      },
+      removeAt: (pointId) => {
+        if (this.mode === MODES.AREA) {
+          this.areaLine.points.splice(pointId, 1)
+        } else if (this.mode === MODES.ROUTE) {
+          this.routeLine.points.splice(pointId, 1)
+          this.routes = [routeLine]
+        }
+        return this.returnState()
+      }
+    }
+
+    this.area = {
+      create: () => {
+        this.areas.push(this.areaLine)
+        this.areaLine = { points: [] }
+        return this.returnState()
+      },
+      setAt: (areaId, pointId, latLng) => {
+        this.areas[areaId].points[pointId] = latLng
+
+        return this.returnState()
+      },
+      insertAt: (areaId, pointId, latLng) => {
+        this.areas[areaId].points.splice(pointId, 0, latLng)
+
+        return this.returnState()
+      },
+      removeAt: (areaId, pointId) => {
+        this.areas[areaId].points.splice(pointId, 1)
+
+        if (this.areas[areaId].points.length <= 1) {
+          this.areas.splice(areaId, 1)
+        }
+
+        return this.returnState()
+      }
+    }
+
+    this.route = {
+      create: () => {
+        this.routeLine = { points: [] }
+        this.routes = []
+        return this.returnState()
+      },
+      setAt: (routeId, pointId, latLng) => {
+        this.routes[routeId].points[pointId] = latLng
+
+        return this.returnState()
+      },
+      insertAt: (routeId, pointId, latLng) => {
+        this.routes[routeId].points.splice(pointId, 0, latLng)
+
+        return this.returnState()
+      },
+      removeAt: (routeId, pointId) => {
+        this.routes[routeId].points.splice(pointId, 1)
+
+        if (this.routes[routeId].points.length <= 1) {
+          this.routes.splice(routeId, 1)
+        }
+
+        return this.returnState()
+      }
+    }
+  }
 
   getMode () {
-    return mode
-  },
-
-  init: (data) => {
-    markers = data.markers
-    areas = data.areas
-    routes = data.routes
-
-    areaLine = { points: [] }
-    routeLine = { points: [] }
-  },
+    return this.mode
+  }
 
   clearMap () {
-    markers = markers === undefined ? undefined : []
-    areas = areas === undefined ? undefined : []
-    routes = routes === undefined ? undefined : []
-    areaLine = { points: [] }
-    routeLine =  { points: [] }
+    this.markers = markers === undefined ? undefined : []
+    this.areas = areas === undefined ? undefined : []
+    this.routes = routes === undefined ? undefined : []
+    this.areaLine = { points: [] }
+    this.routeLine =  { points: [] }
 
-    return { markers, areas, routes, lines: [areaLine, routeLine] }
-  },
-
-  map: {
-    onClick (latLng) {
-      if (mode === MODES.POSITION) {
-        // Move marker to another place
-        if (!markers) markers = new Array(1)
-        markers[0] = { position: latLng }
-      } else if (mode === MODES.AREA) {
-        areaLine.points.push(latLng)
-      }
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    }
-  },
-
-  marker: {
-    moveTo (i, latLng) {
-      markers[i].position = latLng
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    }
-  },
-
-  line: {
-    setAt (pointId, latLng) {
-      if (mode === MODES.AREA) {
-        areaLine.points[pointId] = latLng
-      } else if (mode === MODES.ROUTE) {
-        routeLine.points[pointId] = latLng
-      }
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    },
-    insertAt (pointId, latLng) {
-      if (mode === MODES.AREA) {
-        areaLine.points.splice(pointId, 0, latLng)
-      } else if (mode === MODES.ROUTE) {
-        routeLine.points.splice(pointId, 0, latLng)
-      }
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    },
-    removeAt (pointId) {
-      if (mode === MODES.AREA) {
-        areaLine.points.splice(pointId, 1)
-      } else if (mode === MODES.ROUTE) {
-        routeLine.points.splice(pointId, 1)
-      }
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    }
-  },
-
-  area: {
-    create () {
-      areas.push(areaLine)
-      areaLine = { points: [] }
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    },
-    setAt (areaId, pointId, latLng) {
-      areas[areaId].points[pointId] = latLng
-
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    },
-    insertAt (areaId, pointId, latLng) {
-      areas[areaId].points.splice(pointId, 0, latLng)
-
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    },
-    removeAt (areaId, pointId) {
-      areas[areaId].points.splice(pointId, 1)
-
-      if (areas[areaId].points.length <= 1) {
-        areas.splice(areaId, 1)
-      }
-
-      return { markers, areas, routes, lines: [areaLine, routeLine] }
-    }
-  },
-
-  route: {}
+    return this.returnState()
+  }
 }
