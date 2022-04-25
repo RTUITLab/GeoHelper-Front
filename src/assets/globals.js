@@ -21,6 +21,7 @@ export const FETCH_OBJECTS = 'FETCH_OBJECTS'
 export const UPDATE_OBJECT = 'UPDATE_OBJECT'
 export const DELETE_OBJECT = 'DELETE_OBJECT'
 export const UPLOAD_FILE = 'UPLOAD_FILE'
+export const FETCH_OBJECT_TOKEN = 'FETCH_OBJECT_TOKEN'
 
 // *******
 //  EVENTS
