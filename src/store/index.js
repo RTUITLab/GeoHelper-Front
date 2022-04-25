@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 import {
-  CHECK_AUTH, DELETE_OBJECT, ENTITY_TYPES,
+  CHECK_AUTH, DELETE_OBJECT, ENTITY_TYPES, FETCH_OBJECT_TOKEN,
   FETCH_OBJECTS, GET_OBJECT_ONE, GET_OBJECTS, GET_TOKEN,
   INIT_APP, LOGIN, LOGOUT, REMOVE_OBJECT,
   SET_OBJECTS, SET_TOKEN, UPDATE_OBJECT, UPLOAD_FILE
@@ -146,6 +146,10 @@ const store = new Vuex.Store({
       s.commit(REMOVE_OBJECT, _id)
 
       return true
+    },
+
+    [FETCH_OBJECT_TOKEN]: async (s, _id) => {
+      return (await axios.get(`object/${_id}/key`)).data.key
     }
   },
 
