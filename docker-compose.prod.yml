@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  front:
+    image: registry.rtuitlab.dev/geohelper/front
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 50M
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "100k"
+          max-file: "5"
+    networks:
+      - net
+networks:
+  net:
+    driver: overlay

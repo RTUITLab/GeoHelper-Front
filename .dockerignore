@@ -1,0 +1,7 @@
+.git/
+.idea/
+.vscode/
+deploy/
+!deploy/nginx.conf
+**/*.md
+docker-compose*.yml

@@ -29,3 +29,22 @@ npm run dev
 # build for production with minification
 npm run build
 ```
+
+## Docker run
+1. Build [locally](#building)
+1. Build image
+    ```bash
+    docker build -t geohelper-front -f deploy/Dockerfile .
+    ```
+    or
+    ```bash
+    docker compose -f docker-compose.override.yml build
+    ```
+1. Run image
+    ```bash
+    docker run -d -p 3002:3002 geohelper-front
+    ```
+    or
+    ```bash
+    docker compose -f docker-compose.override.yml up -d
+    ```
