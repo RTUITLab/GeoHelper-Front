@@ -35,7 +35,6 @@ export default {
         if (window.mapIsReady) {
           this.loading = false
           this.initMap()
-          console.log(this.lines)
           this.drawElements()
         } else {
           mapCallback()

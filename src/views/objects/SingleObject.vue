@@ -430,7 +430,6 @@ export default {
         return
       }
 
-      console.log(data.behaviors)
       this.$store.dispatch(UPDATE_OBJECT, data)
         .then(() => this.$router.push('/'))
         .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
