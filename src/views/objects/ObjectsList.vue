@@ -138,9 +138,9 @@ export default {
 
     changeQuery () {
       if (this.search) {
-        router.replace({ path: '', query: { q: this.search } })
+        history.pushState({}, null, this.$route.path + '?q=' + this.search)
       } else {
-        router.replace({ path: '', query: { } })
+        history.pushState({}, null, this.$route.path)
       }
     }
   }
