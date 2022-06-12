@@ -57,7 +57,7 @@
       <v-btn
         icon
         small
-        @click="deleteItem(item._id)"
+        @click.stop="deleteItem(item._id)"
         title="Удалить"
       >
         <v-icon
