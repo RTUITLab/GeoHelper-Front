@@ -54,7 +54,6 @@ export class MapControl {
         } else if (this.mode === MODES.AREA) {
           this.areaLine.points.push(latLng)
         } else if (this.mode === MODES.ROUTE) {
-          console.log(this.routeLine)
           this.routeLine.points.push(latLng)
           this.routes = [this.routeLine]
         }

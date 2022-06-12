@@ -19,9 +19,6 @@ export default {
   data: () => ({
     isLoading: false
   }),
-  mounted () {
-    console.log(!!this.id)
-  },
   methods: {
     async copyToken () {
       this.isLoading = true
