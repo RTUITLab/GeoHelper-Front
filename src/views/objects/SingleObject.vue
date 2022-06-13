@@ -52,20 +52,6 @@
           <data-section :type="form.type" :item-data="form.data"></data-section>
         </template>
 
-        <template v-if="item.type === ENTITY_TYPES.AUDIO || item.type === ENTITY_TYPES.EXCURSION">
-          <v-file-input
-            label="Аудиофайл"
-            accept="audio/*"
-            v-model="audioFile"
-            :loading="!!loadingQueue"
-            :disabled="!!loadingQueue"
-            @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO)"
-            :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
-          ></v-file-input>
-
-          <audio :src="item.audioFile ? (item.audioFile.localUrl ? item.audioFile.localUrl : item.audioFile.url) : ''" controls></audio>
-        </template>
-
         <template v-if="item.type === ENTITY_TYPES.OBJECT || item.type === ENTITY_TYPES.EXCURSION">
           <v-file-input
             label="Модель"
@@ -272,7 +258,9 @@ export default {
         name: this.item.name,
         type: this.item.type,
         data: {
-          description: this.item.description
+          description: this.item.description,
+          audio: this.item.audioFile,
+          model: this.item.modelFile
         }
       }
 
