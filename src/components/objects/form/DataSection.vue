@@ -55,9 +55,11 @@ export default {
     }
   },
   created () {
-    this.description = this.itemData.description
-    this.audio = this.itemData.audio
-    this.model = this.itemData.model
+    if (this.itemData) {
+      this.description = this.itemData.description
+      this.audio = this.itemData.audio
+      this.model = this.itemData.model
+    }
   },
   methods: {
     openLink (mode) {

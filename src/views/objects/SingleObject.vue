@@ -229,9 +229,9 @@ export default {
         name: this.item.name,
         type: this.item.type,
         data: {
-          description: this.item.description,
-          audio: this.item.audioFile,
-          model: this.item.modelFile
+          description: this.item.description ?? '',
+          audio: this.item.audioFile ?? {},
+          model: this.item.modelFile ?? {}
         }
       }
 
