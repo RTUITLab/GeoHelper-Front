@@ -56,111 +56,10 @@
           <map-input v-model="mapData" ref="map"></map-input>
         </div>
 
-        <template v-if="item.type && item.type === ENTITY_TYPES.OBJECT">
+        <template v-if="form.type && form.type === ENTITY_TYPES.OBJECT">
           <v-divider style="margin-top: 16px"></v-divider>
-          <v-row>
-            <v-col class="a">
-              <v-subheader style="padding-left: 4px">Поведение</v-subheader>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col class="col-auto">
-              <v-btn
-                icon
-                small
-                class="ml-auto"
-                title="Добавить поведение"
-                @click="addBehavior"
-              ><v-icon>mdi-plus</v-icon></v-btn>
-            </v-col>
-          </v-row>
 
-          <p v-if="!item.behaviors || !item.behaviors.length" style="text-align: center">Поведение отсутствует</p>
-          <v-expansion-panels v-else>
-            <v-expansion-panel
-              v-for="(item,i) in item.behaviors"
-              :key="i"
-            >
-              <v-expansion-panel-header>Поведение {{i + 1}}</v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-select
-                  label="Тип"
-                  v-model="item.action.type"
-                  :rules="[v => !!v || 'Поле не заполнено']"
-                  :items="[
-                    {
-                      value: BEHAVIORS_TYPES.ROUTE,
-                      text: 'Маршрут'
-                    },
-                    {
-                      value: BEHAVIORS_TYPES.EXCURSION,
-                      text: 'Экскурсия'
-                    }
-                  ]"
-                ></v-select>
-                <v-select
-                  multiple
-                  label="Условия"
-                  :rules="[v => !!v || 'Поле не заполнено', v => !!v.length || 'Поле не заполнено']"
-                  v-model="item.conditions"
-                  :items="[
-                    {
-                      value: BEHAVIORS_CONDITIONS_TYPES.CLICK,
-                      text: 'Нажатие'
-                    },
-                    {
-                      value: BEHAVIORS_CONDITIONS_TYPES.VOLUME,
-                      text: 'Звук'
-                    }
-                  ]"
-                ></v-select>
-
-                <template v-if="item.action.type === BEHAVIORS_TYPES.ROUTE">
-                  <v-file-input
-                    label="Аудиофайл"
-                    accept="audio/*"
-                    v-model="item.action.points[0].audioFile"
-                    :loading="!!loadingQueue"
-                    :disabled="!!loadingQueue"
-                    @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO, item.action.points[0])"
-                    :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
-                  ></v-file-input>
-
-                  <audio :src="item.action.points[0].audio ? (item.action.points[0].audio.localUrl ? item.action.points[0].audio.localUrl : item.action.points[0].audio.url) : ''" controls></audio>
-                </template>
-
-                <div class="map-input">
-                  <map-input v-model="item.map"></map-input>
-                </div>
-
-                <template v-if="item.map.routes[0] && item.action.type === BEHAVIORS_TYPES.EXCURSION">
-                  <v-row v-for="(point, j) in item.map.routes[0].points" :key="j">
-                    <v-col>
-                      <v-divider></v-divider>
-                      <v-subheader>Точка {{j + 1}}</v-subheader>
-                      <v-textarea
-                        auto-grow
-                        label="Описание"
-                        v-model="item.action.points[j].description"
-                        :rules="[v => !!v || 'Поле не заполнено']"
-                      ></v-textarea>
-
-                      <v-file-input
-                        label="Аудиофайл"
-                        accept="audio/*"
-                        v-model="item.action.points[j].audioFile"
-                        :loading="!!loadingQueue"
-                        :disabled="!!loadingQueue"
-                        @change="(e) => uploadFile(e, ENTITY_TYPES.AUDIO, item.action.points[j])"
-                        :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
-                      ></v-file-input>
-
-                      <audio :src="item.action.points[j].audio ? (item.action.points[j].audio.localUrl ? item.action.points[j].audio.localUrl : item.action.points[j].audio.url) : ''" controls></audio>
-                    </v-col>
-                  </v-row>
-                </template>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
+          <behavior-section :behaviors="form.behaviors" ref="behaviorSection"></behavior-section>
         </template>
       </v-form>
     </v-card-text>
@@ -197,10 +96,11 @@ import {
 import MapInput from '../../components/maps/MapInput'
 import TokenBtn from '../../components/objects/TokenBtn'
 import DataSection from '../../components/objects/form/DataSection'
+import BehaviorSection from '../../components/objects/form/BehaviorSection'
 
 export default {
   name: 'SingleObject',
-  components: { DataSection, TokenBtn, MapInput },
+  components: { BehaviorSection, DataSection, TokenBtn, MapInput },
   data: () => {
     return {
       item: {},
@@ -225,7 +125,8 @@ export default {
           description: this.item.description ?? '',
           audio: this.item.audioFile ?? {},
           model: this.item.modelFile ?? {}
-        }
+        },
+        behaviors: this.item.behaviors
       }
 
       this.mapData = {
@@ -338,56 +239,17 @@ export default {
       }
 
       // Behaviors
-      let bError = ''
-      data.behaviors = this.item.behaviors.map((B, j) => {
-        const behavior = {
-          type: B.action.type,
-          action: {
-            type: B.action.type,
-            points: B.action.points.slice(0, B.map.routes[0].points.length).map((P, i) => ({
-              lat: B.map.routes[0].points[i].lat,
-              lng: B.map.routes[0].points[i].lng,
-              audio: P.audio ? P.audio : B.action.points[0].audio,
-              description: P.description ? P.description : B.action.points[0].description
-            }))
-          },
-          conditions: B.conditions
+      if (this.form.type === ENTITY_TYPES.OBJECT) {
+        data.behaviors = this.$refs.behaviorSection.validate()
+
+        if (data.behaviors === false) {
+          return
         }
-
-        if (behavior.action.points.length < 3) {
-          bError = `Поведение ${j + 1} содержит менее 3-х точек`
-        }
-
-        return behavior
-      })
-
-      if (bError) {
-        this.$root.$emit(CREATE_SNACHBAR, { text: bError })
-        return
       }
 
       this.$store.dispatch(UPDATE_OBJECT, data)
         .then(() => this.$router.push('/'))
         .catch((e) => this.$root.$emit(CREATE_SNACHBAR, { text: e.error }))
-    },
-
-    addBehavior () {
-      const newBehavior = {
-        action: {
-          points: new Array(100).fill({})
-        },
-        map: {
-          routes: []
-        }
-      }
-
-      newBehavior.action.points = newBehavior.action.points.map(() => ({ audio: {} }))
-
-      if (this.item.behaviors) {
-        this.item.behaviors.push(newBehavior)
-      } else {
-        this.item.behaviors = [newBehavior]
-      }
     }
   }
 }
