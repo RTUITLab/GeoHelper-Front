@@ -22,7 +22,16 @@
         v-for="(item,i) in value"
         :key="i"
       >
-        <v-expansion-panel-header>Поведение {{i + 1}}</v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <v-row>
+            <v-col class="ma-auto" cols="auto">Поведение {{i + 1}}</v-col>
+            <v-col>
+              <v-btn icon small @click.stop="value.splice(i, 1)">
+                <v-icon small>mdi-delete</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-select
             label="Тип"
