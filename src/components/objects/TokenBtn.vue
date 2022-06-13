@@ -6,7 +6,7 @@
     title="Скопировать токен"
     @click="copyToken"
   >
-    <v-icon>mdi-content-copy</v-icon>
+    <v-icon>mdi-lock-open-variant-outline</v-icon>
   </v-btn>
 </template>
 
