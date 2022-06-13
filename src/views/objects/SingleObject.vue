@@ -49,7 +49,7 @@
 
           <p></p>
 
-          <data-section :type="form.type" :item-data="form.data"></data-section>
+          <data-section :type="form.type" :item-data="form.data" @change="(e) => { form.data = e }"></data-section>
         </template>
 
         <v-divider></v-divider>
@@ -315,25 +315,25 @@ export default {
       }
 
       const data = {
-        name: this.item.name,
-        type: this.item.type,
+        name: this.form.name,
+        type: this.form.type,
         areas: this.mapData.areas,
         position: this.mapData.position
       }
 
+      // Type based data
       data.files = []
-      if (this.item.type === ENTITY_TYPES.AUDIO || this.item.type === ENTITY_TYPES.EXCURSION) {
-        data.files.push(this.item.audioFile)
+      if (this.form.type === ENTITY_TYPES.AUDIO || this.form.type === ENTITY_TYPES.EXCURSION) {
+        data.files.push(this.form.data.audio)
       }
-      if (this.item.type === ENTITY_TYPES.OBJECT || this.item.type === ENTITY_TYPES.EXCURSION) {
-        data.files.push(this.item.modelFile)
+      if (this.form.type === ENTITY_TYPES.OBJECT || this.form.type === ENTITY_TYPES.EXCURSION) {
+        data.files.push(this.form.data.model)
       }
 
-      // Type based data
-      if (this.item.type === ENTITY_TYPES.TEXT || this.item.type === ENTITY_TYPES.EXCURSION) {
-        data.description = this.item.description
+      if (this.form.type === ENTITY_TYPES.TEXT || this.form.type === ENTITY_TYPES.EXCURSION) {
+        data.description = this.form.data.description
       }
-      if (this.item.type === ENTITY_TYPES.AUDIO || this.item.type === ENTITY_TYPES.OBJECT) {
+      if (this.form.type === ENTITY_TYPES.AUDIO || this.form.type === ENTITY_TYPES.OBJECT) {
         data.fileName = data.files[0].fileName
         data.url = data.files[0].url
       }

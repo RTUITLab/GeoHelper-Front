@@ -6,17 +6,18 @@
         label="Описание"
         auto-grow
         :rules="[v => !!v || 'Поле не заполнено']"
+        @change="emitChange"
       ></v-textarea>
     </template>
 
     <template v-if="type === ENTITY_TYPES.AUDIO || type === ENTITY_TYPES.EXCURSION">
-      <file-input audio :file-name="audio.fileName" @change="(e) => { audio = e }"></file-input>
+      <file-input audio :file-name="audio.fileName" @change="(e) => { audio = e; emitChange() }"></file-input>
 
       <audio :src="audio.localUrl || audio.url || ''" controls></audio>
     </template>
 
     <template v-if="type === ENTITY_TYPES.OBJECT || type === ENTITY_TYPES.EXCURSION">
-      <file-input model :file-name="model.fileName" @change="(e) => { model = e }"></file-input>
+      <file-input model :file-name="model.fileName" @change="(e) => { model = e; emitChange() }"></file-input>
 
       <v-row style="margin-bottom: 16px">
         <v-col>
@@ -62,6 +63,13 @@ export default {
     }
   },
   methods: {
+    emitChange () {
+      this.$emit('change', {
+        description: this.description,
+        audio: this.audio,
+        model: this.model
+      })
+    },
     openLink (mode) {
       let src = ''
       if (mode === 'DOWNLOAD') {
