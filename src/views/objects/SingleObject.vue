@@ -117,6 +117,12 @@ export default {
       await this.$store.dispatch(FETCH_OBJECTS)
       this.item = this.$store.getters[GET_OBJECT_ONE](this.$route.params.id)
 
+      this.mapData = {
+        markers: [{ position: this.item.position }],
+        areas: this.item.areas || [],
+        route: this.item.route || []
+      }
+
       // Fill form
       this.form = {
         name: this.item.name,
@@ -127,31 +133,6 @@ export default {
           model: this.item.modelFile ?? {}
         },
         behaviors: this.item.behaviors
-      }
-
-      this.mapData = {
-        markers: [{ position: this.item.position }],
-        areas: this.item.areas || [],
-        route: this.item.route || []
-      }
-
-      if (this.item.behaviors && this.item.behaviors.length) {
-        this.item.behaviors = this.item.behaviors.map((B) => {
-          B.map = {
-            routes: [{ points: B.action.points.map((point) => ({ lat: point.lat, lng: point.lng })) }]
-          }
-          B.action.points = B.action.points.map((point) => {
-            if (point.audio) {
-              point.audioFile = new File([], point.audio.fileName, { type: 'audio/*' })
-            }
-
-            return point
-          })
-
-          B.action.points.push(...(new Array(100)).fill({}))
-
-          return B
-        })
       }
     } else {
       this.mapData = {

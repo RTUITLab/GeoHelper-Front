@@ -109,7 +109,20 @@ export default {
   },
   created () {
     if (this.behaviors) {
-      this.value = this.behaviors
+      this.behaviors.forEach((B) => {
+        this.addBehavior()
+
+        const lastB = this.value[this.value.length - 1]
+        lastB.action.type = B.action.type
+        lastB.conditions = B.conditions
+        lastB.map = {
+          routes: [{ points: B.action.points.map((point) => ({ lat: point.lat, lng: point.lng })) }]
+        }
+
+        for (let i = 0; i < lastB.map.routes[0].points.length; i++) {
+          lastB.action.points[i] = B.action.points[i]
+        }
+      })
     }
   },
   methods: {
@@ -131,6 +144,7 @@ export default {
         this.value = [newBehavior]
       }
     },
+
     validate () {
       let bError = ''
 
