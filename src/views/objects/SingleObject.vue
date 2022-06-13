@@ -43,11 +43,6 @@
 
         <template v-if="form.type">
           <v-divider></v-divider>
-          <v-row>
-            <v-subheader>Данные</v-subheader>
-          </v-row>
-
-          <p></p>
 
           <data-section :type="form.type" :item-data="form.data" @change="(e) => { form.data = e }"></data-section>
         </template>

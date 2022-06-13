@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <section>
+    <v-row>
+      <v-subheader>Данные</v-subheader>
+    </v-row>
+
+    <p></p>
+
     <template v-if="ENTITY_TYPES.TEXT === type || type === ENTITY_TYPES.EXCURSION">
       <v-textarea
         v-model="description"
@@ -36,7 +42,7 @@
         </v-col>
       </v-row>
     </template>
-  </div>
+  </section>
 </template>
 
 <script>
