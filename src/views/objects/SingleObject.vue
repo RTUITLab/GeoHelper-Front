@@ -13,7 +13,7 @@
     <v-card-text>
       <v-form ref="form">
         <v-text-field
-          v-model="item.name"
+          v-model="form.name"
           label="Название"
           type="text"
           :rules="[v => !!v || 'Поле не заполнено']"
@@ -37,11 +37,11 @@
               text: 'Экскурсионный'
             }
           ]"
-          v-model="item.type"
+          v-model="form.type"
           label="Тип"
         ></v-select>
 
-        <template v-if="item.type">
+        <template v-if="form.type">
           <v-divider></v-divider>
           <v-row>
             <v-subheader>Данные</v-subheader>
@@ -49,14 +49,7 @@
 
           <p></p>
 
-          <template v-if="ENTITY_TYPES.TEXT === item.type || item.type === ENTITY_TYPES.EXCURSION">
-            <v-textarea
-              v-model="item.description"
-              label="Описание"
-              auto-grow
-              :rules="[v => !!v || 'Поле не заполнено']"
-            ></v-textarea>
-          </template>
+          <data-section :type="form.type" :item-data="form.data"></data-section>
         </template>
 
         <template v-if="item.type === ENTITY_TYPES.AUDIO || item.type === ENTITY_TYPES.EXCURSION">
@@ -251,13 +244,15 @@ import {
 } from '../../assets/globals'
 import MapInput from '../../components/maps/MapInput'
 import TokenBtn from '../../components/objects/TokenBtn'
+import DataSection from '../../components/objects/form/DataSection'
 
 export default {
   name: 'SingleObject',
-  components: { TokenBtn, MapInput },
+  components: { DataSection, TokenBtn, MapInput },
   data: () => {
     return {
       item: {},
+      form: {},
       ENTITY_TYPES: ENTITY_TYPES,
       BEHAVIORS_TYPES: BEHAVIORS_TYPES,
       BEHAVIORS_CONDITIONS_TYPES: BEHAVIORS_CONDITIONS_TYPES,
@@ -271,6 +266,16 @@ export default {
     if (this.$route.params.id) {
       await this.$store.dispatch(FETCH_OBJECTS)
       this.item = this.$store.getters[GET_OBJECT_ONE](this.$route.params.id)
+
+      // Fill form
+      this.form = {
+        name: this.item.name,
+        type: this.item.type,
+        data: {
+          description: this.item.description
+        }
+      }
+
       this.mapData = {
         markers: [{ position: this.item.position }],
         areas: this.item.areas || [],
