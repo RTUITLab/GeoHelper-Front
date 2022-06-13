@@ -17,6 +17,7 @@ export default {
   name: 'FileInput',
   props: {
     audio: Boolean,
+    model: Boolean,
     fileName: String
   },
   data: () => {
@@ -60,11 +61,18 @@ export default {
           accept: 'audio/*',
           type: 'audio'
         }
-      }
-      return {
-        label: '',
-        accept: '*/*',
-        type: 'none'
+      } else if (this.model) {
+        return {
+          label: 'Модель',
+          accept: 'application/zip',
+          type: 'model'
+        }
+      } else {
+        return {
+          label: '',
+          accept: '*/*',
+          type: 'none'
+        }
       }
     }
   }

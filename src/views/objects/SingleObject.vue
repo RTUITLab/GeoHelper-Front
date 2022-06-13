@@ -52,35 +52,6 @@
           <data-section :type="form.type" :item-data="form.data"></data-section>
         </template>
 
-        <template v-if="item.type === ENTITY_TYPES.OBJECT || item.type === ENTITY_TYPES.EXCURSION">
-          <v-file-input
-            label="Модель"
-            accept="application/zip"
-            v-model="modelFile"
-            :loading="!!loadingQueue"
-            :disabled="!!loadingQueue"
-            @change="(e) => uploadFile(e, ENTITY_TYPES.OBJECT)"
-            :rules="[v => !!v || 'Поле не заполнено', v => !!v && v.size < 52428000 || 'Файл более 50 Мб']"
-          ></v-file-input>
-
-          <v-row style="margin-bottom: 16px">
-            <v-col>
-              <v-btn
-                style="margin-right: 16px"
-                color="primary"
-                text
-                @click="() => openLink('DOWNLOAD')"
-              >Скачать</v-btn>
-
-              <v-btn
-                outlined
-                color="primary"
-                @click="() => openLink('OPEN')"
-              >Открыть</v-btn>
-            </v-col>
-          </v-row>
-        </template>
-
         <v-divider></v-divider>
         <v-row>
           <v-subheader>Видимость</v-subheader>
