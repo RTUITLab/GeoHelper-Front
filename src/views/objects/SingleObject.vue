@@ -213,8 +213,6 @@ export default {
       ENTITY_TYPES: ENTITY_TYPES,
       BEHAVIORS_TYPES: BEHAVIORS_TYPES,
       BEHAVIORS_CONDITIONS_TYPES: BEHAVIORS_CONDITIONS_TYPES,
-      audioFile: {},
-      modelFile: {},
       loadingQueue: 0,
       mapData: ''
     }
@@ -239,13 +237,6 @@ export default {
         markers: [{ position: this.item.position }],
         areas: this.item.areas || [],
         route: this.item.route || []
-      }
-
-      if (this.item.audioFile) {
-        this.audioFile = new File([], this.item.audioFile.fileName, { type: 'audio/*' })
-      }
-      if (this.item.modelFile) {
-        this.modelFile = new File([], this.item.modelFile.fileName, { type: 'application/zip' })
       }
 
       if (this.item.behaviors && this.item.behaviors.length) {
@@ -316,20 +307,6 @@ export default {
       }
 
       this.loadingQueue--
-    },
-
-    openLink (mode) {
-      let src = ''
-      if (mode === 'DOWNLOAD') {
-        src = this.item.modelFile.url
-      }
-      if (mode === 'OPEN') {
-        src = location.origin + '/ModelViewer/index.html?=' + this.item.modelFile.url.split('/').pop()
-      }
-
-      if (src) {
-        window.open(src, '_blank')
-      }
     },
 
     saveData () {
